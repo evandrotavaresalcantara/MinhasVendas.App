@@ -22,7 +22,7 @@ public class OrdemDeCompraServico : BaseServico, IOrdemDeCompraServico
     public async Task Adicionar(OrdemDeCompra ordemDeCompra)
     {
         ordemDeCompra.DataDeCriacao = DateTime.Now;
-        ordemDeCompra.StatusOrdemDeCompra = StatusOrdemDeCompra.Solicitado;
+        ordemDeCompra.StatusOrdemDeCompra = StatusOrdemDeCompra.Novo;
 
         await _ordemDeCompraRepositorio.Adicionar(ordemDeCompra);
     }
@@ -71,6 +71,8 @@ public class OrdemDeCompraServico : BaseServico, IOrdemDeCompraServico
 
     }
 
+
+
     public async Task FinalizarCompraView(int id)
     {
           var ordemDeCompra = await _ordemDeCompraRepositorio.Obter().Include(d => d.DetalheDeCompras).FirstOrDefaultAsync(o => o.Id == id);
@@ -98,6 +100,74 @@ public class OrdemDeCompraServico : BaseServico, IOrdemDeCompraServico
             return;
         }
 
+    }
+
+    public async Task SolicitarAprovacao(OrdemDeCompra ordemDeCompra)
+    {
+        var itemOrdemDeCompra = await _ordemDeCompraRepositorio.Obter().Include(d => d.DetalheDeCompras).FirstOrDefaultAsync(o => o.Id == ordemDeCompra.Id);
+
+        var temItensDeCompra = itemOrdemDeCompra.DetalheDeCompras.Any();
+
+        var temRegistroDeEstoqueAberto = itemOrdemDeCompra.DetalheDeCompras.Any(d => d.RegistradoTransacaoDeEstoque == true);
+
+        if (!temItensDeCompra)
+        {
+            Notificar("SOLICITAR APROVAÇÃO. Ordem de Compra vazia");
+            return;
+        }
+
+        if (temRegistroDeEstoqueAberto)
+        {
+            Notificar("SOLICITAR APROVAÇÃO. Ordem de compra já está aprovada.");
+            return;
+        }
+
+        if (ordemDeCompra.StatusOrdemDeCompra == StatusOrdemDeCompra.Fechado)
+        {
+            Notificar("SOLICITAR APROVAÇÃO. Ordem de Compra já está fechada.");
+            return;
+        }
+
+        itemOrdemDeCompra.StatusOrdemDeCompra = StatusOrdemDeCompra.Aprovado;
+
+        await _ordemDeCompraRepositorio.Atualizar(itemOrdemDeCompra);
+
+    }
+
+    public async Task SolicitarAprovacao(int id)
+    {
+        var ordemDeCompra = await _ordemDeCompraRepositorio.Obter().Include(d => d.DetalheDeCompras).FirstOrDefaultAsync(o => o.Id == id);
+
+
+        var temItensDeCompra = ordemDeCompra.DetalheDeCompras.Any();
+
+        var temRegistroDeEstoqueAberto = ordemDeCompra.DetalheDeCompras.Any(d => d.RegistradoTransacaoDeEstoque == false);
+
+        if (!temItensDeCompra)
+        {
+            Notificar("SOLICITAR APROVAÇÃO. Ordem de Compra vazia");
+            return;
+        }
+       
+        if (ordemDeCompra.StatusOrdemDeCompra == StatusOrdemDeCompra.Aprovado)
+        {
+            Notificar("SOLICITAR APROVAÇÃO. Ordem de compra já está aprovada.");
+            return;
+        }
+        if (ordemDeCompra.StatusOrdemDeCompra == StatusOrdemDeCompra.Solicitado)
+        {
+            Notificar("SOLICITAR APROVAÇÃO. Ordem de compra já está em Análise (já foi solicitado).");
+            return;
+        }
+
+        if (ordemDeCompra.StatusOrdemDeCompra == StatusOrdemDeCompra.Fechado)
+        {
+            Notificar("SOLICITAR APROVAÇÃO. Ordem de Compra já está fechada.");
+            return;
+        }
+
+        ordemDeCompra.StatusOrdemDeCompra = StatusOrdemDeCompra.Aprovado;
+        await _ordemDeCompraRepositorio.Atualizar(ordemDeCompra);
     }
 
     public async Task<OrdemDeCompra> ConsultaOrdemDeCompraDetalheDeCompraProdutoFornecedor(int id)

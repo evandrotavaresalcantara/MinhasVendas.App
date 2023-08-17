@@ -27,6 +27,12 @@ public class DetalheDeCompraServico : BaseServico, IDetalheDeCompraServico
             Notificar("Ordem de Compra está fechada.");
             return;
         }
+
+        if (ordemDeCompra.StatusOrdemDeCompra == StatusOrdemDeCompra.Aprovado)
+        {
+            Notificar("Ordem de Compra está Aprovada.");
+            return;
+        }
         _minhasVendasAppContext.Add(detalheDeCompra);
         await _minhasVendasAppContext.SaveChangesAsync();
 
@@ -35,6 +41,31 @@ public class DetalheDeCompraServico : BaseServico, IDetalheDeCompraServico
     public Task Atualizar(DetalheDeCompra detalheDeCompra)
     {
         throw new NotImplementedException();
+    }
+
+    public async Task RemoverStatus(int id)
+    {
+        var detalheDeCompra = await _minhasVendasAppContext.DetalheDeCompras
+                              .Include(v => v.OrdemDeCompra)
+                              .FirstOrDefaultAsync(m => m.Id == id);
+
+
+        if (detalheDeCompra.OrdemDeCompra.StatusOrdemDeCompra == StatusOrdemDeCompra.Fechado)
+        {
+            Notificar("Ordem de Compra está fechada.");
+            return;
+        }
+        if (detalheDeCompra.OrdemDeCompra.StatusOrdemDeCompra == StatusOrdemDeCompra.Aprovado)
+        {
+            Notificar("Ordem de Compra está aprovada.");
+            return;
+        }
+     
+        if (detalheDeCompra.RegistradoTransacaoDeEstoque)
+        {
+            Notificar("Produto já registrado no estoque.");
+            return;
+        }
     }
 
     public async Task Remover(int id)
@@ -49,6 +80,12 @@ public class DetalheDeCompraServico : BaseServico, IDetalheDeCompraServico
             Notificar("Ordem de Venda está fechada. Não é possível Excluir o produto.");
             return;
         }
+        if (detalheDeCompra.OrdemDeCompra.StatusOrdemDeCompra == StatusOrdemDeCompra.Aprovado)
+        {
+            Notificar("Ordem de Venda está aprovada. Não é possível Excluir o produto.");
+            return;
+        }
+
         if (detalheDeCompra.RegistradoTransacaoDeEstoque)
         {
             Notificar("Produto já registrado no estoque. Não é possível excluir.");
@@ -59,25 +96,7 @@ public class DetalheDeCompraServico : BaseServico, IDetalheDeCompraServico
 
     }
 
-    public async Task VerificarStatus(int id)
-    {
-        var detalheDeCompra = await _minhasVendasAppContext.DetalheDeCompras
-                              .Include(v => v.OrdemDeCompra)
-                              .FirstOrDefaultAsync(m => m.Id == id);
 
-
-        if (detalheDeCompra.OrdemDeCompra.StatusOrdemDeCompra == StatusOrdemDeCompra.Fechado)
-        {
-            Notificar("Ordem de Venda está fechada.");
-            return;
-        }
-
-        if (detalheDeCompra.RegistradoTransacaoDeEstoque)
-        {
-            Notificar("Produto já registrado no estoque.");
-            return;
-        }
-    }
 
     public async Task InserirProdutoStatus(int id)
     {
@@ -88,15 +107,67 @@ public class DetalheDeCompraServico : BaseServico, IDetalheDeCompraServico
             Notificar("Ordem de Compra está fechada.");
             return;
         }
+
+        if (ordemDeCompra.StatusOrdemDeCompra == StatusOrdemDeCompra.Aprovado)
+        {
+            Notificar("Ordem de Compra está Aprovada.");
+            return;
+        }
     }
 
-    public async Task RecberProduto(DetalheDeCompra detalheDeCompra)
+    public async Task ReceberProduto(int id)
+    {
+        var detalheDeCompra = await _minhasVendasAppContext.DetalheDeCompras
+                              .Include(v => v.OrdemDeCompra)
+                              .FirstOrDefaultAsync(m => m.Id == id);
+
+
+        if (detalheDeCompra.OrdemDeCompra.StatusOrdemDeCompra == StatusOrdemDeCompra.Fechado)
+        {
+            Notificar("Ordem de Compra está fechada.");
+            return;
+        }
+        if (detalheDeCompra.OrdemDeCompra.StatusOrdemDeCompra == StatusOrdemDeCompra.Novo)
+        {
+            Notificar("Ordem de Compra sem solicitação de Aprovação.");
+            return;
+        }
+        if (detalheDeCompra.OrdemDeCompra.StatusOrdemDeCompra == StatusOrdemDeCompra.Solicitado)
+        {
+            Notificar("Ordem de Compra em Análise.");
+            return;
+        }
+
+        if (detalheDeCompra.RegistradoTransacaoDeEstoque)
+        {
+            Notificar("Produto já registrado no estoque.");
+            return;
+        }
+    }
+
+    public async Task ReceberProduto(DetalheDeCompra detalheDeCompra)
     {
         var ordemDeCompra = await _minhasVendasAppContext.OrdemDeCompras.FindAsync(detalheDeCompra.OrdemDeCompraId);
 
         if (ordemDeCompra.StatusOrdemDeCompra == StatusOrdemDeCompra.Fechado)
         {
             Notificar("Ordem de Compra está fechada.");
+            return;
+        }
+        if (ordemDeCompra.StatusOrdemDeCompra == StatusOrdemDeCompra.Novo)
+        {
+            Notificar("Ordem de Compra sem solicitação de Aprovação.");
+            return;
+        }
+        if (ordemDeCompra.StatusOrdemDeCompra == StatusOrdemDeCompra.Solicitado)
+        {
+            Notificar("Ordem de Compra em Análise.");
+            return;
+        }
+
+        if (detalheDeCompra.RegistradoTransacaoDeEstoque)
+        {
+            Notificar("Produto já registrado no estoque.");
             return;
         }
 
@@ -117,22 +188,24 @@ public class DetalheDeCompraServico : BaseServico, IDetalheDeCompraServico
         await _minhasVendasAppContext.SaveChangesAsync();
     }
 
+
     public async Task<DetalheDeCompra> ConsultaDetalheDeCompraProdutoOrdemDeCompra(int id)
     {
         var consultaDetalheDeCompraProdutoOrdemDeCompra = await _minhasVendasAppContext.DetalheDeCompras
                                                                  .AsNoTracking()
                                                                  .Include(p => p.Produto)
                                                                  .Include(o => o.OrdemDeCompra)
-                                                                 .FirstOrDefaultAsync(d=> d.Id == id);
+                                                                 .FirstOrDefaultAsync(d => d.Id == id);
 
         return consultaDetalheDeCompraProdutoOrdemDeCompra;
     }
 
     public async Task<DetalheDeCompra> Consulta(int id)
     {
-        var detalheDeCompra = await _minhasVendasAppContext.DetalheDeCompras.AsNoTracking().FirstOrDefaultAsync(d=> d.Id == id);
+        var detalheDeCompra = await _minhasVendasAppContext.DetalheDeCompras.AsNoTracking().FirstOrDefaultAsync(d => d.Id == id);
 
         return detalheDeCompra;
     }
-}    
+
+}
 

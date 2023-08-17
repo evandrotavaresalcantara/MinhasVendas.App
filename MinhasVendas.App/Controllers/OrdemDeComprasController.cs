@@ -16,7 +16,7 @@ using MinhasVendas.App.ViewModels;
 namespace MinhasVendas.App.Controllers;
 
 public class OrdemDeComprasController : BaseController
-{       
+{
     private readonly IOrdemDeCompraServico _ordemDeCompraServico;
     private readonly IFornecedorRepositorio _fornecedorRepositorio;
 
@@ -36,7 +36,7 @@ public class OrdemDeComprasController : BaseController
 
     public async Task<IActionResult> Create()
     {
-        ViewData["FornecedorId"] = new SelectList(await  _fornecedorRepositorio.BuscarTodos(), "Id", "Nome");
+        ViewData["FornecedorId"] = new SelectList(await _fornecedorRepositorio.BuscarTodos(), "Id", "Nome");
 
         return View();
     }
@@ -68,6 +68,45 @@ public class OrdemDeComprasController : BaseController
 
         return View(model);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> SolicitarAprovacao(int id)
+    {
+
+        ViewData["OrdemDeCompraId"] = id;
+
+        CarrinhoDeComprasViewModel model = new CarrinhoDeComprasViewModel();
+
+        await _ordemDeCompraServico.SolicitarAprovacao(id);
+
+        if (!OperacaoValida()) return PartialView("_OrdemDeCompraStatus", model);
+
+        var ordemDeCompra = await _ordemDeCompraServico.ConsultaOrdemDeCompraDetalheDeCompra(id);
+
+        model.OrdemDeCompra = ordemDeCompra;
+
+        return PartialView("_SolicitarAprovacao", model);
+
+
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> SolicitarAprovacao(int id, CarrinhoDeComprasViewModel model)
+    {
+        if (id != model.OrdemDeCompra.Id) return NotFound();
+
+        var ordemDeCompra = await _ordemDeCompraServico.ConsultaOrdemDeCompra(model.OrdemDeCompra.Id);
+
+        if (ordemDeCompra == null) return NotFound();
+
+        await _ordemDeCompraServico.SolicitarAprovacao(model.OrdemDeCompra);
+
+        if (!OperacaoValida()) return PartialView("_OrdemDeCompraStatus", model);
+
+        return RedirectToAction("CarrinhoDeCompras", "OrdemDeCompras", new { id = ordemDeCompra.Id });
+
+    }
+
 
     [HttpGet]
     public async Task<IActionResult> FinalizarCompra(int id)

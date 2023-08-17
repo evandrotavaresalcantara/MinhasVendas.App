@@ -56,12 +56,13 @@
 <vc:resumo></vc:resumo>
 
 
-<strong>Total da Compra: @Model.TotalCompra</strong>
+<strong>Total da Compra: @Model.TotalCompra.ToString("C")</strong>
 <strong>Total de Itens: @Model.TotalItens</strong>
 
 <div>
     <div style="float:left">
         <button class="btn btn-info" onclick="InserirProduto(@Model.OrdemDeCompra.Id)">Inserir Produto</button>
+        <button class="btn btn-success" onclick="SolicitarAprovacao(@Model.OrdemDeCompra.Id)">Solicitar Aprovação</button>
         <button class="btn btn-dark" onclick="FinalizarVenda(@Model.OrdemDeCompra.Id)">Finalizar Compra</button>
     </div>
 </div>
@@ -148,6 +149,15 @@
     </div>
 </div>
 
+
+<div class="modal fade" id="receberProdutoFormModel">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="receberProdutoFormModelDiv"> </div>
+        </div>
+    </div>
+</div>
+
 <div class="modal fade" id="finalizarVendaFormModel">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -156,10 +166,10 @@
     </div>
 </div>
 
-<div class="modal fade" id="receberProdutoFormModel">
+<div class="modal fade" id="modalSolicitarAprovacao">
     <div class="modal-dialog">
         <div class="modal-content">
-            <div id="receberProdutoFormModelDiv"> </div>
+            <div id="conteudoModalSolicitarAprovacao"> </div>
         </div>
     </div>
 </div>
@@ -170,59 +180,72 @@
     }
     }
 
-    <script>
+<script>
 
-        var InserirProduto = function (vendaId) {
+    var InserirProduto = function (vendaId) {
 
-            var vendaId = vendaId;
-            var action = "/DetalheDeCompras/InserirProduto/";
-            var url = action + vendaId;
+        var vendaId = vendaId;
+        var action = "/DetalheDeCompras/InserirProduto/";
+        var url = action + vendaId;
 
-            $("#inserirProdutoFormModelDiv").load(url, function () {
-                $("#inserirProdutoFormModel").modal("show");
+        $("#inserirProdutoFormModelDiv").load(url, function () {
+            $("#inserirProdutoFormModel").modal("show");
 
-                var form = document.getElementById("inserirProdutoForm");
-                $.validator.unobtrusive.parse(inserirProdutoForm);
-            });
+            var form = document.getElementById("inserirProdutoForm");
+            $.validator.unobtrusive.parse(inserirProdutoForm);
+        });
 
-        }
+    }
 
-        var ExcluirProduto = function (id) {
+    var ExcluirProduto = function (id) {
 
-            var id = id;
-            var action = "/DetalheDeCompras/ExcluirProduto/";
-            var url = action + id;
+        var id = id;
+        var action = "/DetalheDeCompras/ExcluirProduto/";
+        var url = action + id;
 
-            $("#ExcluirProdutoFormModelDiv").load(url, function () {
-                $("#ExcluirProdutoFormModel").modal("show");
-            });
-        }
+        $("#ExcluirProdutoFormModelDiv").load(url, function () {
+            $("#ExcluirProdutoFormModel").modal("show");
+        });
+    }
 
-        var ReceberProduto = function (id) {
+    var ReceberProduto = function (id) {
 
-            var id = id;
-            var action = "/DetalheDeCompras/ReceberProduto/";
-            var url = action + id;
+        var id = id;
+        var action = "/DetalheDeCompras/ReceberProduto/";
+        var url = action + id;
 
-            $("#receberProdutoFormModelDiv").load(url, function () {
-                $("#receberProdutoFormModel").modal("show");
-            });
-        }
+        $("#receberProdutoFormModelDiv").load(url, function () {
+            $("#receberProdutoFormModel").modal("show");
+        });
+    }
 
-        var FinalizarVenda = function (vendaId) {
+    var FinalizarVenda = function (vendaId) {
 
-            var vendaId = vendaId;
-            var action = "/OrdemDeCompras/FinalizarCompra/";
-            var url = action + vendaId;
+        var vendaId = vendaId;
+        var action = "/OrdemDeCompras/FinalizarCompra/";
+        var url = action + vendaId;
 
-            $("#finalizarVendaFormModelDiv").load(url, function () {
-                $("#finalizarVendaFormModel").modal("show");
+        $("#finalizarVendaFormModelDiv").load(url, function () {
+            $("#finalizarVendaFormModel").modal("show");
 
-                var form = document.getElementById("finalizarVendaForm");
-                $.validator.unobtrusive.parse(finalizarVendaForm);
-            });
+            var form = document.getElementById("finalizarCompraForm");
+            $.validator.unobtrusive.parse(finalizarVendaForm);
+        });
+    }
+
+    var SolicitarAprovacao = function (vendaId) {
+
+        var vendaId = vendaId;
+        var action = "/OrdemDeCompras/SolicitarAprovacao/";
+        var url = action + vendaId;
+
+        $("#conteudoModalSolicitarAprovacao").load(url, function () {
+            $("#modalSolicitarAprovacao").modal("show");
+       
+        });
+    }
 
 
-        }
-    </script>
+
+</script>
 

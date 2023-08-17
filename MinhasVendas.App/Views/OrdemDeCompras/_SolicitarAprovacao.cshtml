@@ -1,0 +1,26 @@
+﻿@model MinhasVendas.App.ViewModels.CarrinhoDeComprasViewModel
+
+@{
+    ViewData["Title"] = "Solicitar Aprovação";
+}
+
+
+<div class="modal-header">
+    <h5 class="modal-title">@ViewData["Title"]</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<div class="modal-body">
+    <vc:resumo></vc:resumo>
+    Solicitação aprovada com sucesso.
+</div>
+
+<div class="modal-footer">
+    <div class="col-md-offset-2 col-md-10">
+        <a type="button" class="btn btn-success" asp-action="CarrinhoDeCompras" asp-route-id="@Model.OrdemDeCompra.Id">Meu Carrinho</a>
+    </div>
+</div>
+
+
+
+

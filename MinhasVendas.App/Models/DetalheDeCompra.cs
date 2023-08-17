@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MinhasVendas.App.Models
 {
@@ -11,6 +13,9 @@ namespace MinhasVendas.App.Models
         public int TransacaoDeEstoqueId { get; set; }
         [Range(1, 1000, ErrorMessage = "Valor Inválido")]
         public int Quantidade { get; set; }
+        [Range(1, 100)]
+        [DataType(DataType.Currency)]
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal CustoUnitario { get; set; }
         public DateTime? DataDeRecebimento {  get; set; }
         public bool RegistradoTransacaoDeEstoque { get; set; }

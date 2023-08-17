@@ -67,7 +67,7 @@ public class DetalheDeComprasController : BaseController
 
         if (detalheDeCompra == null) return NotFound("Item de Venda não encontrado");
 
-        await _detalheDeCompraServico.VerificarStatus(id);
+        await _detalheDeCompraServico.ReceberProduto(id);
 
         if (!OperacaoValida()) return PartialView("_OrdemDeCompraStatus", model);
 
@@ -85,7 +85,7 @@ public class DetalheDeComprasController : BaseController
 
         if (detalheDeCompra == null) return NotFound("Item não encontrado.");
 
-        await _detalheDeCompraServico.RecberProduto(detalheDeCompra);
+        await _detalheDeCompraServico.ReceberProduto(detalheDeCompra);
 
         if (!OperacaoValida()) return PartialView("_ReceberProduto", carrinhoDeComprasViewModel);
 
@@ -103,7 +103,7 @@ public class DetalheDeComprasController : BaseController
 
         model.DetalheDeCompra = detalheDeCompra;
 
-        await _detalheDeCompraServico.VerificarStatus(id);
+        await _detalheDeCompraServico.RemoverStatus(id);
 
         if (!OperacaoValida()) return PartialView("_OrdemDeCompraStatus", model);
 
