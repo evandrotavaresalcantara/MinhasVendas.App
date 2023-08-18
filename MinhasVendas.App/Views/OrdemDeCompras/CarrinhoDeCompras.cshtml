@@ -2,7 +2,7 @@
 
 @{
     ViewData["Title"] = "Carrinho de Compras";
-    @Model.TotalCompra.ToString("C");
+   
 }
 
 @{
@@ -11,54 +11,84 @@
     {
         var precoProduto = from item in Model.OrdemDeCompra.DetalheDeCompras select (item.CustoUnitario * item.Quantidade);
         decimal[] precoProdutos = precoProduto.ToArray();
-        decimal totalCompra = precoProdutos.Aggregate((a, b) => a + b) + Model.OrdemDeCompra.ValorDeFrete;
+        decimal totalProdutos = precoProdutos.Aggregate((a, b) => a + b);
+        decimal totalCompra = totalProdutos + Model.OrdemDeCompra.ValorDeFrete;
         Model.TotalCompra = totalCompra;
 
         var itens = from item in Model.OrdemDeCompra.DetalheDeCompras select (item.Quantidade);
         int totalItens = itens.Sum();
+
         Model.TotalItens = totalItens;
+        Model.TotalProdutos = totalProdutos;
     }
 }
 
-<h1>Carrinho de Compras</h1>
+<h2 class="text-center">Carrinho de Compras</h2>
 
-<div>
-    <h4>OrdemDeCompra</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.OrdemDeCompra.DataDeCriacao)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.OrdemDeCompra.DataDeCriacao)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.OrdemDeCompra.StatusOrdemDeCompra)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.OrdemDeCompra.StatusOrdemDeCompra)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.OrdemDeCompra.ValorDeFrete)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.OrdemDeCompra.ValorDeFrete)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.OrdemDeCompra.Fornecedor)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.OrdemDeCompra.Fornecedor.Id)
-        </dd>
-    </dl>
+
+<div class="card-group">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Dados da Compra:</h5>
+            <dl class="row">
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.OrdemDeCompra.DataDeCriacao)
+                </dt>
+                <dd class="col-sm-5">
+                    @Html.DisplayFor(model => model.OrdemDeCompra.DataDeCriacao)
+                </dd>
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.OrdemDeCompra.StatusOrdemDeCompra)
+                </dt>
+                <dd class="col-sm-5">
+                    @Html.DisplayFor(model => model.OrdemDeCompra.StatusOrdemDeCompra)
+                </dd>
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.OrdemDeCompra.Fornecedor)
+                </dt>
+                <dd class="col-sm-5">
+                    @Html.DisplayFor(model => model.OrdemDeCompra.Fornecedor.Nome)
+                </dd>
+            </dl>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Valores da Compra:</h5>
+            <dl class="row">
+               
+                <dt class="col-sm-4">
+                    Valor Produtos
+                </dt>
+                <dd class="col-sm-5">
+                    @Html.DisplayFor(model => model.TotalProdutos)
+                </dd>
+                <dt class="col-sm-4">
+                    @Html.DisplayNameFor(model => model.OrdemDeCompra.ValorDeFrete)
+                </dt>
+                <dd class="col-sm-5">
+                    @Html.DisplayFor(model => model.OrdemDeCompra.ValorDeFrete)
+                </dd>
+                <dt class="col-sm-4">
+                    Valor da Compra
+                </dt>
+                <dd class="col-sm-5">
+                    @Html.DisplayFor(model => model.TotalCompra)
+                </dd>
+                <dt class="col-sm-4">
+                    Total de Itens
+                </dt>
+                <dd class="col-sm-5">
+                    @Html.DisplayFor(model => model.TotalItens)
+                </dd>
+            </dl>
+        </div>
+    </div>
 </div>
+
 <br />
 
 <vc:resumo></vc:resumo>
-
-
-<strong>Total da Compra: @Model.TotalCompra</strong>
-<strong>Total de Itens: @Model.TotalItens</strong>
 
 <div>
     <div style="float:left">
@@ -84,10 +114,10 @@
                 @Html.Name("TotalProduto")
             </th>
             <th>
-                @Html.Name("DataRecebimento")
+                @Html.Name("Data de Recebimento")
             </th>
             <th>
-                @Html.Name("StatusRecebimento")
+                @Html.Name("Status Recebimento")
             </th>
         </tr>
     </thead>
@@ -108,10 +138,11 @@
                     @Html.DisplayFor(modelItem => item.CustoUnitario)
                 </td>
                 <td>
-                   @Model.TotalProduto.ToString("c")
+                    @Model.TotalProduto.ToString("c")
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.DataDeRecebimento)
+                    
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.RegistradoTransacaoDeEstoque)
@@ -243,7 +274,7 @@
 
         $("#conteudoModalSolicitarAprovacao").load(url, function () {
             $("#modalSolicitarAprovacao").modal("show");
-       
+
         });
     }
 

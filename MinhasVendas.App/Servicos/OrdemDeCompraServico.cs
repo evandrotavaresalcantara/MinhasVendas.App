@@ -129,6 +129,7 @@ public class OrdemDeCompraServico : BaseServico, IOrdemDeCompraServico
         }
 
         itemOrdemDeCompra.StatusOrdemDeCompra = StatusOrdemDeCompra.Aprovado;
+        itemOrdemDeCompra.ValorDeFrete = ordemDeCompra.ValorDeFrete;
 
         await _ordemDeCompraRepositorio.Atualizar(itemOrdemDeCompra);
 
@@ -166,8 +167,8 @@ public class OrdemDeCompraServico : BaseServico, IOrdemDeCompraServico
             return;
         }
 
-        ordemDeCompra.StatusOrdemDeCompra = StatusOrdemDeCompra.Aprovado;
-        await _ordemDeCompraRepositorio.Atualizar(ordemDeCompra);
+        //ordemDeCompra.StatusOrdemDeCompra = StatusOrdemDeCompra.Aprovado;
+        //await _ordemDeCompraRepositorio.Atualizar(ordemDeCompra);
     }
 
     public async Task<OrdemDeCompra> ConsultaOrdemDeCompraDetalheDeCompraProdutoFornecedor(int id)

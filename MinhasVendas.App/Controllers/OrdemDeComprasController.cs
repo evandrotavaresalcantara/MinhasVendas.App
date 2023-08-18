@@ -81,12 +81,7 @@ public class OrdemDeComprasController : BaseController
 
         if (!OperacaoValida()) return PartialView("_OrdemDeCompraStatus", model);
 
-        var ordemDeCompra = await _ordemDeCompraServico.ConsultaOrdemDeCompraDetalheDeCompra(id);
-
-        model.OrdemDeCompra = ordemDeCompra;
-
         return PartialView("_SolicitarAprovacao", model);
-
 
     }
 

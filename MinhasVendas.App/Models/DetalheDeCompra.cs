@@ -17,6 +17,9 @@ namespace MinhasVendas.App.Models
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal CustoUnitario { get; set; }
+        
+        [Display(Name = "Data de Recebimento")]
+        [DataType(DataType.Date)]
         public DateTime? DataDeRecebimento {  get; set; }
         public bool RegistradoTransacaoDeEstoque { get; set; }
 

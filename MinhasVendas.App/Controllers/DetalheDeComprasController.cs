@@ -73,6 +73,8 @@ public class DetalheDeComprasController : BaseController
 
         model.DetalheDeCompra = detalheDeCompra;
 
+        model.DetalheDeCompra.DataDeRecebimento = DateTime.Now;
+
         return PartialView("_ReceberProduto", model);
     }
 
@@ -84,6 +86,8 @@ public class DetalheDeComprasController : BaseController
         var detalheDeCompra = await _detalheDeCompraServico.Consulta(carrinhoDeComprasViewModel.DetalheDeCompra.Id);
 
         if (detalheDeCompra == null) return NotFound("Item não encontrado.");
+
+        detalheDeCompra.DataDeRecebimento = carrinhoDeComprasViewModel.DetalheDeCompra.DataDeRecebimento;
 
         await _detalheDeCompraServico.ReceberProduto(detalheDeCompra);
 
