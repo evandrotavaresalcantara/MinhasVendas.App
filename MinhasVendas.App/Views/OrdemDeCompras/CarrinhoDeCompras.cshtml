@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Carrinho de Compras";
+    @Model.TotalCompra.ToString("C");
 }
 
 @{
@@ -56,7 +57,7 @@
 <vc:resumo></vc:resumo>
 
 
-<strong>Total da Compra: @Model.TotalCompra.ToString("C")</strong>
+<strong>Total da Compra: @Model.TotalCompra</strong>
 <strong>Total de Itens: @Model.TotalItens</strong>
 
 <div>
@@ -93,7 +94,8 @@
     <tbody>
         @foreach (var item in Model.OrdemDeCompra.DetalheDeCompras)
         {
-            var produtoTotal = item.Quantidade * item.CustoUnitario;
+            //var produtoTotal = item.Quantidade * item.CustoUnitario;
+            Model.TotalProduto = item.Quantidade * item.CustoUnitario;
 
             <tr>
                 <td>
@@ -106,7 +108,7 @@
                     @Html.DisplayFor(modelItem => item.CustoUnitario)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => produtoTotal)
+                   @Model.TotalProduto.ToString("c")
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.DataDeRecebimento)

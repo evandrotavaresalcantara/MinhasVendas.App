@@ -13,7 +13,7 @@ namespace MinhasVendas.App.Models
         public DateTime DataDeCriacao { get; set; }
         public StatusOrdemDeCompra StatusOrdemDeCompra { get; set; }
         public FormaDePagamento FormaDePagamento { get; set; }
-        [Range(1, 100)]
+
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(18, 2)")]
         public Decimal ValorDeFrete { get; set; }

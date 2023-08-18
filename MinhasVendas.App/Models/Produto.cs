@@ -9,11 +9,11 @@ namespace MinhasVendas.App.Models
         //public int Id { get; set; }
 
         public string? Nome { get; set; }
-        [Range(1, 100)]
+
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal PrecoDeLista { get; set; }
-        [Range(1, 100)]
+
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal PrecoBase { get; set; }

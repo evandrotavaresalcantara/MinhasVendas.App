@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Localization;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MinhasVendas.App.Data;
 using MinhasVendas.App.Interfaces;
@@ -9,6 +10,7 @@ using MinhasVendas.App.Notificador;
 using MinhasVendas.App.Repositorio;
 using MinhasVendas.App.Servicos;
 using System.Configuration;
+using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,8 +47,9 @@ builder.Services.AddScoped<IDetalheDeVendaRepositorio, DetalheDeVendaRepositorio
 builder.Services.AddScoped<ITransacaoDeEstoqueRepositorio, TransacaoDeEstoqueRepositorio>();
 
 
-
 var app = builder.Build();
+
+
 
 
 
@@ -57,6 +60,17 @@ var app = builder.Build();
 //    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
 //    app.UseHsts();
 //}
+
+var defaultCulture = new CultureInfo("pt-BR");
+var localizationOptions = new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture(defaultCulture),
+    SupportedCultures = new List<CultureInfo> { defaultCulture },
+    SupportedUICultures = new List<CultureInfo> { defaultCulture }
+};
+app.UseRequestLocalization(localizationOptions);
+
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
