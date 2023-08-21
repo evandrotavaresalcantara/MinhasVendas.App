@@ -175,7 +175,7 @@ public class OrdemDeCompraServico : BaseServico, IOrdemDeCompraServico
     {
         var ordemDeCompra = await _ordemDeCompraRepositorio.Obter()
                                     .Include(d => d.DetalheDeCompras)
-                                    .ThenInclude(p=> p.Produto)
+                                        .ThenInclude(p=> p.Produto)
                                     .Include(f=> f.Fornecedor)
                                     .FirstOrDefaultAsync(o => o.Id == id);
 

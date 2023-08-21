@@ -10,8 +10,10 @@ using MinhasVendas.App.Interfaces;
 using MinhasVendas.App.Interfaces.Repositorio;
 using MinhasVendas.App.Interfaces.Servico;
 using MinhasVendas.App.Models;
+using MinhasVendas.App.Paginacao;
 using MinhasVendas.App.Servicos;
 using MinhasVendas.App.ViewModels;
+using Newtonsoft.Json;
 
 namespace MinhasVendas.App.Controllers;
 
@@ -19,20 +21,43 @@ public class OrdemDeComprasController : BaseController
 {
     private readonly IOrdemDeCompraServico _ordemDeCompraServico;
     private readonly IFornecedorRepositorio _fornecedorRepositorio;
+    private readonly IOrdemDeCompraRepositorio _ordemDeCompraRepositorio;
+
 
     public OrdemDeComprasController(IOrdemDeCompraServico ordemDeCompraServico,
                                     IFornecedorRepositorio fornecedorRepositorio,
+                                    IOrdemDeCompraRepositorio ordemDeCompraRepositorio,
                                     INotificador notificador) : base(notificador)
     {
         _ordemDeCompraServico = ordemDeCompraServico;
         _fornecedorRepositorio = fornecedorRepositorio;
+        _ordemDeCompraRepositorio = ordemDeCompraRepositorio;
     }
 
-    public async Task<IActionResult> Index()
+
+    [HttpGet]
+    public ActionResult<IEnumerable<OrdemDeCompra>> Index(int? numeroDePagina)
     {
-        var OrdemDeCompraFornecedor = await _ordemDeCompraServico.ConsultaOrdemDeCompraFornecedor();
-        return View(OrdemDeCompraFornecedor);
+        var ordemDeComprasParametros = new OrdemDeComprasParametros() { NumeroDePagina = numeroDePagina ?? 1, TamanhoDePagina = 10 };
+
+        var ordemDeCompraFornecedor = _ordemDeCompraRepositorio.ObterOrdemDecomprasPaginacaoLista(ordemDeComprasParametros);
+
+        var metadata = new
+        {
+            ordemDeCompraFornecedor.TotalDeItens,
+            ordemDeCompraFornecedor.TamanhoDaPagina,
+            ordemDeCompraFornecedor.PaginaAtual,
+            ordemDeCompraFornecedor.TotalDePaginas,
+            ordemDeCompraFornecedor.TemProxima,
+            ordemDeCompraFornecedor.TemAnterior
+
+        };
+
+        ViewBag.Metada = metadata;
+
+        return View(ordemDeCompraFornecedor);
     }
+
 
     public async Task<IActionResult> Create()
     {
@@ -138,6 +163,9 @@ public class OrdemDeComprasController : BaseController
         return RedirectToAction("CarrinhoDeCompras", "OrdemDeCompras", new { id = ordemDeCompra.Id });
 
     }
+
+
+
 
 }
 

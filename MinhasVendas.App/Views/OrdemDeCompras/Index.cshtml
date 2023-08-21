@@ -1,13 +1,14 @@
 ﻿@model IEnumerable<MinhasVendas.App.Models.OrdemDeCompra>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Ordem De Compra";
 }
 
-<h1>Index</h1>
+<h1>Ordem de Compra</h1>
+
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Nova Ordem de Compra</a>
 </p>
 <table class="table">
     <thead>
@@ -28,27 +29,50 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataDeCriacao)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StatusOrdemDeCompra)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ValorDeFrete)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Fornecedor.Id)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
-                <a asp-action="CarrinhoDeCompras" asp-route-id="@item.Id">CarrinhoDeCompras</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DataDeCriacao)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StatusOrdemDeCompra)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ValorDeFrete)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fornecedor.Id)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
+                    <a asp-action="CarrinhoDeCompras" asp-route-id="@item.Id">CarrinhoDeCompras</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+
+
+@{
+    var anteriorDesabilitar = !ViewBag.Metada.TemAnterior ? "disabled" : "";
+    var proximoHabilitar = !ViewBag.Metada.TemProxima ? "disabled" : "";
+}
+
+<nav aria-label="Paginacao Ordem de Vendas">
+    <ul class="pagination">
+        <li class="page-item  @anteriorDesabilitar">
+            <a class="page-link" asp-action="Index"
+               asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual - 1)">Anterior</a>
+        </li>
+        <li class="page-item @proximoHabilitar">
+            <a class="page-link" asp-action="Index"
+               asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual + 1)">Próximo</a>
+        </li>
+    </ul>
+</nav>
+
+

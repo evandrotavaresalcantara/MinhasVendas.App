@@ -1,6 +1,7 @@
 ﻿using MinhasVendas.App.Data;
 using MinhasVendas.App.Interfaces.Repositorio;
 using MinhasVendas.App.Models;
+using MinhasVendas.App.Paginacao;
 
 namespace MinhasVendas.App.Repositorio
 {
@@ -9,5 +10,7 @@ namespace MinhasVendas.App.Repositorio
         public ProdutoRepositorio(MinhasVendasAppContext minhasVendasAppContext) : base(minhasVendasAppContext)
         {
         }
+
+       
     }
 }
