@@ -10,14 +10,27 @@
 <p>
     <a asp-action="Create">Nova Ordem de Compra</a>
 </p>
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Pesquisa: <input type="text" name="pesquisarTexto" value="@ViewData["FiltroAtual"]" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+            <a asp-action="Index">Voltar para Lista</a>
+        </p>
+    </div>
+</form>
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.DataDeCriacao)
+                @*@Html.DisplayNameFor(model => model.DataDeCriacao)*@
+                <a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["DataDeCriacaoClassificarParam"]" asp-route-filtroAtual="@ViewData["FiltroAtual"]">@Html.DisplayNameFor(model => model.DataDeCriacao)</a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.StatusOrdemDeCompra)
+                @*@Html.DisplayNameFor(model => model.StatusOrdemDeCompra)*@
+                <a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["StatusOrdemDeCompraClassificarParam"]" asp-route-filtroAtual="@ViewData["FiltroAtual"]">@Html.DisplayNameFor(model => model.StatusOrdemDeCompra)</a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ValorDeFrete)
@@ -42,7 +55,7 @@
                     @Html.DisplayFor(modelItem => item.ValorDeFrete)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Fornecedor.Id)
+                    @Html.DisplayFor(modelItem => item.Fornecedor.Nome)
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
@@ -66,13 +79,28 @@
     <ul class="pagination">
         <li class="page-item  @anteriorDesabilitar">
             <a class="page-link" asp-action="Index"
-               asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual - 1)">Anterior</a>
+               asp-route-ordemDeClassificacao="@ViewData["ClassificacaoAtual"]"
+               asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual - 1)"
+               asp-route-filtroAtual="@ViewData["FiltroAtual"]">
+               Anterior</a>
         </li>
         <li class="page-item @proximoHabilitar">
             <a class="page-link" asp-action="Index"
-               asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual + 1)">Próximo</a>
+               asp-route-ordemDeClassificacao="@ViewData["ClassificacaoAtual"]"
+               asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual + 1)"
+               asp-route-filtroAtual="@ViewData["FiltroAtual"]">
+               Próximo
+           </a>
         </li>
     </ul>
 </nav>
+
+<br />
+
+<a asp-action="Index"
+   asp-route-ordemDeClassificacao="@ViewData["ClassificacaoAtual"]"
+   asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual - 1)">
+   Anterior
+</a>
 
 

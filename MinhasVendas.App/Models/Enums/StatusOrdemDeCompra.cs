@@ -2,9 +2,9 @@
 {
     public enum StatusOrdemDeCompra
     {
-        Solicitado = 0,        
-        Fechado = 1,
-        Aprovado = 2,
-        Novo = 3
+        Novo = 1,
+        Solicitado = 2,        
+        Aprovado = 3,
+        Fechado = 4
     }
 }

@@ -4,12 +4,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using MinhasVendas.App.Data;
 using MinhasVendas.App.Interfaces;
 using MinhasVendas.App.Interfaces.Repositorio;
 using MinhasVendas.App.Interfaces.Servico;
 using MinhasVendas.App.Models;
+using MinhasVendas.App.Models.Enums;
 using MinhasVendas.App.Paginacao;
 using MinhasVendas.App.Servicos;
 using MinhasVendas.App.ViewModels;
@@ -36,9 +38,23 @@ public class OrdemDeComprasController : BaseController
 
 
     [HttpGet]
-    public ActionResult<IEnumerable<OrdemDeCompra>> Index(int? numeroDePagina)
+    public ActionResult<IEnumerable<OrdemDeCompra>> Index(string ordemDeClassificacao, string filtroAtual, string pesquisarTexto, int? numeroDePagina)
     {
         var ordemDeComprasParametros = new OrdemDeComprasParametros() { NumeroDePagina = numeroDePagina ?? 1, TamanhoDePagina = 10 };
+        
+        ViewData["ClassificacaoAtual"] = ordemDeClassificacao;
+        ViewData["DataDeCriacaoClassificarParam"] = String.IsNullOrEmpty(ordemDeClassificacao) ? "dataDeCriacao_descendente" : "";
+        ViewData["StatusOrdemDeCompraClassificarParam"] = ordemDeClassificacao == "statusOrdemDeCompra" ? "statusOrdemDeCompra_descendente" : "statusOrdemDeCompra";
+
+
+        ordemDeComprasParametros.OrdemDeClassificacao = ordemDeClassificacao;
+        ordemDeComprasParametros.PesquisaTexto = pesquisarTexto;
+        ordemDeComprasParametros.FiltroAtual = filtroAtual;
+
+        ViewData["FiltroAtual"] = ordemDeComprasParametros.PesquisaTexto ?? ordemDeComprasParametros.FiltroAtual;
+
+        
+
 
         var ordemDeCompraFornecedor = _ordemDeCompraRepositorio.ObterOrdemDecomprasPaginacaoLista(ordemDeComprasParametros);
 
