@@ -65,8 +65,8 @@ public class DetalheDeVendasController : BaseController
 
         if (!OperacaoValida()) return PartialView("_InserirProduto", model);
 
-        var url = Url.Action("CarrinhoDeVendasPartial", "OrdemDeVendas", new { id = detalheDeVenda.OrdemDeVendaId });
-        return Json(new { sucesso = true, url });
+        return RedirectToAction("CarrinhoDeVendas", "OrdemDeVendas", new { id = detalheDeVenda.OrdemDeVendaId });
+               
 
     }
 

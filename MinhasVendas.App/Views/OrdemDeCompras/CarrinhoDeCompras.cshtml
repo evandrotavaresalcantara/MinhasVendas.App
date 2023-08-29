@@ -6,7 +6,7 @@
 }
 
 @{
-
+   
     if (Model.OrdemDeCompra.DetalheDeCompras.Any())
     {
         var precoProduto = from item in Model.OrdemDeCompra.DetalheDeCompras select (item.CustoUnitario * item.Quantidade);
@@ -161,10 +161,6 @@
         }
     </tbody>
 </table>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.OrdemDeCompra.Id">Editar</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
 
 <div class="modal fade" id="inserirProdutoFormModel">
     <div class="modal-dialog">

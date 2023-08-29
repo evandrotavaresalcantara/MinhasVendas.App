@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MinhasVendas.App.Data;
 using MinhasVendas.App.Interfaces;
+using MinhasVendas.App.Interfaces.Repositorio;
 using MinhasVendas.App.Interfaces.Servico;
 using MinhasVendas.App.Models;
 using MinhasVendas.App.Models.Enums;
@@ -11,10 +12,13 @@ namespace MinhasVendas.App.Servicos;
 public class OrdemDeVendaServico : BaseServico, IOrdemDeVendaServico
 {
     private readonly MinhasVendasAppContext _minhasVendasAppContext;
+    private readonly IOrdemDeVendaRepositorio _ordemDeVendaRepositorio;
     public OrdemDeVendaServico(MinhasVendasAppContext minhasVendasAppContext,
+                               IOrdemDeVendaRepositorio ordemDeVendaRepositorio,
                                INotificador notificador) : base(notificador)
     {
         _minhasVendasAppContext = minhasVendasAppContext;
+        _ordemDeVendaRepositorio = ordemDeVendaRepositorio;
     }
     public async Task FinalizarVendaView(int id)
     {
@@ -78,6 +82,7 @@ public class OrdemDeVendaServico : BaseServico, IOrdemDeVendaServico
         }
         ordemDeVenda.StatusOrdemDeVenda = StatusOrdemDeVenda.Vendido;
         ordemDeVenda.FormaDePagamento = ordemDeVendaEntrada.FormaDePagamento;
+        ordemDeVenda.DataDePagamento = DateTime.Now;
 
         _minhasVendasAppContext.Update(ordemDeVenda);
         await _minhasVendasAppContext.SaveChangesAsync();
@@ -97,7 +102,7 @@ public class OrdemDeVendaServico : BaseServico, IOrdemDeVendaServico
         _minhasVendasAppContext.OrdemDeVendas.Add(ordemDeVenda);
         
         ordemDeVenda.StatusOrdemDeVenda = StatusOrdemDeVenda.Orcamento;
-        ordemDeVenda.DataDeVenda = DateTime.Now;
+        ordemDeVenda.DataDeCriacao = DateTime.Now;
         
         await _minhasVendasAppContext.SaveChangesAsync();
     }
@@ -135,4 +140,36 @@ public class OrdemDeVendaServico : BaseServico, IOrdemDeVendaServico
 
         return ordemDeVendaCliente;
     }
+    public async Task InserirFrete(int id)
+    {
+        var ordemDeVenda = await _ordemDeVendaRepositorio.Obter().Include(d => d.DetalheDeVendas).FirstOrDefaultAsync(o => o.Id == id);
+
+        var temItensDeVenda = ordemDeVenda.DetalheDeVendas.Any();
+
+        if (ordemDeVenda.StatusOrdemDeVenda == StatusOrdemDeVenda.Vendido)
+        {
+            Notificar("INSERIR VALOR DO FRETE. Ordem de venda com status VENDIDO.)");
+            return;
+        }
+    }
+
+    public async Task InserirFrete(OrdemDeVenda ordemDeVenda)
+    {
+        var ordemDeVendaBD = await _ordemDeVendaRepositorio.Obter().Include(d => d.DetalheDeVendas).FirstOrDefaultAsync(o => o.Id == ordemDeVenda.Id);
+
+        var temItensDeVenda = ordemDeVendaBD.DetalheDeVendas.Any();
+
+        if (ordemDeVenda.StatusOrdemDeVenda == StatusOrdemDeVenda.Vendido)
+        {
+            Notificar("INSERIR VALOR DO FRETE. Ordem de venda com status VENDIDO.)");
+            return;
+        }
+
+        ordemDeVendaBD.ValorDeFrete = ordemDeVenda.ValorDeFrete;
+
+        await _ordemDeVendaRepositorio.Atualizar(ordemDeVendaBD);
+
+
+    }
+
 }

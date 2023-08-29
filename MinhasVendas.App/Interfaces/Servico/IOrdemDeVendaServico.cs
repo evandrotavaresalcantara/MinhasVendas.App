@@ -13,5 +13,8 @@ namespace MinhasVendas.App.Interfaces
         Task<OrdemDeVenda> ConsultaOrdemDeVendaDetalheDeVenda(int id);
         Task<IEnumerable<OrdemDeVenda>> ConsultaOrdemDevendaCliente();
         Task<OrdemDeVenda> ConsultaOrdemDeVenda(int id);
+
+        Task InserirFrete(OrdemDeVenda ordemDeVenda);
+        Task InserirFrete(int id);
     }
 }

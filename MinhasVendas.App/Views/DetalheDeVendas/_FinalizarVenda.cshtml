@@ -1,13 +1,21 @@
 ﻿@model MinhasVendas.App.ViewModels.CarrinhoDeVendasViewModel
 
 @{
-    ViewData["Title"] = "Finalizar Venda";
+    ViewData["Title"] = "Finalizar Vendasss";
 }
 
 @{
+ 
     var precoProduto = from item in Model.OrdemDeVenda.DetalheDeVendas select (item.PrecoUnitario * item.Quantidade * (1 - item.Desconto / 100));
     decimal[] precoProdutos = precoProduto.ToArray();
-    decimal totalVenda = precoProdutos.Aggregate((a, b) => a + b);
+    decimal totalProdutos = precoProdutos.Aggregate((a, b) => a + b);
+    decimal totalVenda = totalProdutos + Model.OrdemDeVenda.ValorDeFrete;
+
+    var itens = from item in Model.OrdemDeVenda.DetalheDeVendas select (item.Quantidade);
+    int totalItens = itens.Sum();
+
+    Model.TotalItens = totalItens;
+    Model.TotalProdutos = totalProdutos;
     Model.TotalVenda = totalVenda;
 }
 
@@ -35,6 +43,11 @@
             <input type="radio" value="1" asp-for="@Model.OrdemDeVenda.FormaDePagamento" /> Dinheiro<br />
             <input type="radio" value="2" asp-for="@Model.OrdemDeVenda.FormaDePagamento" /> Cartao<br />
             </div>               
+        <div class="form-group">
+            <label asp-for="@Model.OrdemDeVenda.ValorDeFrete class="control-label"></label>
+            <input asp-for="@Model.OrdemDeVenda.ValorDeFrete" class="form-control"/>
+            <span asp-validation-for="@Model.OrdemDeVenda.ValorDeFrete" class="text-danger" ></span>
+        </div>
         <div class="modal-footer">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Finalizar Venda" class="btn btn-success" />

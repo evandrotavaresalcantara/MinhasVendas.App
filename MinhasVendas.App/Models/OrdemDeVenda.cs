@@ -1,4 +1,7 @@
-﻿using MinhasVendas.App.Models.Enums;
+﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using MinhasVendas.App.Models.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace MinhasVendas.App.Models
 {
@@ -11,8 +14,12 @@ namespace MinhasVendas.App.Models
         public StatusOrdemDeVenda StatusOrdemDeVenda { get; set; }
         public FormaDePagamento FormaDePagamento { get; set; }
         public DateTime? DataDePagamento { get; set; }
-        public DateTime DataDeVenda { get; set; } // Substituir por DataDeCriacao
-       
+        public DateTime DataDeCriacao { get; set; } 
+
+        [DataType(DataType.Currency)]
+        [Column(TypeName = "decimal(18, 2)")]
+        public Decimal ValorDeFrete { get; set; }
+
         /* Ef Relacionamento */
         public ICollection<DetalheDeVenda>? DetalheDeVendas { get; set; }
         public ICollection<TransacaoDeEstoque>? TransacaoDeEstoques { get; set; }

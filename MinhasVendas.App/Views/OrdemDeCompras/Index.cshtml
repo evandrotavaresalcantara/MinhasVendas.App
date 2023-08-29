@@ -7,19 +7,22 @@
 <h1>Ordem de Compra</h1>
 
 
+
 <p>
-    <a asp-action="Create">Nova Ordem de Compra</a>
+    <a class="btn btn-success" asp-action="Create">Nova Ordem de Compras</a>
 </p>
 
-<form asp-action="Index" method="get">
-    <div class="form-actions no-color">
-        <p>
+<div >
+    <form asp-action="Index" method="get">
+        <div class="form-actions no-color">
+            <p>
             Pesquisa: <input type="text" name="pesquisarTexto" value="@ViewData["FiltroAtual"]" />
             <input type="submit" value="Search" class="btn btn-default" /> |
             <a asp-action="Index">Voltar para Lista</a>
         </p>
     </div>
 </form>
+</div>
 
 <table class="table">
     <thead>
@@ -58,9 +61,6 @@
                     @Html.DisplayFor(modelItem => item.Fornecedor.Nome)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
                     <a asp-action="CarrinhoDeCompras" asp-route-id="@item.Id">CarrinhoDeCompras</a>
                 </td>
             </tr>
@@ -75,7 +75,7 @@
     var proximoHabilitar = !ViewBag.Metada.TemProxima ? "disabled" : "";
 }
 
-<nav aria-label="Paginacao Ordem de Vendas">
+<nav aria-label="Paginacao Ordem de Compras">
     <ul class="pagination">
         <li class="page-item  @anteriorDesabilitar">
             <a class="page-link" asp-action="Index"
@@ -96,11 +96,5 @@
 </nav>
 
 <br />
-
-<a asp-action="Index"
-   asp-route-ordemDeClassificacao="@ViewData["ClassificacaoAtual"]"
-   asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual - 1)">
-   Anterior
-</a>
 
 

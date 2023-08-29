@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MinhasVendas.App.Data;
 
@@ -10,9 +11,11 @@ using MinhasVendas.App.Data;
 namespace MinhasVendas.App.Migrations
 {
     [DbContext(typeof(MinhasVendasAppContext))]
-    partial class MinhasVendasAppContextModelSnapshot : ModelSnapshot
+    [Migration("20230823182211_ValorFrete")]
+    partial class ValorFrete
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "7.0.9");
@@ -154,10 +157,10 @@ namespace MinhasVendas.App.Migrations
                     b.Property<int>("ClienteId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<DateTime>("DataDeCriacao")
+                    b.Property<DateTime?>("DataDePagamento")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("DataDePagamento")
+                    b.Property<DateTime>("DataDeVenda")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("FormaDePagamento")
