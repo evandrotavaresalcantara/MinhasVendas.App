@@ -14,12 +14,12 @@
     <div class="modal-body">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
-            <input hidden readonly asp-for="@Model.OrdemDeCompra.Id" class="form-control" value=@ViewBag.OrdemDeCompraId>
+            <input hidden readonly asp-for="@Model.OrdemDeCompraViewModel.Id" class="form-control" value=@ViewBag.OrdemDeCompraId>
         </div>
         <div class="form-group">
             <label class="control-label">Valor do Frete</label>
-            <input asp-for="@Model.OrdemDeCompra.ValorDeFrete" class="form-control" />
-            <span asp-validation-for="@Model.OrdemDeCompra.ValorDeFrete" class="text-danger"></span>
+            <input asp-for="@Model.OrdemDeCompraViewModel.ValorDeFrete" class="form-control" />
+            <span asp-validation-for="@Model.OrdemDeCompraViewModel.ValorDeFrete" class="text-danger"></span>
         </div>
     </div>
     <div class="modal-footer">

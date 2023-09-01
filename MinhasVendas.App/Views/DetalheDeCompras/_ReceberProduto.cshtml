@@ -13,20 +13,20 @@
     <vc:resumo></vc:resumo>
 </div>
 <form asp-action="ReceberProduto">
-    <input type="hidden" asp-for="@Model.DetalheDeCompra.Id" />
+    <input type="hidden" asp-for="@Model.DetalheDeCompraViewModel.Id" />
     <div class="modal-body">        
         <div class="form-group">
-            <label asp-for="@Model.DetalheDeCompra.Produto.Nome" class="control-label"></label>
-            <input readonly asp-for="@Model.DetalheDeCompra.Produto.Nome" class="form-control" />
+            <label asp-for="@Model.DetalheDeCompraViewModel.Produto.Nome" class="control-label"></label>
+            <input readonly asp-for="@Model.DetalheDeCompraViewModel.Produto.Nome" class="form-control" />
         </div> 
         <div class="form-group">
-            <label asp-for="@Model.DetalheDeCompra.Quantidade" class="control-label"></label>
-            <input readonly asp-for="@Model.DetalheDeCompra.Quantidade" class="form-control" />
+            <label asp-for="@Model.DetalheDeCompraViewModel.Quantidade" class="control-label"></label>
+            <input readonly asp-for="@Model.DetalheDeCompraViewModel.Quantidade" class="form-control" />
         </div>
         <div class="form-group">
-            <label asp-for="@Model.DetalheDeCompra.DataDeRecebimento" class="control-label"></label>
-            <input asp-for="@Model.DetalheDeCompra.DataDeRecebimento" class="form-control" />
-            <span asp-validation-for="@Model.DetalheDeCompra.DataDeRecebimento" class="text-danger"></span>
+            <label asp-for="@Model.DetalheDeCompraViewModel.DataDeRecebimento" class="control-label"></label>
+            <input asp-for="@Model.DetalheDeCompraViewModel.DataDeRecebimento" class="form-control" />
+            <span asp-validation-for="@Model.DetalheDeCompraViewModel.DataDeRecebimento" class="text-danger"></span>
         </div>
    </div>
         

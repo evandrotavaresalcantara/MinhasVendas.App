@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Data.SqlClient;
@@ -24,21 +25,24 @@ public class OrdemDeComprasController : BaseController
     private readonly IOrdemDeCompraServico _ordemDeCompraServico;
     private readonly IFornecedorRepositorio _fornecedorRepositorio;
     private readonly IOrdemDeCompraRepositorio _ordemDeCompraRepositorio;
+    private readonly IMapper _mapper;
 
 
     public OrdemDeComprasController(IOrdemDeCompraServico ordemDeCompraServico,
                                     IFornecedorRepositorio fornecedorRepositorio,
                                     IOrdemDeCompraRepositorio ordemDeCompraRepositorio,
+                                    IMapper mapper,
                                     INotificador notificador) : base(notificador)
     {
         _ordemDeCompraServico = ordemDeCompraServico;
         _fornecedorRepositorio = fornecedorRepositorio;
         _ordemDeCompraRepositorio = ordemDeCompraRepositorio;
+        _mapper = mapper;
     }
 
 
     [HttpGet]
-    public ActionResult<IEnumerable<OrdemDeCompra>> Index(string ordemDeClassificacao, string filtroAtual, string pesquisarTexto, int? numeroDePagina)
+    public ActionResult<IEnumerable<OrdemDeCompraViewModel>> Index(string ordemDeClassificacao, string filtroAtual, string pesquisarTexto, int? numeroDePagina)
     {
         var ordemDeComprasParametros = new OrdemDeComprasParametros() { NumeroDePagina = numeroDePagina ?? 1, TamanhoDePagina = 10 };
         
@@ -71,7 +75,9 @@ public class OrdemDeComprasController : BaseController
 
         ViewBag.Metada = metadata;
 
-        return View(ordemDeCompraFornecedor);
+        var ordemDeCompraViewModel = _mapper.Map<IEnumerable<OrdemDeCompraViewModel>>(ordemDeCompraFornecedor);
+
+        return View(ordemDeCompraViewModel);
     }
 
 
@@ -84,15 +90,17 @@ public class OrdemDeComprasController : BaseController
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,FornecedorId,DataDeCriacao,StatusOrdemDeCompra")] OrdemDeCompra ordemDeCompra)
+    public async Task<IActionResult> Create([Bind("Id,FornecedorId,DataDeCriacao,StatusOrdemDeCompra")] OrdemDeCompraViewModel ordemDeCompraViewModel)
     {
-        ViewData["FornecedorId"] = new SelectList(await _fornecedorRepositorio.BuscarTodos(), "Id", "Nome", ordemDeCompra.FornecedorId);
+        ViewData["FornecedorId"] = new SelectList(await _fornecedorRepositorio.BuscarTodos(), "Id", "Nome", ordemDeCompraViewModel.FornecedorId);
 
-        if (!ModelState.IsValid) return View(ordemDeCompra);
+        if (!ModelState.IsValid) return View(ordemDeCompraViewModel);
+
+        var ordemDeCompra = _mapper.Map<OrdemDeCompra>(ordemDeCompraViewModel);
 
         await _ordemDeCompraServico.Adicionar(ordemDeCompra);
 
-        if (!OperacaoValida()) return View(ordemDeCompra);
+        if (!OperacaoValida()) return View(ordemDeCompraViewModel);
 
         return RedirectToAction("CarrinhoDeCompras", "OrdemDeCompras", new { id = ordemDeCompra.Id });
 
@@ -105,7 +113,9 @@ public class OrdemDeComprasController : BaseController
 
         var model = new CarrinhoDeComprasViewModel();
 
-        model.OrdemDeCompra = ordemDeCompra;
+        var ordemDeCompraViewModel = _mapper.Map<OrdemDeCompraViewModel>(ordemDeCompra);
+
+        model.OrdemDeCompraViewModel = ordemDeCompraViewModel;
 
         return View(model);
     }
@@ -129,13 +139,15 @@ public class OrdemDeComprasController : BaseController
     [HttpPost]
     public async Task<IActionResult> SolicitarAprovacao(int id, CarrinhoDeComprasViewModel model)
     {
-        if (id != model.OrdemDeCompra.Id) return NotFound();
+        if (id != model.OrdemDeCompraViewModel.Id) return NotFound();
 
-        var ordemDeCompra = await _ordemDeCompraServico.ConsultaOrdemDeCompra(model.OrdemDeCompra.Id);
+        var ordemDeCompra = await _ordemDeCompraServico.ConsultaOrdemDeCompra(model.OrdemDeCompraViewModel.Id);
 
         if (ordemDeCompra == null) return NotFound();
 
-        await _ordemDeCompraServico.SolicitarAprovacao(model.OrdemDeCompra);
+        var ordemDeCompraViewModel = _mapper.Map<OrdemDeCompra>(model.OrdemDeCompraViewModel);
+
+        await _ordemDeCompraServico.SolicitarAprovacao(ordemDeCompraViewModel);
 
         if (!OperacaoValida()) return PartialView("_OrdemDeCompraStatus", model);
 
@@ -157,7 +169,9 @@ public class OrdemDeComprasController : BaseController
 
         var ordemDeCompra = await _ordemDeCompraServico.ConsultaOrdemDeCompraDetalheDeCompra(id);
 
-        model.OrdemDeCompra = ordemDeCompra;
+        var ordemDeCompraViewModel = _mapper.Map<OrdemDeCompraViewModel>(ordemDeCompra);
+
+        model.OrdemDeCompraViewModel = ordemDeCompraViewModel;
 
         return PartialView("_FinalizarCompra", model);
     }
@@ -166,17 +180,19 @@ public class OrdemDeComprasController : BaseController
     [HttpPost]
     public async Task<IActionResult> FinalizarCompra(int id, CarrinhoDeComprasViewModel model)
     {
-        if (id != model.OrdemDeCompra.Id) return NotFound();
+        if (id != model.OrdemDeCompraViewModel.Id) return NotFound();
 
-        var ordemDeCompra = await _ordemDeCompraServico.ConsultaOrdemDeCompra(model.OrdemDeCompra.Id);
+        var ordemDeCompraBusca = await _ordemDeCompraServico.ConsultaOrdemDeCompra(model.OrdemDeCompraViewModel.Id);
 
-        if (ordemDeCompra == null) return NotFound();
+        if (ordemDeCompraBusca == null) return NotFound();
 
-        await _ordemDeCompraServico.FinalizarCompra(model.OrdemDeCompra);
+        var ordemDeCompra = _mapper.Map<OrdemDeCompra>(model.OrdemDeCompraViewModel);
+
+        await _ordemDeCompraServico.FinalizarCompra(ordemDeCompra);
 
         if (!OperacaoValida()) return PartialView("_OrdemDeCompraStatus", model);
 
-        return RedirectToAction("CarrinhoDeCompras", "OrdemDeCompras", new { id = ordemDeCompra.Id });
+        return RedirectToAction("CarrinhoDeCompras", "OrdemDeCompras", new { id = ordemDeCompraBusca.Id });
 
     }
 

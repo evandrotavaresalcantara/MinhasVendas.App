@@ -7,9 +7,9 @@ namespace MinhasVendas.App.ViewModels
 {
     public class CarrinhoDeComprasViewModel
     {
-        public Produto? Produto { get; set; }
-        public DetalheDeCompra? DetalheDeCompra { get; set; }
-        public OrdemDeCompra? OrdemDeCompra { get; set; }
+        public ProdutoViewModel? Produto { get; set; }
+        public DetalheDeCompraViewModel? DetalheDeCompraViewModel { get; set; }
+        public OrdemDeCompraViewModel? OrdemDeCompraViewModel { get; set; }
 
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(18, 2)")]

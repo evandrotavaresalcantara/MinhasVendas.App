@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Localization;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using MinhasVendas.App.AutoMapper;
 using MinhasVendas.App.Data;
 using MinhasVendas.App.Interfaces;
 using MinhasVendas.App.Interfaces.Repositorio;
@@ -45,6 +47,14 @@ builder.Services.AddScoped<IOrdemDeVendaRepositorio, OrdemDeVendaRepositorio>();
 builder.Services.AddScoped<IDetalheDeCompraRepositorio, DetalheDeCompraRepositorio>();
 builder.Services.AddScoped<IDetalheDeVendaRepositorio, DetalheDeVendaRepositorio>();
 builder.Services.AddScoped<ITransacaoDeEstoqueRepositorio, TransacaoDeEstoqueRepositorio>();
+
+
+var mapeamentoConfiguracao = new MapperConfiguration(mc =>
+{
+    mc.AddProfile(new AutoMapperConfig());
+});
+IMapper mapper = mapeamentoConfiguracao.CreateMapper();
+builder.Services.AddSingleton(mapper);
 
 
 var app = builder.Build();
