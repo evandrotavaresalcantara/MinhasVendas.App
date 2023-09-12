@@ -10,14 +10,14 @@
     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
 
-<form asp-action="SolicitarAprovacao">
-    <div class="modal-body">
+<form asp-action="SolicitarAprovacao" id="formularioSolicitarAprovacao">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="modal-body">
         <div class="form-group">
             <input hidden readonly asp-for="@Model.OrdemDeCompraViewModel.Id" class="form-control" value=@ViewBag.OrdemDeCompraId>
         </div>
         <div class="form-group">
-            <label class="control-label">Valor do Frete</label>
+            <label asp-for="@Model.OrdemDeCompraViewModel.ValorDeFrete" class="control-label"></label>
             <input asp-for="@Model.OrdemDeCompraViewModel.ValorDeFrete" class="form-control" />
             <span asp-validation-for="@Model.OrdemDeCompraViewModel.ValorDeFrete" class="text-danger"></span>
         </div>

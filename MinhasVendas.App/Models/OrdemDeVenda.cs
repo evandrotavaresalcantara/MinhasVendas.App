@@ -7,8 +7,6 @@ namespace MinhasVendas.App.Models
 {
     public class OrdemDeVenda : Entidade
     {
-        //public int Id { get; set; }
-
         public int ClienteId { get; set; }
        
         public StatusOrdemDeVenda StatusOrdemDeVenda { get; set; }
@@ -16,8 +14,6 @@ namespace MinhasVendas.App.Models
         public DateTime? DataDePagamento { get; set; }
         public DateTime DataDeCriacao { get; set; } 
 
-        [DataType(DataType.Currency)]
-        [Column(TypeName = "decimal(18, 2)")]
         public Decimal ValorDeFrete { get; set; }
 
         /* Ef Relacionamento */

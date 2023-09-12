@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -19,16 +20,20 @@ public class DetalheDeVendasController : BaseController
     private readonly IDetalheDeVendaServico _detalheDeVendaServico;
     private readonly ITransacaoDeEstoqueServico _transacaoDeEstoqueServico;
     private readonly IProdutoServico _produtoServico;
+    private readonly IMapper _mapper;
 
     public DetalheDeVendasController(IDetalheDeVendaServico detalheDeVendaServico,
                                      ITransacaoDeEstoqueServico transacaoDeEstoqueServico,
                                      IProdutoServico produtoServico,
+                                     IMapper mapper,
                                      INotificador notificador) : base(notificador)
     {        
         _detalheDeVendaServico = detalheDeVendaServico;
         _transacaoDeEstoqueServico = transacaoDeEstoqueServico;
         _produtoServico = produtoServico;
+        _mapper = mapper;
     }
+
     [HttpGet]
     public async Task<IActionResult> InserirProduto(int id)
     {
@@ -49,23 +54,25 @@ public class DetalheDeVendasController : BaseController
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> InserirProduto([Bind("Id,OrdemDeVendaId,ProdutoId,Quantidade,PrecoUnitario,Desconto")] DetalheDeVenda detalheDeVenda)  //
+    public async Task<IActionResult> InserirProduto([Bind("Id,OrdemDeVendaId,ProdutoId,Quantidade,PrecoUnitario,Desconto")] DetalheDeVendaViewModel detalheDeVendaViewModel)  //
     {
         var listaDeProdutos = await _transacaoDeEstoqueServico.ConsultaSaldoDeEstoque();
 
         ViewData["ProdutoId"] = new SelectList(listaDeProdutos, "Id", "ProdutoCompleto");
-        ViewData["OrdemDeVendaId"] = detalheDeVenda.OrdemDeVendaId;
+        ViewData["OrdemDeVendaId"] = detalheDeVendaViewModel.OrdemDeVendaId;
 
         CarrinhoDeVendasViewModel model = new CarrinhoDeVendasViewModel();
-        model.DetalheDeVenda = detalheDeVenda;
+        model.DetalheDeVendaViewModel = detalheDeVendaViewModel;
 
         if (!ModelState.IsValid) return PartialView("_InserirProduto", model);
+
+        var detalheDeVenda = _mapper.Map<DetalheDeVenda>(detalheDeVendaViewModel);
 
         await _detalheDeVendaServico.Adicionar(detalheDeVenda);
 
         if (!OperacaoValida()) return PartialView("_InserirProduto", model);
 
-        return RedirectToAction("CarrinhoDeVendas", "OrdemDeVendas", new { id = detalheDeVenda.OrdemDeVendaId });
+        return RedirectToAction("CarrinhoDeVendas", "OrdemDeVendas", new { id = detalheDeVendaViewModel.OrdemDeVendaId });
                
 
     }
@@ -73,9 +80,9 @@ public class DetalheDeVendasController : BaseController
     // GET: VendasDetalhes/Delete/5
     public async Task<IActionResult> ExcluirProduto(int id)
     {
-        var detalheDeVenda = await _detalheDeVendaServico.ConsultaDetalheDeVendaProdutoOrdemDeVenda(id);
+        var detalheDeVendaBD = await _detalheDeVendaServico.ConsultaDetalheDeVendaProdutoOrdemDeVenda(id);
 
-        if (detalheDeVenda is null) return NotFound("Item não encontrado.");
+        if (detalheDeVendaBD is null) return NotFound("Item não encontrado.");
 
         await _detalheDeVendaServico.Remover(id, true);
 
@@ -83,7 +90,9 @@ public class DetalheDeVendasController : BaseController
 
         if (!OperacaoValida()) return PartialView("_OrdemDendaStatus", model);
 
-        model.DetalheDeVenda = detalheDeVenda;
+        var detalheDeVendaViewModel = _mapper.Map<DetalheDeVendaViewModel>(detalheDeVendaBD);
+
+        model.DetalheDeVendaViewModel = detalheDeVendaViewModel;
 
         return PartialView("_ExcluirProduto", model);
     }
@@ -93,9 +102,9 @@ public class DetalheDeVendasController : BaseController
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> ConfirmarExclusao(int id)
     {
-        var detalheDeVenda = await _detalheDeVendaServico.ConsultaDetalheDeVendaOrdemDeVenda(id);
+        var detalheDeVendaBD = await _detalheDeVendaServico.ConsultaDetalheDeVendaOrdemDeVenda(id);
 
-        if (detalheDeVenda is null) return NotFound("Item Não econtrado.");
+        if (detalheDeVendaBD is null) return NotFound("Item Não econtrado.");
 
         await _detalheDeVendaServico.Remover(id, false);
 
@@ -103,6 +112,6 @@ public class DetalheDeVendasController : BaseController
 
         if (!OperacaoValida()) return PartialView("_OrdemDendaStatus", model);
 
-        return RedirectToAction("CarrinhoDeVendas", "OrdemDeVendas", new { detalheDeVenda.OrdemDeVenda.Id });
+        return RedirectToAction("CarrinhoDeVendas", "OrdemDeVendas", new { detalheDeVendaBD.OrdemDeVenda.Id });
     }
 }

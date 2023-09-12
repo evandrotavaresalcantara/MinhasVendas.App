@@ -6,16 +6,10 @@ namespace MinhasVendas.App.Models
 {
     public class Produto : Entidade
     {
-        //public int Id { get; set; }
-
         public string? Nome { get; set; }
 
-        [DataType(DataType.Currency)]
-        [Column(TypeName = "decimal(18, 2)")]
         public decimal PrecoDeLista { get; set; }
 
-        [DataType(DataType.Currency)]
-        [Column(TypeName = "decimal(18, 2)")]
         public decimal PrecoBase { get; set; }
         public int EstoqueAtual { get; set; }
 

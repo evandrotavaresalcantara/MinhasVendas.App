@@ -4,9 +4,9 @@ namespace MinhasVendas.App.ViewModels
 {
     public class CarrinhoDeVendasViewModel
     {
-        public Produto? Produto { get; set; }
-        public DetalheDeVenda? DetalheDeVenda { get; set; }
-        public OrdemDeVenda? OrdemDeVenda { get; set; }
+        public ProdutoViewModel? ProdutoViewModel { get; set; }
+        public DetalheDeVendaViewModel? DetalheDeVendaViewModel { get; set; }
+        public OrdemDeVendaViewModel? OrdemDeVendaViewModel { get; set; }
 
         public int TotalItens { get; set; }
         public decimal TotalProdutos { get; set; }

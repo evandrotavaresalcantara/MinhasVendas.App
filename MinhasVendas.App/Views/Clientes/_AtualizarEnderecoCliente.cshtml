@@ -1,0 +1,66 @@
+﻿@model MinhasVendas.App.ViewModels.ClienteEnderecoViewModel
+
+@{
+    ViewData["Title"] = "Atualizar Endereço do Cliente";
+}
+
+<div class="modal-header">
+    <h5 class="modal-title">@ViewData["Title"]</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<form asp-action="EditarEnderecoCliente" id="formularioModalAtuazliarEnderecoCliente">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="modal-body">
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="ClienteId" />
+        <div class="form-group">
+            <label asp-for="Cep" class="control-label"></label>
+            <input id="cep" asp-for="Cep" class="form-control" onblur="pesquisacep(this.value);" />
+            <span asp-validation-for="Cep" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Logradouro" class="control-label"></label>
+            <input id="rua" asp-for="Logradouro" class="form-control" />
+            <span asp-validation-for="Logradouro" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Numero" class="control-label"></label>
+            <input asp-for="Numero" class="form-control" />
+            <span asp-validation-for="Numero" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Complemento" class="control-label"></label>
+            <input asp-for="Complemento" class="form-control" />
+            <span asp-validation-for="Complemento" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Bairro" class="control-label"></label>
+            <input id="bairro" asp-for="Bairro" class="form-control" />
+            <span asp-validation-for="Bairro" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Cidade" class="control-label"></label>
+            <input id="cidade" asp-for="Cidade" class="form-control" />
+            <span asp-validation-for="Cidade" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Estado" class="control-label"></label>
+            <input id="uf" asp-for="Estado" class="form-control" />
+            <span asp-validation-for="Estado" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class=" col-md-offset-2 col-md-10">
+            <input type="submit" value="Solicitar" class="btn btn-success" />
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+    </div>
+</form>
+
+
+
+
+@*<div>
+    <a asp-action="Index">Back to List</a>
+</div>*@

@@ -11,11 +11,12 @@ namespace MinhasVendas.App.AutoMapper
             CreateMap<Cliente, ClienteViewModel>().ReverseMap();
             CreateMap<Fornecedor, FornecedorViewModel>().ReverseMap();
             CreateMap<Produto, ProdutoViewModel>().ReverseMap();  
-            CreateMap<TransacaoDeEstoque, TransacaoDeEstoqueViewModel>().ReverseMap();
             CreateMap<OrdemDeCompra,  OrdemDeCompraViewModel>().ReverseMap();
             CreateMap<OrdemDeVenda,  OrdemDeVendaViewModel>().ReverseMap();
             CreateMap<DetalheDeCompra, DetalheDeCompraViewModel>().ReverseMap();
             CreateMap<DetalheDeVenda, DetalheDeVendaViewModel>().ReverseMap();
+            CreateMap<ClienteEndereco, ClienteEnderecoViewModel>().ReverseMap();
+            CreateMap<FornecedorEndereco, FornecedorEnderecoViewModel>().ReverseMap();
         }
     }
 }

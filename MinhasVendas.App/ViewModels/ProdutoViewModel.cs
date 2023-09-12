@@ -12,17 +12,19 @@ namespace MinhasVendas.App.ViewModels
         public string? Nome { get; set; }
 
         [DataType(DataType.Currency)]
-        [Column(TypeName = "decimal(18, 2)")]
+        [Column(TypeName = "decimal(18, 3)")]
         public decimal PrecoDeLista { get; set; }
 
+
         [DataType(DataType.Currency)]
-        [Column(TypeName = "decimal(18, 2)")]
+        [Column(TypeName = "decimal(18, 3)")]
         public decimal PrecoBase { get; set; }
+
+
         public int EstoqueAtual { get; set; }
 
         /* Ef Relacionamento */
         ICollection<DetalheDeVendaViewModel>? DetalheDeVendas { get; set; }
         ICollection<DetalheDeCompraViewModel>? DetalheDeCompras { get; set; }
-        ICollection<TransacaoDeEstoqueViewModel>? TransacaoDeEstoques { get; set; }
     }
 }

@@ -9,7 +9,7 @@ namespace MinhasVendas.App.Repositorio
     public abstract class Repositorio<T> : IRepositorio<T> where T : Entidade, new()
     {
         private readonly MinhasVendasAppContext _minhasVendasAppContext;
-        private readonly DbSet<T> _dbSet;
+        protected readonly DbSet<T> _dbSet;
         
         public Repositorio(MinhasVendasAppContext minhasVendasAppContext)
         {

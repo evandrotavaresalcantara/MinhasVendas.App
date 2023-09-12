@@ -17,16 +17,19 @@ namespace MinhasVendas.App.Controllers
     public class ClientesController : BaseController
     {
         private readonly IClienteRespositorio _clienteRespositorio;
+        private readonly IClienteEnderecoRepositorio _clienteEnderecoRepositorio;
         private readonly IClienteServico _clienteServico;
         private readonly IMapper _mapper;
 
         public ClientesController(
                                   IClienteRespositorio clienteRespositorio,
+                                  IClienteEnderecoRepositorio clienteEnderecoRepositorio,
                                   IClienteServico clienteServico,
                                   IMapper mapper,
                                   INotificador notificador) : base(notificador)  
         {
             _clienteRespositorio = clienteRespositorio;
+            _clienteEnderecoRepositorio = clienteEnderecoRepositorio;
             _clienteServico = clienteServico;
             _mapper = mapper;
         }
@@ -43,11 +46,13 @@ namespace MinhasVendas.App.Controllers
 
         public async Task<IActionResult> Details(int id)
         {
+            var clienteEnderecoProdutos = await _clienteRespositorio.ObterClienteProdutoEndereco(id);
+
             var cliente = await _clienteRespositorio.BuscarPorId(id);
 
             if (cliente == null) return NotFound();
 
-            var clienteViewModel = _mapper.Map<ClienteViewModel>(cliente);
+            var clienteViewModel = _mapper.Map<ClienteViewModel>(clienteEnderecoProdutos);
           
             return View(clienteViewModel);
         }
@@ -59,7 +64,7 @@ namespace MinhasVendas.App.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id","Nome")] ClienteViewModel clienteViewModel)
+        public async Task<IActionResult> Create(ClienteViewModel clienteViewModel)
         {
             if (!ModelState.IsValid) return View(clienteViewModel);
 
@@ -85,8 +90,10 @@ namespace MinhasVendas.App.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome")] ClienteViewModel clienteViewModel)
+        public async Task<IActionResult> Edit(int id, ClienteViewModel clienteViewModel)
         {
+            if (!ModelState.IsValid) return View(clienteViewModel);
+
             if (id != clienteViewModel.Id) return NotFound();
 
             var clienteDB = await _clienteRespositorio.ObterSemRastreamento().FirstOrDefaultAsync(c=> c.Id == id);
@@ -99,7 +106,7 @@ namespace MinhasVendas.App.Controllers
 
             if (!OperacaoValida()) return View(clienteViewModel);
 
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", new { id = cliente.Id });
         
         }
 
@@ -132,5 +139,41 @@ namespace MinhasVendas.App.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        [HttpGet]                                
+        public async Task<IActionResult> EditarEnderecoCliente(int id)
+        {
+            var endereco = await _clienteEnderecoRepositorio.ObterPorId(e => e.Id == id);
+
+            if (endereco == null) return NotFound();
+
+            var clienteEnderecoViewModel = _mapper.Map<ClienteEnderecoViewModel>(endereco);
+
+            return PartialView("_AtualizarEnderecoCliente", clienteEnderecoViewModel);
+            //return View("_AtualizarEnderecoCliente", clienteEnderecoViewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditarEnderecoCliente(ClienteEnderecoViewModel clienteEnderecoViewModel)
+        {
+
+
+            if (!ModelState.IsValid) return PartialView("_AtualizarEnderecoCliente", clienteEnderecoViewModel);
+
+            var endereco = await _clienteEnderecoRepositorio.ObterSemRastreamento().FirstOrDefaultAsync(e => e.Id ==  clienteEnderecoViewModel.Id);
+
+            if (endereco == null) return NotFound();
+
+            var clienteEndereco = _mapper.Map<ClienteEndereco>(clienteEnderecoViewModel);
+
+            await _clienteEnderecoRepositorio.Atualizar(clienteEndereco);
+
+            if (!OperacaoValida()) return View(clienteEnderecoViewModel);
+
+            return RedirectToAction("Details", new { id = clienteEndereco.ClienteId });
+
+        }
+
+
+
     }
 }

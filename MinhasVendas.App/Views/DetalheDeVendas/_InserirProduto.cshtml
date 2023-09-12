@@ -13,22 +13,22 @@
     <vc:resumo></vc:resumo>
     <div class="modal-body">
         <div class="form-group">
-            <label asp-for="@Model.DetalheDeVenda.OrdemDeVendaId class=" control-label"></label>
-            <input readonly asp-for="@Model.DetalheDeVenda.OrdemDeVendaId" class="form-control" value=@ViewBag.OrdemDeVendaId>
+            <label asp-for="@Model.DetalheDeVendaViewModel.OrdemDeVendaId class=" control-label"></label>
+            <input readonly asp-for="@Model.DetalheDeVendaViewModel.OrdemDeVendaId" class="form-control" value=@ViewBag.OrdemDeVendaId>
         </div>
         <div class="form-group">
-            <label asp-for="@Model.DetalheDeVenda.ProdutoId" class="control-label"></label>
-            <select asp-for="@Model.DetalheDeVenda.ProdutoId" class="form-control" asp-items="ViewBag.ProdutoId"></select>
+            <label asp-for="@Model.DetalheDeVendaViewModel.ProdutoId" class="control-label"></label>
+            <select asp-for="@Model.DetalheDeVendaViewModel.ProdutoId" class="form-control" asp-items="ViewBag.ProdutoId"></select>
         </div>
         <div class="form-group">
-            <label asp-for="@Model.DetalheDeVenda.Quantidade" class="control-label"></label>
-            <input asp-for="@Model.DetalheDeVenda.Quantidade" class="form-control" />
-            <span asp-validation-for="@Model.DetalheDeVenda.Quantidade" class="text-danger"></span>
+            <label asp-for="@Model.DetalheDeVendaViewModel.Quantidade" class="control-label"></label>
+            <input asp-for="@Model.DetalheDeVendaViewModel.Quantidade" class="form-control" />
+            <span asp-validation-for="@Model.DetalheDeVendaViewModel.Quantidade" class="text-danger"></span>
         </div>
         <div class="form-group">
-            <label asp-for="@Model.DetalheDeVenda.Desconto" class="control-label"></label>
-            <input asp-for="@Model.DetalheDeVenda.Desconto" class="form-control" />
-            <span asp-validation-for="@Model.DetalheDeVenda.Desconto" class="text-danger"></span>
+            <label asp-for="@Model.DetalheDeVendaViewModel.Desconto" class="control-label"></label>
+            <input asp-for="@Model.DetalheDeVendaViewModel.Desconto" class="form-control" />
+            <span asp-validation-for="@Model.DetalheDeVendaViewModel.Desconto" class="text-danger"></span>
         </div>
 
         <div class="modal-footer">

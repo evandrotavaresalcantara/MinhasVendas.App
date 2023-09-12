@@ -1,0 +1,48 @@
+﻿@model IEnumerable<MinhasVendas.App.ViewModels.OrdemDeVendaViewModel>
+
+<table class="table table-bordered table-hover">
+    <thead class="table-dark">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.StatusOrdemDeVenda)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FormaDePagamento)
+            </th>
+            <th>
+               @Html.DisplayNameFor(model => model.DataDePagamento)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DataDeCriacao)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Cliente)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.StatusOrdemDeVenda)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FormaDePagamento)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DataDePagamento)
+            </td>
+            <td>
+                    @Html.DisplayFor(modelItem => item.DataDeCriacao)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Cliente.Nome)
+            </td>
+            <td>
+                <a asp-controller="OrdemDeVendas" asp-action="CarrinhoDeVendas" asp-route-id="@item.Id">CarrinhoDeVendas</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

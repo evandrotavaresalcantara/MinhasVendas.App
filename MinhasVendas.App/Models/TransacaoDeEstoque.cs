@@ -6,8 +6,6 @@ namespace MinhasVendas.App.Models
 {
     public class TransacaoDeEstoque : Entidade
     {
-        //public int Id { get; set; }
-
         
         public int ProdutoId { get; set; }
         public int? OrdemDeCompraId { get; set; }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -23,16 +24,19 @@ public class OrdemDeVendasController : BaseController
     private readonly IOrdemDeVendaServico _ordemDeVendaServico;
     private readonly IClienteRespositorio _clienteRespositorio;
     private readonly IOrdemDeVendaRepositorio _ordemDeVendaRepositorio;
+    private readonly IMapper _mapper;
 
     public OrdemDeVendasController(MinhasVendasAppContext context,
                                    IOrdemDeVendaServico ordemDeVendaServico,
                                    IClienteRespositorio clienteRespositorio,
                                    IOrdemDeVendaRepositorio ordemDeVendaRepositorio,
+                                   IMapper mapper,
                                    INotificador notificador) : base(notificador)
     {
         _ordemDeVendaServico = ordemDeVendaServico;
         _clienteRespositorio = clienteRespositorio;
         _ordemDeVendaRepositorio = ordemDeVendaRepositorio;
+        _mapper = mapper;
     }
 
     [HttpGet]
@@ -69,16 +73,10 @@ public class OrdemDeVendasController : BaseController
 
         ViewBag.Metada = metadata;
 
-        return View(ordemDeVendaCliente);
+        var ordemDeVendaViewModel = _mapper.Map<IEnumerable<OrdemDeVendaViewModel>>(ordemDeVendaCliente);
+
+        return View(ordemDeVendaViewModel);
     }
-
-    public async Task<IActionResult> Index2()
-    {
-        var ordemDeVendasClientes = await _ordemDeVendaServico.ConsultaOrdemDevendaCliente();
-
-        return View(ordemDeVendasClientes);
-    }
-
 
 
     public async Task<IActionResult> Create()
@@ -89,20 +87,22 @@ public class OrdemDeVendasController : BaseController
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Create([Bind("Id,ClienteId,StatusOrdemDeVenda,FormaDePagamento,DataDePagamento,DataDeVenda")] OrdemDeVenda ordemDeVenda)
+    public async Task<IActionResult> Create([Bind("Id,ClienteId,StatusOrdemDeVenda,FormaDePagamento,DataDePagamento,DataDeVenda")] OrdemDeVendaViewModel ordemDeVendaViewModel)
     {
         if (!ModelState.IsValid)
         {
-            ViewData["ClienteId"] = new SelectList(await _clienteRespositorio.BuscarTodos(), "Id", "Nome", ordemDeVenda.ClienteId);
-            return View(ordemDeVenda);
+            ViewData["ClienteId"] = new SelectList(await _clienteRespositorio.BuscarTodos(), "Id", "Nome", ordemDeVendaViewModel.ClienteId);
+            return View(ordemDeVendaViewModel);
         }
 
+        var ordemDeVenda = _mapper.Map<OrdemDeVenda>(ordemDeVendaViewModel);
+        
         await _ordemDeVendaServico.Adicionar(ordemDeVenda);
 
         if (!OperacaoValida())
         {
-            ViewData["ClienteId"] = new SelectList(await _clienteRespositorio.BuscarTodos(), "Id", "Nome", ordemDeVenda.ClienteId);
-            return View(ordemDeVenda);
+            ViewData["ClienteId"] = new SelectList(await _clienteRespositorio.BuscarTodos(), "Id", "Nome", ordemDeVendaViewModel.ClienteId);
+            return View(ordemDeVendaViewModel);
         }
 
         return RedirectToAction("CarrinhoDeVendas", new { id = ordemDeVenda.Id });
@@ -116,7 +116,9 @@ public class OrdemDeVendasController : BaseController
 
         var model = new CarrinhoDeVendasViewModel();
 
-        model.OrdemDeVenda = ordemDeVenda;
+        var ordemDeVendaViewModel = _mapper.Map<OrdemDeVendaViewModel>(ordemDeVenda);
+
+        model.OrdemDeVendaViewModel = ordemDeVendaViewModel;
 
         return View(model);
     }
@@ -129,7 +131,9 @@ public class OrdemDeVendasController : BaseController
 
         var model = new CarrinhoDeVendasViewModel();
 
-        model.OrdemDeVenda = ordemDeVenda;
+        var ordemDeVendaViewModel = _mapper.Map<OrdemDeVendaViewModel>(ordemDeVenda);
+        
+        model.OrdemDeVendaViewModel = ordemDeVendaViewModel;
 
         return PartialView("CarrinhoDeVendas", model);
     }
@@ -146,7 +150,9 @@ public class OrdemDeVendasController : BaseController
 
         var ordemDeVenda = await _ordemDeVendaServico.ConsultaOrdemDeVendaDetalheDeVenda(id);
 
-        model.OrdemDeVenda = ordemDeVenda;
+        var ordemDeVendaViewModel = _mapper.Map<OrdemDeVendaViewModel>(ordemDeVenda);
+
+        model.OrdemDeVendaViewModel = ordemDeVendaViewModel;
 
         return PartialView("_FinalizarVenda", model);
     }
@@ -154,17 +160,19 @@ public class OrdemDeVendasController : BaseController
     [HttpPost]
     public async Task<IActionResult> FinalizarVenda(int id, CarrinhoDeVendasViewModel model)
     {
-        if (id != model.OrdemDeVenda.Id) return NotFound();
+        if (id != model.OrdemDeVendaViewModel.Id) return NotFound();
 
-        var ordemDeVenda = await _ordemDeVendaServico.ConsultaOrdemDeVenda(model.OrdemDeVenda.Id);
+        var ordemDeVendaBD = await _ordemDeVendaServico.ConsultaOrdemDeVenda(model.OrdemDeVendaViewModel.Id);
 
-        if (ordemDeVenda is null) return NotFound();
+        if (ordemDeVendaBD is null) return NotFound();
 
-        await _ordemDeVendaServico.FinalizarVenda(model.OrdemDeVenda);
+        var ordemDeVenda = _mapper.Map<OrdemDeVenda>(model.OrdemDeVendaViewModel);
+
+        await _ordemDeVendaServico.FinalizarVenda(ordemDeVenda);
 
         if (!OperacaoValida()) return PartialView("_OrdemDeVendaStatus", model);
 
-        return RedirectToAction("CarrinhoDeVendas", "OrdemDeVendas", new { id = ordemDeVenda.Id });
+        return RedirectToAction("CarrinhoDeVendas", "OrdemDeVendas", new { id = ordemDeVendaBD.Id });
 
     }
 
@@ -187,17 +195,19 @@ public class OrdemDeVendasController : BaseController
     [HttpPost]
     public async Task<IActionResult> InserirFrete(int id, CarrinhoDeVendasViewModel model)
     {
-        if (id != model.OrdemDeVenda.Id) return NotFound();
+        if (id != model.OrdemDeVendaViewModel.Id) return NotFound();
 
-        var ordemDeVenda = await _ordemDeVendaServico.ConsultaOrdemDeVenda(model.OrdemDeVenda.Id);
+        var ordemDeVendaBD = await _ordemDeVendaServico.ConsultaOrdemDeVenda(model.OrdemDeVendaViewModel.Id);
 
-        if (ordemDeVenda == null) return NotFound("Ordem de Venda Não Econtrada.");
+        if (ordemDeVendaBD == null) return NotFound("Ordem de Venda Não Econtrada.");
 
-        await _ordemDeVendaServico.InserirFrete(model.OrdemDeVenda);
+        var ordemDeVenda = _mapper.Map<OrdemDeVenda>(model.OrdemDeVendaViewModel);
+
+        await _ordemDeVendaServico.InserirFrete(ordemDeVenda);
 
         if (!OperacaoValida()) return PartialView("_OrdemDeVendaStatus", model);
 
-        return RedirectToAction("CarrinhoDeVendas", "OrdemDeVendas", new { id = ordemDeVenda.Id });
+        return RedirectToAction("CarrinhoDeVendas", "OrdemDeVendas", new { id = ordemDeVendaBD.Id });
 
     }
 }

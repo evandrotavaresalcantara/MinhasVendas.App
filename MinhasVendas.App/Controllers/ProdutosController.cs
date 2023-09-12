@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using MinhasVendas.App.Interfaces;
 using MinhasVendas.App.Interfaces.Servico;
 using MinhasVendas.App.Models;
 using MinhasVendas.App.Models.Enums;
+using MinhasVendas.App.ViewModels;
 
 namespace MinhasVendas.App.Controllers
 {
@@ -17,13 +19,16 @@ namespace MinhasVendas.App.Controllers
     {
         private readonly MinhasVendasAppContext _context;
         private readonly IProdutoServico _produtoServico;
+        private readonly IMapper _mapper;
 
         public ProdutosController(MinhasVendasAppContext context,
                                   INotificador notificador,
+                                  IMapper mapper,
                                   IProdutoServico produtoServico) : base(notificador)
         {
             _context = context;
             _produtoServico = produtoServico;
+            _mapper = mapper;
         }
 
         // GET: Produtos
@@ -46,8 +51,11 @@ namespace MinhasVendas.App.Controllers
                 var item = produtos.Find(p => p.Id == produto.Key);
                 item.EstoqueAtual = produto.totalProdutoComprado - produto.totalProdutoVendido;
             }
+
+            var produtosViewModel = _mapper.Map<IEnumerable<ProdutoViewModel>>(produtos);
+
             return _context.Produtos != null ? 
-                          View(produtos) :
+                          View(produtosViewModel) :
                           Problem("Entity set 'MinhasVendasContext.Produtos'  is null.");
         }
 
@@ -65,8 +73,9 @@ namespace MinhasVendas.App.Controllers
             {
                 return NotFound();
             }
+            var produtoViewModel = _mapper.Map<ProdutoViewModel>(produto);
 
-            return View(produto);
+            return View(produtoViewModel);
         }
 
         // GET: Produtos/Create
@@ -80,13 +89,15 @@ namespace MinhasVendas.App.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Nome,PrecoDeLista,PrecoBase")] Produto produto)
+        public async Task<IActionResult> Create([Bind("Id,Nome,PrecoDeLista,PrecoBase")] ProdutoViewModel produtoViewModel)
         {
-            if (!ModelState.IsValid) return View(produto);
+            if (!ModelState.IsValid) return View(produtoViewModel);
+
+            var produto = _mapper.Map<Produto>(produtoViewModel);
 
             await _produtoServico.Adicionar(produto);
 
-            if (!OperacaoValida()) return View(produto);
+            if (!OperacaoValida()) return View(produtoViewModel);
 
             return RedirectToAction(nameof(Index));
         }
@@ -104,7 +115,10 @@ namespace MinhasVendas.App.Controllers
             {
                 return NotFound();
             }
-            return View(produto);
+
+            var produtoViewModel = _mapper.Map<ProdutoViewModel>(produto);
+
+            return View(produtoViewModel);
         }
 
         // POST: Produtos/Edit/5
@@ -112,9 +126,9 @@ namespace MinhasVendas.App.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,PrecoDeLista,PrecoBase")] Produto produto)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nome,PrecoDeLista,PrecoBase")] ProdutoViewModel produtoViewModel)
         {
-            if (id != produto.Id)
+            if (id != produtoViewModel.Id)
             {
                 return NotFound();
             }
@@ -123,12 +137,13 @@ namespace MinhasVendas.App.Controllers
             {
                 try
                 {
+                    var produto = _mapper.Map<Produto>(produtoViewModel);
                     _context.Update(produto);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ProdutoExists(produto.Id))
+                    if (!ProdutoExists(produtoViewModel.Id))
                     {
                         return NotFound();
                     }
@@ -139,7 +154,7 @@ namespace MinhasVendas.App.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(produto);
+            return View(produtoViewModel);
         }
 
         // GET: Produtos/Delete/5
@@ -157,7 +172,8 @@ namespace MinhasVendas.App.Controllers
                 return NotFound();
             }
 
-            return View(produto);
+            var produtoViewModel = _mapper.Map<ProdutoViewModel>(produto);
+            return View(produtoViewModel);
         }
 
         // POST: Produtos/Delete/5

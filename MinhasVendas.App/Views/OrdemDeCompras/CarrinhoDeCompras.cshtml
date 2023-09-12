@@ -162,6 +162,8 @@
     </tbody>
 </table>
 
+<a class="btn btn-light" href="javascript:window.history.back();">Voltar</a>
+
 <div class="modal fade" id="inserirProdutoFormModel">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -271,6 +273,8 @@
         $("#conteudoModalSolicitarAprovacao").load(url, function () {
             $("#modalSolicitarAprovacao").modal("show");
 
+            var form = document.getElementById("formularioSolicitarAprovacao");
+            $.validator.unobtrusive.parse(form);
         });
     }
 

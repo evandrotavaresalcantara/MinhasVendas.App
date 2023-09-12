@@ -40,7 +40,9 @@ builder.Services.AddScoped<IClienteServico, ClienteServico>();
 
 
 builder.Services.AddScoped<IClienteRespositorio, ClienteRepositorio>();
+builder.Services.AddScoped<IClienteEnderecoRepositorio,  ClienteEnderecoRepositorio>();
 builder.Services.AddScoped<IFornecedorRepositorio, FornecedorRepositorio>();
+builder.Services.AddScoped<IFornecedorEnderecoRepositorio, FornecedorEnderecoRepositorio>();
 builder.Services.AddScoped<IProdutoRepositorio, ProdutoRepositorio>();
 builder.Services.AddScoped<IOrdemDeCompraRepositorio, OrdemDeCompraRepositorio>();
 builder.Services.AddScoped<IOrdemDeVendaRepositorio, OrdemDeVendaRepositorio>();

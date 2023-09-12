@@ -5,14 +5,14 @@
 }
 
 @{
-    if (Model.OrdemDeVenda.DetalheDeVendas.Any())
+    if (Model.OrdemDeVendaViewModel.DetalheDeVendas.Any())
     {
-        var precoProduto = from item in Model.OrdemDeVenda.DetalheDeVendas select (item.PrecoUnitario * item.Quantidade * (1 - item.Desconto / 100));
+        var precoProduto = from item in Model.OrdemDeVendaViewModel.DetalheDeVendas select (item.PrecoUnitario * item.Quantidade * (1 - item.Desconto / 100));
         decimal[] precoProdutos = precoProduto.ToArray();
         decimal totalProdutos = precoProdutos.Aggregate((a, b) => a + b);
-        decimal totalVenda = totalProdutos + Model.OrdemDeVenda.ValorDeFrete;
+        decimal totalVenda = totalProdutos + Model.OrdemDeVendaViewModel.ValorDeFrete;
 
-        var itens = from item in Model.OrdemDeVenda.DetalheDeVendas select (item.Quantidade);
+        var itens = from item in Model.OrdemDeVendaViewModel.DetalheDeVendas select (item.Quantidade);
         int totalItens = itens.Sum();
 
         Model.TotalItens = totalItens;
@@ -28,28 +28,28 @@
             <h5 class="card-title">Dados da Venda:</h5>
             <dl class="row">
                 <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.OrdemDeVenda.DataDeCriacao)
+                    @Html.DisplayNameFor(model => model.OrdemDeVendaViewModel.DataDeCriacao)
                 </dt>
                 <dd class="col-sm-5">
-                    @Html.DisplayFor(model => model.OrdemDeVenda.DataDeCriacao)
+                    @Html.DisplayFor(model => model.OrdemDeVendaViewModel.DataDeCriacao)
                 </dd>
                 <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.OrdemDeVenda.DataDePagamento)
+                    @Html.DisplayNameFor(model => model.OrdemDeVendaViewModel.DataDePagamento)
                 </dt>
                 <dd class="col-sm-5">
-                    @Html.DisplayFor(model => model.OrdemDeVenda.DataDePagamento)
+                    @Html.DisplayFor(model => model.OrdemDeVendaViewModel.DataDePagamento)
                 </dd>
                 <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.OrdemDeVenda.StatusOrdemDeVenda)
+                    @Html.DisplayNameFor(model => model.OrdemDeVendaViewModel.StatusOrdemDeVenda)
                 </dt>
                 <dd class="col-sm-5">
-                    @Html.DisplayFor(model => model.OrdemDeVenda.StatusOrdemDeVenda)
+                    @Html.DisplayFor(model => model.OrdemDeVendaViewModel.StatusOrdemDeVenda)
                 </dd>
                 <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.OrdemDeVenda.Cliente)
+                    @Html.DisplayNameFor(model => model.OrdemDeVendaViewModel.Cliente)
                 </dt>
                 <dd class="col-sm-5">
-                    @Html.DisplayFor(model => model.OrdemDeVenda.Cliente.Nome)
+                    @Html.DisplayFor(model => model.OrdemDeVendaViewModel.Cliente.Nome)
                 </dd>
             </dl>
         </div>
@@ -66,10 +66,10 @@
                     @Html.DisplayFor(model => model.TotalProdutos)
                 </dd>
                 <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.OrdemDeVenda.ValorDeFrete)
+                    @Html.DisplayNameFor(model => model.OrdemDeVendaViewModel.ValorDeFrete)
                 </dt>
                 <dd class="col-sm-5">
-                    @Html.DisplayFor(model => model.OrdemDeVenda.ValorDeFrete)
+                    @Html.DisplayFor(model => model.OrdemDeVendaViewModel.ValorDeFrete)
                 </dd>
                 <dt class="col-sm-4">
                     Valor da Compra
@@ -93,9 +93,9 @@
 
 <div>
     <div style="float:left">
-        <button class="btn btn-info" onclick="InserirProduto(@Model.OrdemDeVenda.Id)">Inserir Produto</button>
-        <button class="btn btn-success" onclick="InserirFrete(@Model.OrdemDeVenda.Id)">Inserir Frete</button>
-        <button class="btn btn-dark" onclick="FinalizarVenda(@Model.OrdemDeVenda.Id)">Finalizar Compra</button>
+        <button class="btn btn-info" onclick="InserirProduto(@Model.OrdemDeVendaViewModel.Id)">Inserir Produto</button>
+        <button class="btn btn-success" onclick="InserirFrete(@Model.OrdemDeVendaViewModel.Id)">Inserir Frete</button>
+        <button class="btn btn-dark" onclick="FinalizarVenda(@Model.OrdemDeVendaViewModel.Id)">Finalizar Compra</button>
     </div>
 </div>
 
@@ -121,7 +121,7 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.OrdemDeVenda.DetalheDeVendas)
+        @foreach (var item in Model.OrdemDeVendaViewModel.DetalheDeVendas)
         {
             var produtoTotal = item.Quantidade * item.PrecoUnitario * (1 - (item.Desconto / 100));
 
@@ -150,6 +150,9 @@
         }
     </tbody>
 </table>
+
+
+<a class="btn btn-light" href="javascript:window.history.back();">Voltar</a>
 
 <div class="modal fade" id="modalInserirProduto">
     <div class="modal-dialog">
@@ -247,7 +250,7 @@
             $("#finalizarVendaFormModel").modal("show");
 
             var form = document.getElementById("finalizarVendaForm");
-            $.validator.unobtrusive.parse(finalizarVendaForm);
+            $.validator.unobtrusive.parse(form);
         });
 
     }

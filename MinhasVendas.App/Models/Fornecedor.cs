@@ -1,13 +1,23 @@
-﻿namespace MinhasVendas.App.Models
+﻿using MinhasVendas.App.Models.Enums;
+
+namespace MinhasVendas.App.Models
 {
     public class Fornecedor : Entidade
     {
-        //public int Id { get; set; }
+        public string Documento { get; set; } = string.Empty;
+        public TipoFornecedor TipoFornecedor { get; set; }
 
-        public string? Nome { get; set; }
+        public string Nome { get; set; } = string.Empty;
+        public string Celular { get; set; } = string.Empty;
+        public string WhatsApp { get; set; } = string.Empty;
+        public string Instagram { get; set; } = string.Empty;
+        public string Email { get; set; } = string.Empty;
+
+
 
         /* Ef Relacionamentos */
-        ICollection<OrdemDeCompra>? OrdemDeCompras { get; set; }
+        public ICollection<OrdemDeCompra>? OrdemDeCompras { get; set; }
+        public FornecedorEndereco? Endereco { get; set; }
 
     }
 }
