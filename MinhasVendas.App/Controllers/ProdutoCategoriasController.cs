@@ -8,92 +8,89 @@ using Microsoft.EntityFrameworkCore;
 using MinhasVendas.App.Data;
 using MinhasVendas.App.Models;
 
-namespace MinhasVendas.App.Views
+namespace MinhasVendas.App.Controllers
 {
-    public class ClienteEnderecosController : Controller
+    public class ProdutoCategoriasController : Controller
     {
         private readonly MinhasVendasAppContext _context;
 
-        public ClienteEnderecosController(MinhasVendasAppContext context)
+        public ProdutoCategoriasController(MinhasVendasAppContext context)
         {
             _context = context;
         }
 
-        // GET: ClienteEnderecos
+        // GET: ProdutoCategorias
         public async Task<IActionResult> Index()
         {
-            var minhasVendasAppContext = _context.ClienteEndereco.Include(c => c.Cliente);
-            return View(await minhasVendasAppContext.ToListAsync());
+              return _context.ProdutoCategorias != null ? 
+                          View(await _context.ProdutoCategorias.ToListAsync()) :
+                          Problem("Entity set 'MinhasVendasAppContext.ProdutoCategorias'  is null.");
         }
 
-        // GET: ClienteEnderecos/Details/5
+        // GET: ProdutoCategorias/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.ClienteEndereco == null)
+            if (id == null || _context.ProdutoCategorias == null)
             {
                 return NotFound();
             }
 
-            var clienteEndereco = await _context.ClienteEndereco
-                .Include(c => c.Cliente)
+            var produtoCategoria = await _context.ProdutoCategorias
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (clienteEndereco == null)
+            if (produtoCategoria == null)
             {
                 return NotFound();
             }
 
-            return View(clienteEndereco);
+            return View(produtoCategoria);
         }
 
-        // GET: ClienteEnderecos/Create
+        // GET: ProdutoCategorias/Create
         public IActionResult Create()
         {
-            ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Id");
             return View();
         }
 
-        // POST: ClienteEnderecos/Create
+        // POST: ProdutoCategorias/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ClienteId,Cep,Logradouro,Numero,Complemento,Bairro,Cidade,Estado,Id")] ClienteEndereco clienteEndereco)
+        public async Task<IActionResult> Create([Bind("Nome,Descricao,Id")] ProdutoCategoria produtoCategoria)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(clienteEndereco);
+                _context.Add(produtoCategoria);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Id", clienteEndereco.ClienteId);
-            return View(clienteEndereco);
+            return View(produtoCategoria);
         }
 
-        // GET: ClienteEnderecos/Edit/5
+        // GET: ProdutoCategorias/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null || _context.ClienteEndereco == null)
+            if (id == null || _context.ProdutoCategorias == null)
             {
                 return NotFound();
             }
 
-            var clienteEndereco = await _context.ClienteEndereco.FindAsync(id);
-            if (clienteEndereco == null)
+            var produtoCategoria = await _context.ProdutoCategorias.FindAsync(id);
+            if (produtoCategoria == null)
             {
                 return NotFound();
             }
-            ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Id", clienteEndereco.ClienteId);
-            return View(clienteEndereco);
+            return View(produtoCategoria);
         }
 
-        // POST: ClienteEnderecos/Edit/5
+        // POST: ProdutoCategorias/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ClienteId,Cep,Logradouro,Numero,Complemento,Bairro,Cidade,Estado,Id")] ClienteEndereco clienteEndereco)
+        public async Task<IActionResult> Edit(int id, [Bind("Nome,Descricao,Id")] ProdutoCategoria produtoCategoria)
         {
-            if (id != clienteEndereco.Id)
+            if (id != produtoCategoria.Id)
             {
                 return NotFound();
             }
@@ -102,12 +99,12 @@ namespace MinhasVendas.App.Views
             {
                 try
                 {
-                    _context.Update(clienteEndereco);
+                    _context.Update(produtoCategoria);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!ClienteEnderecoExists(clienteEndereco.Id))
+                    if (!ProdutoCategoriaExists(produtoCategoria.Id))
                     {
                         return NotFound();
                     }
@@ -118,51 +115,49 @@ namespace MinhasVendas.App.Views
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ClienteId"] = new SelectList(_context.Clientes, "Id", "Id", clienteEndereco.ClienteId);
-            return View(clienteEndereco);
+            return View(produtoCategoria);
         }
 
-        // GET: ClienteEnderecos/Delete/5
+        // GET: ProdutoCategorias/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null || _context.ClienteEndereco == null)
+            if (id == null || _context.ProdutoCategorias == null)
             {
                 return NotFound();
             }
 
-            var clienteEndereco = await _context.ClienteEndereco
-                .Include(c => c.Cliente)
+            var produtoCategoria = await _context.ProdutoCategorias
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (clienteEndereco == null)
+            if (produtoCategoria == null)
             {
                 return NotFound();
             }
 
-            return View(clienteEndereco);
+            return View(produtoCategoria);
         }
 
-        // POST: ClienteEnderecos/Delete/5
+        // POST: ProdutoCategorias/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            if (_context.ClienteEndereco == null)
+            if (_context.ProdutoCategorias == null)
             {
-                return Problem("Entity set 'MinhasVendasAppContext.ClienteEndereco'  is null.");
+                return Problem("Entity set 'MinhasVendasAppContext.ProdutoCategorias'  is null.");
             }
-            var clienteEndereco = await _context.ClienteEndereco.FindAsync(id);
-            if (clienteEndereco != null)
+            var produtoCategoria = await _context.ProdutoCategorias.FindAsync(id);
+            if (produtoCategoria != null)
             {
-                _context.ClienteEndereco.Remove(clienteEndereco);
+                _context.ProdutoCategorias.Remove(produtoCategoria);
             }
             
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool ClienteEnderecoExists(int id)
+        private bool ProdutoCategoriaExists(int id)
         {
-          return (_context.ClienteEndereco?.Any(e => e.Id == id)).GetValueOrDefault();
+          return (_context.ProdutoCategorias?.Any(e => e.Id == id)).GetValueOrDefault();
         }
     }
 }

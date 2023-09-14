@@ -1,17 +1,14 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using MinhasVendas.App.AutoMapper;
 using MinhasVendas.App.Data;
 using MinhasVendas.App.Interfaces;
 using MinhasVendas.App.Interfaces.Repositorio;
 using MinhasVendas.App.Interfaces.Servico;
-using MinhasVendas.App.Models;
 using MinhasVendas.App.Notificador;
 using MinhasVendas.App.Repositorio;
 using MinhasVendas.App.Servicos;
-using System.Configuration;
 using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -40,10 +37,11 @@ builder.Services.AddScoped<IClienteServico, ClienteServico>();
 
 
 builder.Services.AddScoped<IClienteRespositorio, ClienteRepositorio>();
-builder.Services.AddScoped<IClienteEnderecoRepositorio,  ClienteEnderecoRepositorio>();
+builder.Services.AddScoped<IClienteEnderecoRepositorio, ClienteEnderecoRepositorio>();
 builder.Services.AddScoped<IFornecedorRepositorio, FornecedorRepositorio>();
 builder.Services.AddScoped<IFornecedorEnderecoRepositorio, FornecedorEnderecoRepositorio>();
 builder.Services.AddScoped<IProdutoRepositorio, ProdutoRepositorio>();
+builder.Services.AddScoped<IProdutoCategoriaRepositorio, ProdutoCategoriaRepositorio>();
 builder.Services.AddScoped<IOrdemDeCompraRepositorio, OrdemDeCompraRepositorio>();
 builder.Services.AddScoped<IOrdemDeVendaRepositorio, OrdemDeVendaRepositorio>();
 builder.Services.AddScoped<IDetalheDeCompraRepositorio, DetalheDeCompraRepositorio>();

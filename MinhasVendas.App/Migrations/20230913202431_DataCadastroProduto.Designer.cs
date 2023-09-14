@@ -11,14 +11,14 @@ using MinhasVendas.App.Data;
 namespace MinhasVendas.App.Migrations
 {
     [DbContext(typeof(MinhasVendasAppContext))]
-    [Migration("20230907202439_Endereco")]
-    partial class Endereco
+    [Migration("20230913202431_DataCadastroProduto")]
+    partial class DataCadastroProduto
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "7.0.9");
+            modelBuilder.HasAnnotation("ProductVersion", "7.0.10");
 
             modelBuilder.Entity("MinhasVendas.App.Models.Cliente", b =>
                 {
@@ -26,8 +26,9 @@ namespace MinhasVendas.App.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("Celular")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("Celular")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Email")
                         .IsRequired()
@@ -45,8 +46,9 @@ namespace MinhasVendas.App.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("WhatsApp")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("WhatsApp")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
@@ -176,12 +178,81 @@ namespace MinhasVendas.App.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Celular")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Documento")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Instagram")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("TipoFornecedor")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("WhatsApp")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
                     b.ToTable("Fornecedores");
+                });
+
+            modelBuilder.Entity("MinhasVendas.App.Models.FornecedorEndereco", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Bairro")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Cep")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Cidade")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Complemento")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("FornecedorId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Logradouro")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Numero")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FornecedorId")
+                        .IsUnique();
+
+                    b.ToTable("FornecedorEndereco");
                 });
 
             modelBuilder.Entity("MinhasVendas.App.Models.OrdemDeCompra", b =>
@@ -249,6 +320,20 @@ namespace MinhasVendas.App.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DataDeCadastro")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("EstoqueAtual")
                         .HasColumnType("INTEGER");
 
@@ -261,9 +346,33 @@ namespace MinhasVendas.App.Migrations
                     b.Property<decimal>("PrecoDeLista")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("ProdutoCategoriaId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("ProdutoCategoriaId");
+
                     b.ToTable("Produtos");
+                });
+
+            modelBuilder.Entity("MinhasVendas.App.Models.ProdutoCategoria", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProdutoCategorias");
                 });
 
             modelBuilder.Entity("MinhasVendas.App.Models.TransacaoDeEstoque", b =>
@@ -321,7 +430,7 @@ namespace MinhasVendas.App.Migrations
                         .IsRequired();
 
                     b.HasOne("MinhasVendas.App.Models.Produto", "Produto")
-                        .WithMany()
+                        .WithMany("DetalheDeCompras")
                         .HasForeignKey("ProdutoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -340,7 +449,7 @@ namespace MinhasVendas.App.Migrations
                         .IsRequired();
 
                     b.HasOne("MinhasVendas.App.Models.Produto", "Produto")
-                        .WithMany()
+                        .WithMany("DetalheDeVendas")
                         .HasForeignKey("ProdutoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -350,10 +459,21 @@ namespace MinhasVendas.App.Migrations
                     b.Navigation("Produto");
                 });
 
+            modelBuilder.Entity("MinhasVendas.App.Models.FornecedorEndereco", b =>
+                {
+                    b.HasOne("MinhasVendas.App.Models.Fornecedor", "Fornecedor")
+                        .WithOne("Endereco")
+                        .HasForeignKey("MinhasVendas.App.Models.FornecedorEndereco", "FornecedorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Fornecedor");
+                });
+
             modelBuilder.Entity("MinhasVendas.App.Models.OrdemDeCompra", b =>
                 {
                     b.HasOne("MinhasVendas.App.Models.Fornecedor", "Fornecedor")
-                        .WithMany()
+                        .WithMany("OrdemDeCompras")
                         .HasForeignKey("FornecedorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -364,12 +484,23 @@ namespace MinhasVendas.App.Migrations
             modelBuilder.Entity("MinhasVendas.App.Models.OrdemDeVenda", b =>
                 {
                     b.HasOne("MinhasVendas.App.Models.Cliente", "Cliente")
-                        .WithMany()
+                        .WithMany("OrdemDeVendas")
                         .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Cliente");
+                });
+
+            modelBuilder.Entity("MinhasVendas.App.Models.Produto", b =>
+                {
+                    b.HasOne("MinhasVendas.App.Models.ProdutoCategoria", "ProdutoCategoria")
+                        .WithMany("Produtos")
+                        .HasForeignKey("ProdutoCategoriaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProdutoCategoria");
                 });
 
             modelBuilder.Entity("MinhasVendas.App.Models.TransacaoDeEstoque", b =>
@@ -383,7 +514,7 @@ namespace MinhasVendas.App.Migrations
                         .HasForeignKey("OrdemDeVendaId");
 
                     b.HasOne("MinhasVendas.App.Models.Produto", "Produto")
-                        .WithMany()
+                        .WithMany("TransacaoDeEstoques")
                         .HasForeignKey("ProdutoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -398,6 +529,15 @@ namespace MinhasVendas.App.Migrations
             modelBuilder.Entity("MinhasVendas.App.Models.Cliente", b =>
                 {
                     b.Navigation("Endereco");
+
+                    b.Navigation("OrdemDeVendas");
+                });
+
+            modelBuilder.Entity("MinhasVendas.App.Models.Fornecedor", b =>
+                {
+                    b.Navigation("Endereco");
+
+                    b.Navigation("OrdemDeCompras");
                 });
 
             modelBuilder.Entity("MinhasVendas.App.Models.OrdemDeCompra", b =>
@@ -410,6 +550,20 @@ namespace MinhasVendas.App.Migrations
                     b.Navigation("DetalheDeVendas");
 
                     b.Navigation("TransacaoDeEstoques");
+                });
+
+            modelBuilder.Entity("MinhasVendas.App.Models.Produto", b =>
+                {
+                    b.Navigation("DetalheDeCompras");
+
+                    b.Navigation("DetalheDeVendas");
+
+                    b.Navigation("TransacaoDeEstoques");
+                });
+
+            modelBuilder.Entity("MinhasVendas.App.Models.ProdutoCategoria", b =>
+                {
+                    b.Navigation("Produtos");
                 });
 #pragma warning restore 612, 618
         }

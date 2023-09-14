@@ -27,6 +27,9 @@ namespace MinhasVendas.App.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Documento")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -317,10 +320,28 @@ namespace MinhasVendas.App.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("Ativo")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("DataDeCadastro")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("EstoqueAtual")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Imagem")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Nome")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("PrecoBase")
@@ -329,9 +350,33 @@ namespace MinhasVendas.App.Migrations
                     b.Property<decimal>("PrecoDeLista")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("ProdutoCategoriaId")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("ProdutoCategoriaId");
+
                     b.ToTable("Produtos");
+                });
+
+            modelBuilder.Entity("MinhasVendas.App.Models.ProdutoCategoria", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Descricao")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProdutoCategorias");
                 });
 
             modelBuilder.Entity("MinhasVendas.App.Models.TransacaoDeEstoque", b =>
@@ -389,7 +434,7 @@ namespace MinhasVendas.App.Migrations
                         .IsRequired();
 
                     b.HasOne("MinhasVendas.App.Models.Produto", "Produto")
-                        .WithMany()
+                        .WithMany("DetalheDeCompras")
                         .HasForeignKey("ProdutoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -408,7 +453,7 @@ namespace MinhasVendas.App.Migrations
                         .IsRequired();
 
                     b.HasOne("MinhasVendas.App.Models.Produto", "Produto")
-                        .WithMany()
+                        .WithMany("DetalheDeVendas")
                         .HasForeignKey("ProdutoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -432,7 +477,7 @@ namespace MinhasVendas.App.Migrations
             modelBuilder.Entity("MinhasVendas.App.Models.OrdemDeCompra", b =>
                 {
                     b.HasOne("MinhasVendas.App.Models.Fornecedor", "Fornecedor")
-                        .WithMany()
+                        .WithMany("OrdemDeCompras")
                         .HasForeignKey("FornecedorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -451,6 +496,17 @@ namespace MinhasVendas.App.Migrations
                     b.Navigation("Cliente");
                 });
 
+            modelBuilder.Entity("MinhasVendas.App.Models.Produto", b =>
+                {
+                    b.HasOne("MinhasVendas.App.Models.ProdutoCategoria", "ProdutoCategoria")
+                        .WithMany("Produtos")
+                        .HasForeignKey("ProdutoCategoriaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("ProdutoCategoria");
+                });
+
             modelBuilder.Entity("MinhasVendas.App.Models.TransacaoDeEstoque", b =>
                 {
                     b.HasOne("MinhasVendas.App.Models.OrdemDeCompra", "OrdemDeCompra")
@@ -462,7 +518,7 @@ namespace MinhasVendas.App.Migrations
                         .HasForeignKey("OrdemDeVendaId");
 
                     b.HasOne("MinhasVendas.App.Models.Produto", "Produto")
-                        .WithMany()
+                        .WithMany("TransacaoDeEstoques")
                         .HasForeignKey("ProdutoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -484,6 +540,8 @@ namespace MinhasVendas.App.Migrations
             modelBuilder.Entity("MinhasVendas.App.Models.Fornecedor", b =>
                 {
                     b.Navigation("Endereco");
+
+                    b.Navigation("OrdemDeCompras");
                 });
 
             modelBuilder.Entity("MinhasVendas.App.Models.OrdemDeCompra", b =>
@@ -496,6 +554,20 @@ namespace MinhasVendas.App.Migrations
                     b.Navigation("DetalheDeVendas");
 
                     b.Navigation("TransacaoDeEstoques");
+                });
+
+            modelBuilder.Entity("MinhasVendas.App.Models.Produto", b =>
+                {
+                    b.Navigation("DetalheDeCompras");
+
+                    b.Navigation("DetalheDeVendas");
+
+                    b.Navigation("TransacaoDeEstoques");
+                });
+
+            modelBuilder.Entity("MinhasVendas.App.Models.ProdutoCategoria", b =>
+                {
+                    b.Navigation("Produtos");
                 });
 #pragma warning restore 612, 618
         }

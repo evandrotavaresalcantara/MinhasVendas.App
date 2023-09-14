@@ -9,11 +9,32 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+
+
+<div>
+    <form asp-action="Index" method="get">
+        <div class="form-actions no-color">
+            <p>
+                <input type="text" name="pesquisarTexto" value="@ViewData["FiltroAtual"]" />
+                <input type="submit" value="Pesquisar" class="btn btn-primary" />
+                <a class="btn btn-light" asp-action="Index">Limpar Filtro</a>
+            </p>
+        </div>
+    </form>
+</div>
+
+
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Nome)
+
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["NomeClassificarParam"]" asp-route-filtroAtual="@ViewData["FiltroAtual"]">@Html.DisplayNameFor(model => model.Nome)</a>
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["CodigoClassificarParam"]" asp-route-filtroAtual="@ViewData["FiltroAtual"]">@Html.DisplayNameFor(model => model.Codigo)</a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.PrecoBase)
@@ -28,26 +49,58 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Nome)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PrecoBase)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PrecoDeLista)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.EstoqueAtual)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                <img src="~/imagensProdutos/@item.Imagem" alt="@item.Imagem" style="width: 25x; height: 25px" />
+                </td>                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Codigo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PrecoBase)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PrecoDeLista)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EstoqueAtual)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@{
+    var anteriorDesabilitar = !ViewBag.Metada.TemAnterior ? "disabled" : "";
+    var proximoHabilitar = !ViewBag.Metada.TemProxima ? "disabled" : "";
+}
+
+<nav aria-label="Paginacao Clientes">
+    <ul class="pagination">
+        <li class="page-item  @anteriorDesabilitar">
+            <a class="page-link" asp-action="Index"
+               asp-route-ordemDeClassificacao="@ViewData["ClassificacaoAtual"]"
+               asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual - 1)"
+               asp-route-filtroAtual="@ViewData["FiltroAtual"]">
+                Anterior
+            </a>
+        </li>
+        <li class="page-item @proximoHabilitar">
+            <a class="page-link" asp-action="Index"
+               asp-route-ordemDeClassificacao="@ViewData["ClassificacaoAtual"]"
+               asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual + 1)"
+               asp-route-filtroAtual="@ViewData["FiltroAtual"]">
+                Próximo
+            </a>
+        </li>
+    </ul>
+</nav>

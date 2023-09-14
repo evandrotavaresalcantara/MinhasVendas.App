@@ -35,7 +35,7 @@ public class OrdemDeVendaRepositorio : Repositorio<OrdemDeVenda>, IOrdemDeVendaR
         switch (ordemDeVendasParametros.OrdemDeClassificacao)
         {
             case "dataDeVenda_descendente":
-                ordemDeVendas = ordemDeVendas.OrderByDescending(o => o.DataDeCriacao.ToString());
+                ordemDeVendas = ordemDeVendas.OrderBy(o => o.DataDeCriacao.ToString());
                 break;
             case "statusOrdemDeVenda":
                 ordemDeVendas = ordemDeVendas.OrderBy(o => o.StatusOrdemDeVenda);
@@ -44,7 +44,7 @@ public class OrdemDeVendaRepositorio : Repositorio<OrdemDeVenda>, IOrdemDeVendaR
                 ordemDeVendas = ordemDeVendas.OrderByDescending(o => o.StatusOrdemDeVenda);
                 break;
             default:
-                ordemDeVendas = ordemDeVendas.OrderBy(o => o.DataDeCriacao.ToString());
+                ordemDeVendas = ordemDeVendas.OrderByDescending(o => o.DataDeCriacao.ToString());
                 break;
         }
 

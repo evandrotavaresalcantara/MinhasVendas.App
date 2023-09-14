@@ -25,13 +25,22 @@ namespace MinhasVendas.App.Servicos
                 return;
             }
 
+            produto.DataDeCadastro = DateTime.Now;
             _minhasVendasAppContext.Add(produto);
             await _minhasVendasAppContext.SaveChangesAsync();
         }
 
-        public Task Atualizar(Produto produto)
+        public async Task Atualizar(Produto produto)
         {
-            throw new NotImplementedException();
+            if (_minhasVendasAppContext.Produtos.AsNoTracking().ToListAsync().Result.Any(p => p.Nome == produto.Nome && p.Id != produto.Id))
+            {
+                Notificar("Já existe um produto com este nome informado.");
+                return;
+            }
+
+            _minhasVendasAppContext.Update(produto);
+            await _minhasVendasAppContext.SaveChangesAsync();
+
         }
 
         public async Task<IEnumerable<Produto>> ConsultaProdutos()

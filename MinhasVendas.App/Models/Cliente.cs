@@ -5,6 +5,7 @@
 
         public string Nome { get; set; }   = string.Empty;
         public string SobreNome { get; set; } = string.Empty;
+        public string? Documento { get; set; }
         DateOnly DataNascimento { get; set; }
         public string Celular { get; set; } = string.Empty;
         public string WhatsApp { get; set; } = string.Empty;

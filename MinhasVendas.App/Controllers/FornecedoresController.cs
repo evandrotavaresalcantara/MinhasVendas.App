@@ -5,6 +5,8 @@ using MinhasVendas.App.Interfaces;
 using MinhasVendas.App.Interfaces.Repositorio;
 using MinhasVendas.App.Interfaces.Servico;
 using MinhasVendas.App.Models;
+using MinhasVendas.App.Paginacao;
+using MinhasVendas.App.Repositorio;
 using MinhasVendas.App.ViewModels;
 
 namespace MinhasVendas.App.Controllers;
@@ -30,15 +32,45 @@ public class FornecedoresController : BaseController
         
     }
 
-    public async Task<IActionResult> Index()
+    [HttpGet]
+    public ActionResult<IEnumerable<OrdemDeCompraViewModel>> Index(string ordemDeClassificacao, string filtroAtual, string pesquisarTexto, int? numeroDePagina)
     {
-        var fornecedores = await _fornecedorRepositorio.BuscarTodos();
+        var fornecedoresParametros = new FornecedoresParametros() { NumeroDePagina = numeroDePagina ?? 1, TamanhoDePagina = 10 };
 
-        var fornecedoresViewModel = _mapper.Map<IEnumerable<FornecedorViewModel>>(fornecedores);
+        ViewData["ClassificacaoAtual"] = ordemDeClassificacao;
+        ViewData["NomeClassificarParam"] = String.IsNullOrEmpty(ordemDeClassificacao) ? "nome_descendente" : "";
+        ViewData["CidadeClassificarParam"] = ordemDeClassificacao == "cidade" ? "cidade_descendente" : "cidade";
 
-        return View(fornecedoresViewModel);
 
+        fornecedoresParametros.OrdemDeClassificacao = ordemDeClassificacao;
+        fornecedoresParametros.PesquisaTexto = pesquisarTexto;
+        fornecedoresParametros.FiltroAtual = filtroAtual;
+
+        ViewData["FiltroAtual"] = fornecedoresParametros.PesquisaTexto ?? fornecedoresParametros.FiltroAtual;
+
+
+
+
+        var fornecedorEndereco = _fornecedorRepositorio.ObterFornecedoresaginacaoLista(fornecedoresParametros);
+
+        var metadata = new
+        {
+            fornecedorEndereco.TotalDeItens,
+            fornecedorEndereco.TamanhoDaPagina,
+            fornecedorEndereco.PaginaAtual,
+            fornecedorEndereco.TotalDePaginas,
+            fornecedorEndereco.TemProxima,
+            fornecedorEndereco.TemAnterior
+
+        };
+
+        ViewBag.Metada = metadata;
+
+        var fornecedorViewModel = _mapper.Map<IEnumerable<FornecedorViewModel>>(fornecedorEndereco);
+
+        return View(fornecedorViewModel);
     }
+
 
     public async Task<IActionResult> Details(int id)
     {

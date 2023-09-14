@@ -1,4 +1,5 @@
 ﻿using MinhasVendas.App.Models;
+using MinhasVendas.App.Paginacao;
 
 namespace MinhasVendas.App.Interfaces.Repositorio
 {
@@ -7,6 +8,7 @@ namespace MinhasVendas.App.Interfaces.Repositorio
 
         Task<Cliente> ObterClienteEndereco(int id);
         Task<Cliente> ObterClienteProdutoEndereco(int id);
+        ListaPaginada<Cliente> ObterClientesPaginacaoLista(ClientesParametros clientesParametros);
 
     }
 }

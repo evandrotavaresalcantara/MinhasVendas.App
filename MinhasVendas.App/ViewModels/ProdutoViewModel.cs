@@ -8,23 +8,36 @@ namespace MinhasVendas.App.ViewModels
     public class ProdutoViewModel
     {
         public int Id { get; set; }
+        public int ProdutoCategoriaId { get; set; }
 
-        public string? Nome { get; set; }
+        public string? Nome { get; set; } = string.Empty;
+        public string Codigo { get; set; } = string.Empty;
+        public string Descricao { get; set; } = string.Empty;
+        public IFormFile? ImagemUpload { get; set; } 
+        public string Imagem { get; set; } = string.Empty;
+        public bool Ativo { get; set; }
+        public DateTime DataDeCadastro { get; set; }
 
         [DataType(DataType.Currency)]
-        [Column(TypeName = "decimal(18, 3)")]
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal PrecoBase { get; set; }
+
+        [DataType(DataType.Currency)]
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal PrecoDeLista { get; set; }
 
 
-        [DataType(DataType.Currency)]
-        [Column(TypeName = "decimal(18, 3)")]
-        public decimal PrecoBase { get; set; }
 
 
         public int EstoqueAtual { get; set; }
 
         /* Ef Relacionamento */
-        ICollection<DetalheDeVendaViewModel>? DetalheDeVendas { get; set; }
-        ICollection<DetalheDeCompraViewModel>? DetalheDeCompras { get; set; }
+        public ProdutoCategoria? ProdutoCategoria { get; set; }
+        public ICollection<DetalheDeVendaViewModel>? DetalheDeVendas { get; set; }
+        public ICollection<DetalheDeCompraViewModel>? DetalheDeCompras { get; set; }
     }
 }
+
+
+
+

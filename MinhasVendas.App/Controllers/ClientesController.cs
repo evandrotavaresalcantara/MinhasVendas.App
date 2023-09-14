@@ -10,6 +10,8 @@ using MinhasVendas.App.Data;
 using MinhasVendas.App.Interfaces.Repositorio;
 using MinhasVendas.App.Interfaces.Servico;
 using MinhasVendas.App.Models;
+using MinhasVendas.App.Paginacao;
+using MinhasVendas.App.Repositorio;
 using MinhasVendas.App.ViewModels;
 
 namespace MinhasVendas.App.Controllers
@@ -33,16 +35,47 @@ namespace MinhasVendas.App.Controllers
             _clienteServico = clienteServico;
             _mapper = mapper;
         }
-     
-        public async Task<IActionResult> Index()
+
+        [HttpGet]
+        public ActionResult<IEnumerable<OrdemDeCompraViewModel>> Index(string ordemDeClassificacao, string filtroAtual, string pesquisarTexto, int? numeroDePagina)
         {
-            var clientes = await _clienteRespositorio.Obter().ToListAsync();
+            var clientesParametros = new ClientesParametros() { NumeroDePagina = numeroDePagina ?? 1, TamanhoDePagina = 10 };
 
-            var clientesViewModel = _mapper.Map<IEnumerable<ClienteViewModel>>(clientes);
+            ViewData["ClassificacaoAtual"] = ordemDeClassificacao;
+            ViewData["NomeClassificarParam"] = String.IsNullOrEmpty(ordemDeClassificacao) ? "nome_descendente" : "";
+            ViewData["CidadeClassificarParam"] = ordemDeClassificacao == "cidade" ? "cidade_descendente" : "cidade";
 
-            return View(clientesViewModel);
 
+            clientesParametros.OrdemDeClassificacao = ordemDeClassificacao;
+            clientesParametros.PesquisaTexto = pesquisarTexto;
+            clientesParametros.FiltroAtual = filtroAtual;
+
+            ViewData["FiltroAtual"] = clientesParametros.PesquisaTexto ?? clientesParametros.FiltroAtual;
+
+
+
+
+            var clienteEndereco = _clienteRespositorio.ObterClientesPaginacaoLista(clientesParametros);
+
+            var metadata = new
+            {
+                clienteEndereco.TotalDeItens,
+                clienteEndereco.TamanhoDaPagina,
+                clienteEndereco.PaginaAtual,
+                clienteEndereco.TotalDePaginas,
+                clienteEndereco.TemProxima,
+                clienteEndereco.TemAnterior
+
+            };
+
+            ViewBag.Metada = metadata;
+
+            var clienteViewModel = _mapper.Map<IEnumerable<ClienteViewModel>>(clienteEndereco);
+
+            return View(clienteViewModel);
         }
+
+     
 
         public async Task<IActionResult> Details(int id)
         {
@@ -92,9 +125,9 @@ namespace MinhasVendas.App.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, ClienteViewModel clienteViewModel)
         {
-            if (!ModelState.IsValid) return View(clienteViewModel);
-
             if (id != clienteViewModel.Id) return NotFound();
+            
+            if (!ModelState.IsValid) return View(clienteViewModel);
 
             var clienteDB = await _clienteRespositorio.ObterSemRastreamento().FirstOrDefaultAsync(c=> c.Id == id);
 

@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using MinhasVendas.App.Models;
-using MinhasVendas.App.ViewModels;
 
 namespace MinhasVendas.App.Data
 {
     public class MinhasVendasAppContext : DbContext
     {
-        public MinhasVendasAppContext (DbContextOptions<MinhasVendasAppContext> options)
+        public MinhasVendasAppContext(DbContextOptions<MinhasVendasAppContext> options)
             : base(options)
         {
         }
@@ -21,9 +16,10 @@ namespace MinhasVendas.App.Data
         public DbSet<OrdemDeCompra>? OrdemDeCompras { get; set; }
         public DbSet<OrdemDeVenda>? OrdemDeVendas { get; set; }
         public DbSet<Produto>? Produtos { get; set; }
+        public DbSet<ProdutoCategoria> ProdutoCategorias { get; set; }
         public DbSet<TransacaoDeEstoque>? TransacaoDeEstoques { get; set; }
-        public DbSet<MinhasVendas.App.Models.ClienteEndereco> ClienteEndereco { get; set; } = default!;
-        public DbSet<MinhasVendas.App.ViewModels.FornecedorEnderecoViewModel> FornecedorEnderecoViewModel { get; set; } = default!;
+        public DbSet<ClienteEndereco> ClienteEndereco { get; set; } = default!;
+        public DbSet<FornecedorEndereco> FornecedorEndereco { get; set; } = default!;
 
     }
 }
