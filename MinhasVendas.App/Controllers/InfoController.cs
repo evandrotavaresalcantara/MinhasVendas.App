@@ -302,17 +302,17 @@ namespace MinhasVendas.App.Controllers
                     ViewBag.Resultado = "Todos os produtos foram Removidos.";
 
 
-                    string pathImagensProdutosTmp = @"C:\apps\MinhasVendas\MinhasVendas.App\wwwroot\imagensProdutosTmp";
-                    string pathImagensProdutos = @"C:\apps\MinhasVendas\MinhasVendas.App\wwwroot\imagensProdutos";
 
 
+                    var pathImagensProdutosTmp = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagensProdutosTmp");
+                    var pathImagensProdutos = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagensProdutos");
 
                     DirectoryInfo dirProdutosTmp = new(pathImagensProdutosTmp);
                     DirectoryInfo dirProdutos = new(pathImagensProdutos);
 
                     foreach (FileInfo file1 in dirProdutosTmp.GetFiles())
                     {
-                        file1.Delete();
+                         file1.Delete();
                     }
 
                     foreach (FileInfo file2 in dirProdutos.GetFiles())
@@ -321,11 +321,13 @@ namespace MinhasVendas.App.Controllers
                     }
 
 
+                    if (!OperacaoValida()) return View("Resultado");
 
-
+                    ViewBag.Resultado = "Produtos excluídos com sucesso!";
 
 
                     return View("Resultado");
+
                 }
             }
 
