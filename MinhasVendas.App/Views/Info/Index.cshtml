@@ -4,7 +4,7 @@
 
 <div class="text-center">
     <vc:resumo></vc:resumo>
-    <h2 class="display-4">Informações e Definicões do Sistma - Desenvolviemnto </h2>
+    <h2 class="display-4">Informações e Definicões do Sistema - Desenvolviemnto </h2>
     <hr />
     <p>@ViewBag.Info</p>
     <hr />
@@ -13,7 +13,7 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-2 border p-2 m-2" >
+        <div class="col-md-2 border p-2 m-2">
             <strong>Clientes: @ViewBag.TotalClientes</strong>
             <form asp-action="GerenciarClientes" method="post">
                 <label class="control-label">Excluir Clientes:</label>
@@ -26,7 +26,7 @@
                 <input type="submit" value="Criar" class="btn btn-success" />
             </form><br />
         </div>
-        <div class="col-md-2 border p-2 m-2" >
+        <div class="col-md-2 border p-2 m-2">
             <strong>Fornecedores: @ViewBag.TotalFornecedores</strong>
             <form asp-action="GerenciarFornecedores" method="post">
                 <label class="control-label">Excluir Fornecedores:</label>
@@ -48,6 +48,31 @@
             </form><br />
             <form asp-action="GerenciarProdutos" method="post">
                 <label class="control-label">Criar Produtos:</label>
+                <input name="quantidade" class="form-control" placeholder=" Informe a Qtd" />
+                <input type="submit" value="Criar" class="btn btn-success" />
+            </form>
+        </div>
+        <div class="col-md-2 border p-2 m-2">
+            <strong>Ordem de Compras: @ViewBag.TotalOrdemDeCompras</strong>
+            <form asp-action="GerenciarOrdemDeCompras" method="post">
+                <label class="control-label">Excluir Ordem De Compras:</label>
+                <input name="excluir" class="form-control" placeholder=" (1) para Sim" />
+                <input type="submit" value="Excluir" class="btn btn-danger" />
+            </form><br />
+            <form asp-action="GerenciarOrdemDeCompras" method="post">
+                <label class="control-label">Criar Ordem de Compras:</label>
+                <input name="quantidade" class="form-control" placeholder=" Informe a Qtd" />
+                <input type="submit" value="Criar" class="btn btn-success" />
+            </form>
+        </div><div class="col-md-2 border p-2 m-2">
+            <strong>Ordem de Vendas: @ViewBag.TotalOrdemDeVendas</strong>
+            <form asp-action="GerenciarOrdemDeVendas" method="post">
+                <label class="control-label">Excluir Ordem De Vendas:</label>
+                <input name="excluir" class="form-control" placeholder=" (1) para Sim" />
+                <input type="submit" value="Excluir" class="btn btn-danger" />
+            </form><br />
+            <form asp-action="GerenciarOrdemDeVendas" method="post">
+                <label class="control-label">Criar Ordem de Vendas:</label>
                 <input name="quantidade" class="form-control" placeholder=" Informe a Qtd" />
                 <input type="submit" value="Criar" class="btn btn-success" />
             </form>

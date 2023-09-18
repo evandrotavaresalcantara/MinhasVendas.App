@@ -22,7 +22,7 @@ namespace MinhasVendas.App.Controllers
         private readonly MinhasVendasAppContext _minhasVendasAppContext;
         private readonly IMapper _mapper;
         private readonly INotificador _notificadorInfo;
-        private readonly IClienteRespositorio _clienteRespositorio;
+        private readonly IClienteRespositorio _clienteRepositorio;
         private readonly IClienteServico _clienteServico;
         private readonly IClienteEnderecoRepositorio _clienteEnderecoRepositorio;
         private readonly IFornecedorRepositorio _fornecedorRepositorio;
@@ -31,12 +31,16 @@ namespace MinhasVendas.App.Controllers
         private readonly IProdutoRepositorio _produtoRepositorio;
         private readonly IProdutoServico _produtoServico;
         private readonly IProdutoCategoriaRepositorio _produtoCategoriaRepositorio;
+        private readonly IOrdemDeCompraServico _ordemDeCompraServico;
+        private readonly IOrdemDeCompraRepositorio _ordemDeCompraRepositorio;
+        private readonly IOrdemDeVendaRepositorio _ordemDeVendaRepositorio;
+        private readonly IOrdemDeVendaServico _ordemDeVendaServico;
 
 
         public InfoController(
                                   MinhasVendasAppContext minhasVendasAppContext,
                                   IConfiguration configuration,
-                                  IClienteRespositorio clienteRespositorio,
+                                  IClienteRespositorio clienteRepositorio,
                                   IClienteEnderecoRepositorio clienteEnderecoRepositorio,
                                   IClienteServico clienteServico,
                                   IMapper mapper,
@@ -47,11 +51,15 @@ namespace MinhasVendas.App.Controllers
                                   IProdutoRepositorio produtoRepositorio,
                                   IProdutoServico produtoServico,
                                   IProdutoCategoriaRepositorio produtoCategoriaRepositorio,
+                                  IOrdemDeCompraRepositorio ordemDeCompraRepositorio,
+                                  IOrdemDeCompraServico ordemDeCompraServico,
+                                  IOrdemDeVendaRepositorio ordemDeVendaRepositorio,
+                                  IOrdemDeVendaServico ordemDeVendaServico,
                                   INotificador notificador) : base(notificador)
         {
             _minhasVendasAppContext = minhasVendasAppContext;
             _configuration = configuration;
-            _clienteRespositorio = clienteRespositorio;
+            _clienteRepositorio = clienteRepositorio;
             _clienteEnderecoRepositorio = clienteEnderecoRepositorio;
             _clienteServico = clienteServico;
             _mapper = mapper;
@@ -62,6 +70,10 @@ namespace MinhasVendas.App.Controllers
             _produtoRepositorio = produtoRepositorio;
             _produtoServico = produtoServico;
             _produtoCategoriaRepositorio = produtoCategoriaRepositorio;
+            _ordemDeCompraRepositorio = ordemDeCompraRepositorio;
+            _ordemDeCompraServico = ordemDeCompraServico;
+            _ordemDeVendaRepositorio = ordemDeVendaRepositorio;
+            _ordemDeVendaServico = ordemDeVendaServico;
         }
 
         [HttpGet]
@@ -95,6 +107,8 @@ namespace MinhasVendas.App.Controllers
             ViewBag.TotalClientes = _clienteEnderecoRepositorio.Obter().Count();
             ViewBag.TotalFornecedores = _fornecedorEnderecoRepositorio.Obter().Count();
             ViewBag.TotalProdutos = _produtoRepositorio.Obter().Count();
+            ViewBag.TotalOrdemDeCompras = _ordemDeCompraRepositorio.Obter().Count();
+            ViewBag.TotalOrdemDeVendas = _ordemDeVendaRepositorio.Obter().Count();
 
 
             return View();
@@ -106,9 +120,9 @@ namespace MinhasVendas.App.Controllers
 
             if (excluir == 1)
             {
-                if (_clienteRespositorio.Obter().Any())
+                if (_clienteRepositorio.Obter().Any())
                 {
-                    var clientesDB = _clienteRespositorio.Obter().ToList();
+                    var clientesDB = _clienteRepositorio.Obter().ToList();
 
                     _minhasVendasAppContext.RemoveRange(clientesDB);
                     _minhasVendasAppContext.SaveChanges();
@@ -120,7 +134,7 @@ namespace MinhasVendas.App.Controllers
             }
 
 
-            ClientesController clienteController = new ClientesController(_clienteRespositorio, _clienteEnderecoRepositorio, _clienteServico, _mapper, _notificadorInfo);
+            ClientesController clienteController = new ClientesController(_clienteRepositorio, _clienteEnderecoRepositorio, _clienteServico, _mapper, _notificadorInfo);
             ClienteViewModel clienteViewModel = new ClienteViewModel();
             ClienteEnderecoViewModel clienteEnderecoViewModel = new ClienteEnderecoViewModel();
 
@@ -357,10 +371,92 @@ namespace MinhasVendas.App.Controllers
 
             return View("Resultado");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> GerenciarOrdemDeCompras(int excluir, int quantidade)
+        {
+
+            if (excluir == 1)
+            {
+                if (_ordemDeCompraRepositorio.Obter().Any())
+                {
+                    var ordemDeComprasDB = _ordemDeCompraRepositorio.Obter().ToList();
+
+                    _minhasVendasAppContext.RemoveRange(ordemDeComprasDB);
+                    _minhasVendasAppContext.SaveChanges();
+
+                    ViewBag.Resultado = "Todas as ordens de Compras foram Removidas.";
+
+                    return View("Resultado");
+                }
+            }
+
+
+            OrdemDeComprasController ordemDeComprasController = new(_ordemDeCompraServico, _fornecedorRepositorio, _ordemDeCompraRepositorio, _mapper, _notificadorInfo);
+            OrdemDeCompraViewModel ordemDeCompraViewModel = new();
+            ProdutoViewModel produtoViewModel = new();
+            FornecedorViewModel fornecedorViewModel = new FornecedorViewModel();
+
+            var prefixo = "nomeProduto";
+
+            for (int i = 1; i <= quantidade; i++)
+            {
+                ordemDeCompraViewModel.FornecedorId = _fornecedorRepositorio.Obter().FirstOrDefault().Id;
+
+                await ordemDeComprasController.Create(ordemDeCompraViewModel);
+            }
+
+
+            if (!OperacaoValida()) return View("Resultado");
+
+            ViewBag.Resultado = "Dados Carregado com sucesso!";
+
+
+            return View("Resultado");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GerenciarOrdemDeVendas(int excluir, int quantidade)
+        {
+
+            if (excluir == 1)
+            {
+                if (_ordemDeVendaRepositorio.Obter().Any())
+                {
+                    var ordemDeVendasDB = _ordemDeVendaRepositorio.Obter().ToList();
+
+                    _minhasVendasAppContext.RemoveRange(ordemDeVendasDB);
+                    _minhasVendasAppContext.SaveChanges();
+
+                    ViewBag.Resultado = "Todas as ordens de Vendas foram Removidas.";
+
+                    return View("Resultado");
+                }
+            }
+
+
+            OrdemDeVendasController ordemDeVendasController = new(_minhasVendasAppContext, _ordemDeVendaServico, _clienteRepositorio, _ordemDeVendaRepositorio, _mapper, _notificadorInfo);
+            OrdemDeVendaViewModel ordemDeVendaViewModel = new();
+            ProdutoViewModel produtoViewModel = new();
+            ClienteViewModel fornecedorViewModel = new();
+
+
+            for (int i = 1; i <= quantidade; i++)
+            {
+                ordemDeVendaViewModel.ClienteId = _clienteRepositorio.Obter().FirstOrDefault().Id;
+
+                await ordemDeVendasController.Create(ordemDeVendaViewModel);
+            }
+
+
+            if (!OperacaoValida()) return View("Resultado");
+
+            ViewBag.Resultado = "Dados Carregado com sucesso!";
+
+
+            return View("Resultado");
+        }
     }
-
-
-
 }
 
 
