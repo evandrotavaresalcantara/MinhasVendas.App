@@ -97,6 +97,7 @@ namespace MinhasVendas.App.Controllers
             var nome = _configuration["Info:Nome"];
             var conexao = _configuration.GetConnectionString("MinhaConexao");
 
+
             var info = new
             {
                 appsettings_info_Nome = nome,
@@ -110,6 +111,10 @@ namespace MinhasVendas.App.Controllers
             ViewBag.TotalOrdemDeCompras = _ordemDeCompraRepositorio.Obter().Count();
             ViewBag.TotalOrdemDeVendas = _ordemDeVendaRepositorio.Obter().Count();
 
+            string nomeImagem = "img.png";
+            var pathImagensProdutosTmp = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagensProdutosTmp", nomeImagem);
+
+            ViewBag.Path = pathImagensProdutosTmp;
 
             return View();
         }
