@@ -344,11 +344,10 @@ namespace MinhasVendas.App.Controllers
                 produtoViewModel.PrecoDeLista = i * 2;
                 GeracaoImagem.GerarImagem($"{i}-{prefixo}", $"{i}-{prefixo}");
 
-                string diretorio = @"C:\apps\MinhasVendas\MinhasVendas.App\wwwroot\imagensProdutosTmp";
-                string nomeImagem = $"\\{i}-{prefixo}.png";
-                string imagemCriadaUpload = diretorio + nomeImagem;
+                string nomeImagem = $"{i}-{prefixo}.png";
+                var pathImagensProdutosTmp = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagensProdutosTmp", nomeImagem);
 
-                using (var fluxoImagemCriada = new FileStream(imagemCriadaUpload, FileMode.Open))
+                using (var fluxoImagemCriada = new FileStream(pathImagensProdutosTmp, FileMode.Open))
                 {
 
                     var imagemRecebida = new MemoryStream();

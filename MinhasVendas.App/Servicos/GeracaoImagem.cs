@@ -8,11 +8,9 @@ namespace MinhasVendas.App.Servicos
     {
         public static void GerarImagem(string conteudo, string nomeGeradoImagem)
         {
-            string diretorio = @"C:\apps\MinhasVendas\MinhasVendas.App\wwwroot\imagensProdutosTmp";
-            //string nomeImagem = @"\produto1.png";
-            string nomeImagem = $"\\{nomeGeradoImagem}.png";
-            string imagemCriadaUpload = diretorio + nomeImagem;
 
+            string nomeImagem = $"{nomeGeradoImagem}.png";
+            var pathImagensProdutosTmp = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagensProdutosTmp", nomeImagem);
 
             string FontNome = "Segoe UI";
             int FontTamanho = 15;
@@ -35,7 +33,7 @@ namespace MinhasVendas.App.Servicos
 
             meuGrafico.DrawString(conteudo, minhaFonte, meuPincel1, meuPoint);
 
-            meuBitmap.Save(imagemCriadaUpload, ImageFormat.Png);
+            meuBitmap.Save(pathImagensProdutosTmp, ImageFormat.Png);
 
 
         }
