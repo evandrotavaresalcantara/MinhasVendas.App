@@ -22,7 +22,7 @@ namespace MinhasVendas.App.ViewModels
 
         /* Ef Relacionamentos */
         public ICollection<OrdemDeCompraViewModel>? OrdemDeCompras { get; set; }
-        public FornecedorEndereco? Endereco { get; set; }
+        public FornecedorEnderecoViewModel? Endereco { get; set; }
 
 
     }

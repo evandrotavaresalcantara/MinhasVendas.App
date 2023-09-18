@@ -1,0 +1,84 @@
+﻿@model IEnumerable<MinhasVendas.App.ViewModels.ClienteViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<div>
+    <form asp-action="Index" method="get">
+        <div class="form-actions no-color">
+            <p>
+                <input type="text" name="pesquisarTexto" value="@ViewData["FiltroAtual"]" />
+                <input type="submit" value="Pesquisar" class="btn btn-primary" /> 
+                <a class="btn btn-light" asp-action="Index">Limpar Filtro</a>
+            </p>
+        </div>
+    </form>
+</div>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Nome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SobreNome)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Celular)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.WhatsApp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Instagram)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Endereco.Cidade)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Nome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SobreNome)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Celular)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.WhatsApp)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Instagram)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Endereco.Cidade)
+                </td>
+                <td>
+                    <a class="btn btn-warning" asp-action="Details" asp-route-id="@item.Id">Detalhes</a> 
+                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+

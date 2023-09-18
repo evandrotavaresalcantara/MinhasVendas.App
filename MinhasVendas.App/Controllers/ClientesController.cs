@@ -36,6 +36,7 @@ namespace MinhasVendas.App.Controllers
             _mapper = mapper;
         }
 
+       
         [HttpGet]
         public ActionResult<IEnumerable<OrdemDeCompraViewModel>> Index(string ordemDeClassificacao, string filtroAtual, string pesquisarTexto, int? numeroDePagina)
         {
@@ -53,7 +54,7 @@ namespace MinhasVendas.App.Controllers
             ViewData["FiltroAtual"] = clientesParametros.PesquisaTexto ?? clientesParametros.FiltroAtual;
 
 
-
+            
 
             var clienteEndereco = _clienteRespositorio.ObterClientesPaginacaoLista(clientesParametros);
 
@@ -75,7 +76,31 @@ namespace MinhasVendas.App.Controllers
             return View(clienteViewModel);
         }
 
-     
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<OrdemDeCompraViewModel>>> Index2(string ordemDeClassificacao, string filtroAtual, string pesquisarTexto, int? numeroDePagina)
+        {
+            var clientesParametros = new ClientesParametros() { NumeroDePagina = numeroDePagina ?? 1, TamanhoDePagina = 10 };
+
+            ViewData["ClassificacaoAtual"] = ordemDeClassificacao;
+            ViewData["NomeClassificarParam"] = String.IsNullOrEmpty(ordemDeClassificacao) ? "nome_descendente" : "";
+            ViewData["CidadeClassificarParam"] = ordemDeClassificacao == "cidade" ? "cidade_descendente" : "cidade";
+
+
+            clientesParametros.OrdemDeClassificacao = ordemDeClassificacao;
+            clientesParametros.PesquisaTexto = pesquisarTexto;
+            clientesParametros.FiltroAtual = filtroAtual;
+
+            ViewData["FiltroAtual"] = clientesParametros.PesquisaTexto ?? clientesParametros.FiltroAtual;
+
+
+            var clienteEndereco =  await _clienteRespositorio.BuscarTodos();
+
+            var clienteViewModel = _mapper.Map<IEnumerable<ClienteViewModel>>(clienteEndereco);
+
+            return View(clienteViewModel);
+        }
+
+
 
         public async Task<IActionResult> Details(int id)
         {
