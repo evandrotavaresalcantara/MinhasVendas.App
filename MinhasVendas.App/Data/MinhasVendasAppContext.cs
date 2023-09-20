@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using MinhasVendas.App.Models;
 
 namespace MinhasVendas.App.Data
 {
-    public class MinhasVendasAppContext : DbContext
+    public class MinhasVendasAppContext : IdentityDbContext
     {
         public MinhasVendasAppContext(DbContextOptions<MinhasVendasAppContext> options)
             : base(options)

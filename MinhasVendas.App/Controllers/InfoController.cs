@@ -13,9 +13,11 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Net.NetworkInformation;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MinhasVendas.App.Controllers
 {
+    [Authorize]
     public class InfoController : BaseController
     {
         private readonly IConfiguration _configuration;

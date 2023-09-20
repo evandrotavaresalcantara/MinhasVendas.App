@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -18,6 +19,7 @@ using MinhasVendas.App.ViewModels;
 
 namespace MinhasVendas.App.Controllers
 {
+    [Authorize]
     public class ProdutosController : BaseController
     {
         private readonly MinhasVendasAppContext _context;

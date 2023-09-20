@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using MinhasVendas.App.AutoMapper;
@@ -9,6 +10,7 @@ using MinhasVendas.App.Interfaces.Servico;
 using MinhasVendas.App.Notificador;
 using MinhasVendas.App.Repositorio;
 using MinhasVendas.App.Servicos;
+using System;
 using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +20,11 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<MinhasVendasAppContext>(options =>
                 options.UseSqlite(builder.Configuration.GetConnectionString("MinhaConexao")));
+
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<MinhasVendasAppContext>();
+
+
 
 
 
@@ -87,6 +94,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MinhasVendas.App.Interfaces;
@@ -11,7 +12,7 @@ using MinhasVendas.App.ViewModels;
 
 namespace MinhasVendas.App.Controllers;
 
-
+[Authorize]
 public class FornecedoresController : BaseController
 {
     private readonly IFornecedorRepositorio _fornecedorRepositorio;
