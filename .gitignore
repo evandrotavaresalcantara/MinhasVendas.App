@@ -1,6 +1,4 @@
-*.db
-*.db-shm
-*.db-wal
+
 *.swp
 *.*~
 project.lock.json
