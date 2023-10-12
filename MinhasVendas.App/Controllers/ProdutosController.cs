@@ -99,6 +99,8 @@ namespace MinhasVendas.App.Controllers
 
             var produtosViewModel = _mapper.Map<IEnumerable<ProdutoViewModel>>(listaPaginadaProdutos);
 
+   
+
             return View(produtosViewModel);
         }
 

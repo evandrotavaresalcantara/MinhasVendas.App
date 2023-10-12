@@ -1,12 +1,18 @@
 ﻿@model MinhasVendas.App.ViewModels.CarrinhoDeComprasViewModel
+@*<div class="container-fluid py-4">*@
 
 @{
-    ViewData["Title"] = "Carrinho de Compras";
-   
+    Layout = "_Argon";
+
+    ViewData["Title"] = "Compras";
+
+    ViewData["Rota"] = "Compras";
+    ViewData["Acao"] = "Carrinho de Compras";
+    ViewData["Rotulo"] = "Carrinho de Compras";
 }
 
 @{
-   
+
     if (Model.OrdemDeCompraViewModel.DetalheDeCompras.Any())
     {
         var precoProduto = from item in Model.OrdemDeCompraViewModel.DetalheDeCompras select (item.CustoUnitario * item.Quantidade);
@@ -22,149 +28,185 @@
         Model.TotalProdutos = totalProdutos;
     }
 }
+<div class="container-fluid py-4">
 
-<h2 class="text-center">Carrinho de Compras</h2>
-
-
-<div class="card-group">
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Dados da Compra:</h5>
-            <dl class="row">
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.OrdemDeCompraViewModel.DataDeCriacao)
-                </dt>
-                <dd class="col-sm-5">
-                    @Html.DisplayFor(model => model.OrdemDeCompraViewModel.DataDeCriacao)
-                </dd>
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.OrdemDeCompraViewModel.StatusOrdemDeCompra)
-                </dt>
-                <dd class="col-sm-5">
-                    @Html.DisplayFor(model => model.OrdemDeCompraViewModel.StatusOrdemDeCompra)
-                </dd>
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.OrdemDeCompraViewModel.Fornecedor)
-                </dt>
-                <dd class="col-sm-5">
-                    @Html.DisplayFor(model => model.OrdemDeCompraViewModel.Fornecedor.Nome)
-                </dd>
-            </dl>
+    <div class="card-group">
+        <div class="card mx-1 rounded ">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-8">
+                        <h6 class="card-title">Dados</h6>
+                    </div>
+                    <div class="col-4 text-end">
+                        <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
+                            <i class="ni ni-paper-diploma text-lg opacity-10" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+                <dl class="row">
+                    <dt class="col-md-6 col-sm-12">
+                       @Html.DisplayNameFor(model => model.OrdemDeCompraViewModel.DataDeCriacao)
+                    </dt>
+                    <dd class="col-md-6 col-sm-12">
+                        @Html.DisplayFor(model => model.OrdemDeCompraViewModel.DataDeCriacao)
+                    </dd>
+                    <dt class="col-md-6 col-sm-12">
+                        @Html.DisplayNameFor(model => model.OrdemDeCompraViewModel.StatusOrdemDeCompra)
+                    </dt>
+                    <dd class="col-md-6 col-sm-12">
+                        @Html.DisplayFor(model => model.OrdemDeCompraViewModel.StatusOrdemDeCompra)
+                    </dd>
+                    <dt class="col-md-6 col-sm-12">
+                        @Html.DisplayNameFor(model => model.OrdemDeCompraViewModel.Fornecedor)
+                    </dt>
+                    <dd class="col-md-6 col-sm-12">
+                        @Html.DisplayFor(model => model.OrdemDeCompraViewModel.Fornecedor.Nome)
+                    </dd>
+                </dl>
+            </div>
         </div>
-    </div>
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">Valores da Compra:</h5>
-            <dl class="row">
-               
-                <dt class="col-sm-4">
-                    Valor Produtos
-                </dt>
-                <dd class="col-sm-5">
-                    @Html.DisplayFor(model => model.TotalProdutos)
-                </dd>
-                <dt class="col-sm-4">
-                    @Html.DisplayNameFor(model => model.OrdemDeCompraViewModel.ValorDeFrete)
-                </dt>
-                <dd class="col-sm-5">
-                    @Html.DisplayFor(model => model.OrdemDeCompraViewModel.ValorDeFrete)
-                </dd>
-                <dt class="col-sm-4">
-                    Valor da Compra
-                </dt>
-                <dd class="col-sm-5">
-                    @Html.DisplayFor(model => model.TotalCompra)
-                </dd>
-                <dt class="col-sm-4">
-                    Total de Itens
-                </dt>
-                <dd class="col-sm-5">
-                    @Html.DisplayFor(model => model.TotalItens)
-                </dd>
-            </dl>
+        <div class="card mx-1 rounded">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-8">
+                        <h6 class="card-title">Valores</h6>
+                    </div>
+                    <div class="col-4 text-end">
+                        <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
+                            <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
+                        </div>
+                    </div>
+                </div>
+                <dl class="row">
+                    <dt class="col-md-6 col-sm-12">
+                        Valor Produtos
+                    </dt>
+                    <dd class="col-md-6 col-sm-12">
+                        @Html.DisplayFor(model => model.TotalProdutos)
+                    </dd>
+                    <dt class="col-md-6 col-sm-12">
+                        @Html.DisplayNameFor(model => model.OrdemDeCompraViewModel.ValorDeFrete)
+                    </dt>
+                    <dd class="col-md-6 col-sm-12">
+                        @Html.DisplayFor(model => model.OrdemDeCompraViewModel.ValorDeFrete)
+                    </dd>
+                    <dt class="col-md-6 col-sm-12">
+                        Valor da Compra
+                    </dt>
+                    <dd class="col-md-6 col-sm-12">
+                        @Html.DisplayFor(model => model.TotalCompra)
+                    </dd>
+                    <dt class="col-md-6 col-sm-12">
+                        Total de Itens
+                    </dt>
+                    <dd class="col-md-6 col-sm-12">
+                        @Html.DisplayFor(model => model.TotalItens)
+                    </dd>
+                </dl>
+            </div>
         </div>
     </div>
 </div>
-
-<br />
 
 <vc:resumo></vc:resumo>
 
-<div>
-    <div style="float:left">
-        <button class="btn btn-info" onclick="InserirProduto(@Model.OrdemDeCompraViewModel.Id)">Inserir Produto</button>
-        <button class="btn btn-success" onclick="SolicitarAprovacao(@Model.OrdemDeCompraViewModel.Id)">Solicitar Aprovação</button>
-        <button class="btn btn-dark" onclick="FinalizarVenda(@Model.OrdemDeCompraViewModel.Id)">Finalizar Compra</button>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div style="float:left">
+                <button class="btn btn-info" onclick="InserirProduto(@Model.OrdemDeCompraViewModel.Id)">Inserir Produto</button>
+                <button class="btn btn-success" onclick="SolicitarAprovacao(@Model.OrdemDeCompraViewModel.Id)">Solicitar Aprovação</button>
+                <button class="btn btn-dark" onclick="FinalizarVenda(@Model.OrdemDeCompraViewModel.Id)">Finalizar Compra</button>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table table-flush" id="datatable-search">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Produto)
+                                </th>
+                                <th>
+                                    Quantiade
+                                </th>
+                                <th>
+                                    CustoUnitario
+                                </th>
+                                <th>
+                                    TotalProduto
+                                </th>
+                                <th>
+                                    DataRecebimento
+                                </th>
+                                <th>
+                                    StatusRecebiemnto
+                                </th>
+                                <th>
+                                    Ação
+                                </th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.OrdemDeCompraViewModel.DetalheDeCompras)
+                            {
+                                Model.TotalProduto = item.Quantidade * item.CustoUnitario;
+
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <p class="text-xs font-weight-bold ms-2 mb-0"> @Html.DisplayFor(modelItem => item.Produto.Nome)</p>
+                                        </div>
+                                    </td>
+                                    <td class="font-weight-bold">
+                                        <span class="my-2 text-xs"> @Html.DisplayFor(modelItem => item.Quantidade)</span>
+                                    </td>
+                                    <td class="text-xs font-weight-bold">
+                                        @Html.DisplayFor(modelItem => item.CustoUnitario)
+                                    </td>
+                                    <td class="text-xs font-weight-bold">
+                                        @Model.TotalProduto.ToString("c")
+                                    </td>
+                                    <td class="text-xs font-weight-bold">
+                                        <span class="my-2 text-xs">@Html.DisplayFor(modelItem => item.DataDeRecebimento)</span>
+                                    </td>
+                                    <td class="text-xs font-weight-bold">
+                                        <span class="my-2 text-xs">@Html.DisplayFor(modelItem => item.RegistradoTransacaoDeEstoque)</span>
+                                    </td>
+                                    <td class="text-sm">
+                                        <a class="mx-3" href="#" title="Receber Produto" onclick="ReceberProduto(@item.Id)">
+                                            <i class="ni ni-archive-2 text-secondary"></i>
+                                        </a>
+                                        <a class="mx-3" href="#" title="Excluir Produto" onclick="ExcluirProduto(@item.Id)">
+                                            <i class="fas fa-trash text-secondary"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row mt-2">
+        <div class="col-12">
+            <div style="float:left">
+                <a class="btn btn-light" href="javascript:window.history.back();">Voltar</a>
+                </div>
+        </div>
     </div>
 </div>
 
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.Name("Produto")
-            </th>
-            <th>
-                @Html.Name("Quantidade")
-            </th>
-            <th>
-                @Html.Name("CustoUnitarioUnitario")
-            </th>
-            <th>
-                @Html.Name("TotalProduto")
-            </th>
-            <th>
-                @Html.Name("Data de Recebimento")
-            </th>
-            <th>
-                @Html.Name("Status Recebimento")
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.OrdemDeCompraViewModel.DetalheDeCompras)
-        {
-            //var produtoTotal = item.Quantidade * item.CustoUnitario;
-            Model.TotalProduto = item.Quantidade * item.CustoUnitario;
 
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Produto.Nome)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Quantidade)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.CustoUnitario)
-                </td>
-                <td>
-                    @Model.TotalProduto.ToString("c")
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DataDeRecebimento)
-                    
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.RegistradoTransacaoDeEstoque)
-                </td>
-                <td>
-                    <div style="float:left">
-                        <button class="btn btn-danger" onclick="ExcluirProduto(@item.Id)">Excluir Produto</button>
-                    </div>
-                </td>
-                <td>
-                    <div style="float:left">
-                        <button class="btn btn-warning" onclick="ReceberProduto(@item.Id)">Receber Produto</button>
-                    </div>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
 
-<a class="btn btn-light" href="javascript:window.history.back();">Voltar</a>
 
-<div class="modal fade" id="inserirProdutoFormModel">
+
+<div class="modal fade" id="inserirProdutoFormModel" role="dialog">
     <div class="modal-dialog">
         <div class="modal-content">
             <div id="inserirProdutoFormModelDiv"> </div>
@@ -209,76 +251,77 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-    }
-
-<script>
-
-    var InserirProduto = function (vendaId) {
-
-        var vendaId = vendaId;
-        var action = "/DetalheDeCompras/InserirProduto/";
-        var url = action + vendaId;
-
-        $("#inserirProdutoFormModelDiv").load(url, function () {
-            $("#inserirProdutoFormModel").modal("show");
-
-            var form = document.getElementById("inserirProdutoForm");
-            $.validator.unobtrusive.parse(inserirProdutoForm);
-        });
-
-    }
-
-    var ExcluirProduto = function (id) {
-
-        var id = id;
-        var action = "/DetalheDeCompras/ExcluirProduto/";
-        var url = action + id;
-
-        $("#ExcluirProdutoFormModelDiv").load(url, function () {
-            $("#ExcluirProdutoFormModel").modal("show");
-        });
-    }
-
-    var ReceberProduto = function (id) {
-
-        var id = id;
-        var action = "/DetalheDeCompras/ReceberProduto/";
-        var url = action + id;
-
-        $("#receberProdutoFormModelDiv").load(url, function () {
-            $("#receberProdutoFormModel").modal("show");
-        });
-    }
-
-    var FinalizarVenda = function (vendaId) {
-
-        var vendaId = vendaId;
-        var action = "/OrdemDeCompras/FinalizarCompra/";
-        var url = action + vendaId;
-
-        $("#finalizarVendaFormModelDiv").load(url, function () {
-            $("#finalizarVendaFormModel").modal("show");
-
-            var form = document.getElementById("finalizarCompraForm");
-            $.validator.unobtrusive.parse(finalizarVendaForm);
-        });
-    }
-
-    var SolicitarAprovacao = function (vendaId) {
-
-        var vendaId = vendaId;
-        var action = "/OrdemDeCompras/SolicitarAprovacao/";
-        var url = action + vendaId;
-
-        $("#conteudoModalSolicitarAprovacao").load(url, function () {
-            $("#modalSolicitarAprovacao").modal("show");
-
-            var form = document.getElementById("formularioSolicitarAprovacao");
-            $.validator.unobtrusive.parse(form);
-        });
-    }
 
 
+    <script>
 
-</script>
 
+        var InserirProduto = function (vendaId) {
+
+            var vendaId = vendaId;
+            var action = "/DetalheDeCompras/InserirProduto/";
+            var url = action + vendaId;
+
+
+            $("#inserirProdutoFormModelDiv").load(url, function () {
+                $("#inserirProdutoFormModel").modal("show");
+
+                var form = document.getElementById("inserirProdutoForm");
+                $.validator.unobtrusive.parse(inserirProdutoForm);
+            });
+
+        }
+
+        var ExcluirProduto = function (id) {
+
+            var id = id;
+            var action = "/DetalheDeCompras/ExcluirProduto/";
+            var url = action + id;
+
+            $("#ExcluirProdutoFormModelDiv").load(url, function () {
+                $("#ExcluirProdutoFormModel").modal("show");
+            });
+        }
+
+        var ReceberProduto = function (id) {
+
+            var id = id;
+            var action = "/DetalheDeCompras/ReceberProduto/";
+            var url = action + id;
+
+            $("#receberProdutoFormModelDiv").load(url, function () {
+                $("#receberProdutoFormModel").modal("show");
+            });
+        }
+
+        var FinalizarVenda = function (vendaId) {
+
+            var vendaId = vendaId;
+            var action = "/OrdemDeCompras/FinalizarCompra/";
+            var url = action + vendaId;
+
+            $("#finalizarVendaFormModelDiv").load(url, function () {
+                $("#finalizarVendaFormModel").modal("show");
+
+                var form = document.getElementById("finalizarCompraForm");
+                $.validator.unobtrusive.parse(finalizarVendaForm);
+            });
+        }
+
+        var SolicitarAprovacao = function (vendaId) {
+
+            var vendaId = vendaId;
+            var action = "/OrdemDeCompras/SolicitarAprovacao/";
+            var url = action + vendaId;
+
+            $("#conteudoModalSolicitarAprovacao").load(url, function () {
+                $("#modalSolicitarAprovacao").modal("show");
+
+                var form = document.getElementById("formularioSolicitarAprovacao");
+                $.validator.unobtrusive.parse(form);
+            });
+        }
+
+    </script>
+
+  }

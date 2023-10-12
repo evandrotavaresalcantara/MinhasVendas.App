@@ -1,0 +1,178 @@
+﻿@model IEnumerable<MinhasVendas.App.ViewModels.ClienteViewModel>
+
+@{
+    Layout = "_Argon";
+
+    ViewData["Title"] = "Clientes";
+
+    ViewData["Rota"] = "Clientes";
+    ViewData["Acao"] = "Listagem";
+    ViewData["Rotulo"] = "Listagem de Clientes";
+}
+
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <!-- Card header -->
+                <div class="card-header pb-0">
+                    <div class="d-lg-flex">
+                        <div>
+                            <h5 class="mb-0">Clientes</h5>
+                            <p class="text-sm mb-0">
+                                Listagem
+                            </p>
+                        </div>
+                        <div class="ms-auto my-auto mt-lg-0 mt-4">
+                            <div class="ms-auto my-auto">
+                                <a asp-action="Create" class="btn bg-gradient-primary btn-sm mb-0">Novo Cliente</a>
+                                <button class="btn btn-outline-primary btn-sm export mb-0 mt-sm-0 mt-1" data-type="csv" type="button" name="button">Exportar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body px-0 pb-0">
+                    <div class="table-responsive">
+                        <table class="table table-flush" id="clientes-listagem">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Nome)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.SobreNome)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Celular)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.WhatsApp)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Instagram)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Email)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Endereco.Cidade)
+                                    </th>
+                                    <th>
+                                        Ação
+                                    </th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex">
+                                                <h6 class="ms-3 my-auto"> @Html.DisplayFor(modelItem => item.Nome)</h6>
+                                            </div>
+                                        </td>
+                                        <td class="text-sm">
+                                            @Html.DisplayFor(modelItem => item.SobreNome)
+                                        </td>
+                                        <td class="text-sm">
+                                            @Html.DisplayFor(modelItem => item.Celular)
+                                        </td>
+                                        <td class="text-sm">
+                                            @Html.DisplayFor(modelItem => item.WhatsApp)
+
+                                        </td>
+                                        <td class="text-sm">
+                                            @Html.DisplayFor(modelItem => item.Instagram)
+
+                                        </td>
+                                        <td>
+                                            <span class="text-sm">
+                                                @Html.DisplayFor(modelItem => item.Email)
+                                            </span>
+                                        </td>
+                                        <td class="text-sm">
+                                            @Html.DisplayFor(modelItem => item.Endereco.Cidade)
+                                        </td>
+                                        <td class="text-sm">
+                                            <a asp-action="Details" asp-route-id="@item.Id" title="Produto detalhe">
+                                                <i class="fas fa-eye text-secondary"></i>
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@item.Id" title="Produto excluir">
+                                                <i class="fas fa-trash text-secondary"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Nome)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.SobreNome)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Celular)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.WhatsApp)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Instagram)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Email)
+                                    </th>
+                                    <th>
+                                        @Html.DisplayNameFor(model => model.Endereco.Cidade)
+                                    </th>
+                                    <th>
+                                        Ação
+                                    </th>
+                                </tr>
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+    <script>
+        if (document.getElementById('clientes-listagem')) {
+            const dataTableSearch = new simpleDatatables.DataTable("#clientes-listagem", {
+                searchable: true,
+                fixedHeight: false,
+                perPage: 7
+            });
+
+            document.querySelectorAll(".export").forEach(function (el) {
+                el.addEventListener("click", function (e) {
+                    var type = el.dataset.type;
+
+                    var data = {
+                        type: type,
+                        filename: "soft-ui-" + type,
+                    };
+
+                    if (type === "csv") {
+                        data.columnDelimiter = "|";
+                    }
+
+                    dataTableSearch.export(data);
+                });
+            });
+        };
+    </script>
+
+
+    }
+
+

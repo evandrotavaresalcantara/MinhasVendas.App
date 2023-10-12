@@ -2,7 +2,9 @@
 using MinhasVendas.App.Data;
 using MinhasVendas.App.Interfaces.Repositorio;
 using MinhasVendas.App.Models;
+using MinhasVendas.App.Models.Enums;
 using MinhasVendas.App.Paginacao;
+using System.Linq;
 
 namespace MinhasVendas.App.Repositorio;
 
@@ -24,7 +26,18 @@ public class OrdemDeVendaRepositorio : Repositorio<OrdemDeVenda>, IOrdemDeVendaR
             ordemDeVendasParametros.PesquisaTexto = ordemDeVendasParametros.FiltroAtual;
         }
 
-        IQueryable<OrdemDeVenda> ordemDeVendas = Obter().Include(c => c.Cliente);
+        IQueryable<OrdemDeVenda> ordemDeVendas;
+
+
+        if (Enum.TryParse(ordemDeVendasParametros.Filtro, out StatusOrdemDeVenda resultado))
+        {
+            ordemDeVendas = Obter().Where(p => p.StatusOrdemDeVenda == resultado).Include(c => c.Cliente);
+        }
+
+        else
+        {
+            ordemDeVendas = Obter().Include(c => c.Cliente);
+        }
 
         if (!String.IsNullOrEmpty(ordemDeVendasParametros.PesquisaTexto))
         {

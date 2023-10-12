@@ -26,7 +26,7 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Nome)
+                <a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["NomeClassificarParam"]" asp-route-filtroAtual="@ViewData["FiltroAtual"]">@Html.DisplayNameFor(model => model.Nome)</a>
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.SobreNome)
@@ -44,7 +44,7 @@
                 @Html.DisplayNameFor(model => model.Email)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Endereco.Cidade)
+                <a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["CidadeClassificarParam"]" asp-route-filtroAtual="@ViewData["FiltroAtual"]">@Html.DisplayNameFor(model => model.Endereco.Cidade)</a>
             </th>
         </tr>
     </thead>
@@ -82,3 +82,28 @@
     </tbody>
 </table>
 
+@{
+    var anteriorDesabilitar = !ViewBag.Metada.TemAnterior ? "disabled" : "";
+    var proximoHabilitar = !ViewBag.Metada.TemProxima ? "disabled" : "";
+}
+
+<nav aria-label="Paginacao Clientes">
+    <ul class="pagination">
+        <li class="page-item  @anteriorDesabilitar">
+            <a class="page-link" asp-action="Index"
+               asp-route-ordemDeClassificacao="@ViewData["ClassificacaoAtual"]"
+               asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual - 1)"
+               asp-route-filtroAtual="@ViewData["FiltroAtual"]">
+                Anterior
+            </a>
+        </li>
+        <li class="page-item @proximoHabilitar">
+            <a class="page-link" asp-action="Index"
+               asp-route-ordemDeClassificacao="@ViewData["ClassificacaoAtual"]"
+               asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual + 1)"
+               asp-route-filtroAtual="@ViewData["FiltroAtual"]">
+                Próximo
+            </a>
+        </li>
+    </ul>
+</nav>

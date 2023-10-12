@@ -17,3 +17,17 @@ html {
 body {
   margin-bottom: 60px;
 }
+.ui-autocomplete {
+    position: absolute;
+    top: 0;
+    left: 0;
+    cursor: default;
+    z-index: 9050 !important;
+}
+
+.dataTables_wrapper .dataTables_filter input {
+    margin: 0 20px 0 0; 
+}
+.dataTables_wrapper .dataTables_info {
+    margin: 0 0 0 10px; 
+}

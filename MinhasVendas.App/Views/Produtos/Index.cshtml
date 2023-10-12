@@ -1,106 +1,141 @@
-﻿@model IEnumerable<MinhasVendas.App.ViewModels.ProdutoViewModel>
+﻿@using Newtonsoft.Json
+@model IEnumerable<MinhasVendas.App.ViewModels.ProdutoViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Produtos";
+
+    ViewData["Rota"] = "Produtos";
+    ViewData["Acao"] = "Listagem";
+    ViewData["Rotulo"] = "Listagem de Produtos";
+
+    Layout = "_Argon";
 }
 
-<h1>Index</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-
-
-<div>
-    <form asp-action="Index" method="get">
-        <div class="form-actions no-color">
-            <p>
-                <input type="text" name="pesquisarTexto" value="@ViewData["FiltroAtual"]" />
-                <input type="submit" value="Pesquisar" class="btn btn-primary" />
-                <a class="btn btn-light" asp-action="Index">Limpar Filtro</a>
-            </p>
-        </div>
-    </form>
-</div>
-
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["NomeClassificarParam"]" asp-route-filtroAtual="@ViewData["FiltroAtual"]">@Html.DisplayNameFor(model => model.Nome)</a>
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["CodigoClassificarParam"]" asp-route-filtroAtual="@ViewData["FiltroAtual"]">@Html.DisplayNameFor(model => model.Codigo)</a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PrecoBase)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PrecoDeLista)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.EstoqueAtual)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                <img src="~/imagensProdutos/@item.Imagem" alt="@item.Imagem" style="width: 25x; height: 25px" />
-                </td>                <td>
-                    @Html.DisplayFor(modelItem => item.Nome)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Codigo)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PrecoBase)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PrecoDeLista)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.EstoqueAtual)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+}
 
 @{
     var anteriorDesabilitar = !ViewBag.Metada.TemAnterior ? "disabled" : "";
     var proximoHabilitar = !ViewBag.Metada.TemProxima ? "disabled" : "";
 }
 
-<nav aria-label="Paginacao Clientes">
-    <ul class="pagination">
-        <li class="page-item  @anteriorDesabilitar">
-            <a class="page-link" asp-action="Index"
-               asp-route-ordemDeClassificacao="@ViewData["ClassificacaoAtual"]"
-               asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual - 1)"
-               asp-route-filtroAtual="@ViewData["FiltroAtual"]">
-                Anterior
-            </a>
-        </li>
-        <li class="page-item @proximoHabilitar">
-            <a class="page-link" asp-action="Index"
-               asp-route-ordemDeClassificacao="@ViewData["ClassificacaoAtual"]"
-               asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual + 1)"
-               asp-route-filtroAtual="@ViewData["FiltroAtual"]">
-                Próximo
-            </a>
-        </li>
-    </ul>
-</nav>
+
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <!-- Card header -->
+                <div class="card-header pb-0">
+                    <div class="d-lg-flex">
+                        <div>
+                            <h5 class="mb-0">Produtos</h5>
+                            <div>
+                                <form asp-action="Index" method="get">
+                                    <div class="form-actions no-color">
+                                        <p>
+                                            <input type="text" name="pesquisarTexto" value="@ViewData["FiltroAtual"]" />
+                                            <input type="submit" value="Pesquisar" class="btn bg-gradient-primary btn-sm mb-0" />
+                                            <a class="btn bg-gradient-light btn-sm mb-0" asp-action="Index">Limpar Filtro</a>
+                                        </p>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="ms-auto my-auto mt-lg-0 mt-4">
+                            <div class="ms-auto my-auto">
+                                <a asp-action="Create" class="btn bg-gradient-primary btn-sm mb-0">+&nbsp; Novo Produto</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body px-0 pb-0">
+                    <div class="table-responsive">
+                        <table class="table table-flush" id="products-list">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th><a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["NomeClassificarParam"]" asp-route-filtroAtual="@ViewData["FiltroAtual"]">@Html.DisplayNameFor(model => model.Nome)</a></th>
+                                    <th><a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["CodigoClassificarParam"]" asp-route-filtroAtual="@ViewData["FiltroAtual"]">@Html.DisplayNameFor(model => model.Codigo)</a></th>
+                                    <th> @Html.DisplayNameFor(model => model.PrecoBase)</th>
+                                    <th> @Html.DisplayNameFor(model => model.PrecoDeLista)</th>
+                                    <th> @Html.DisplayNameFor(model => model.EstoqueAtual)</th>
+                                    <th>Ação</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex">
+                                                <div class="form-check my-auto">
+                                                    <input class="form-check-input" type="checkbox" id="customCheck1" checked>
+                                                </div>
+                                                <img class="w-10 ms-3" src="./imagensProdutos/@item.Imagem" alt="@item.Imagem">
+                                                <h6 class="ms-3 my-auto">@Html.DisplayFor(modelItem => item.Nome)</h6>
+                                            </div>
+                                        </td>
+                                        <td class="text-sm">@Html.DisplayFor(modelItem => item.Codigo)</td>
+                                        <td class="text-sm">@Html.DisplayFor(modelItem => item.PrecoBase)</td>
+                                        <td class="text-sm">@Html.DisplayFor(modelItem => item.PrecoDeLista)</td>
+                                        <td>
+                                            <span class="badge badge-danger badge-sm">@Html.DisplayFor(modelItem => item.EstoqueAtual)</span>
+                                        </td>
+                                        <td class="text-sm">
+                                            <!-- Faltar Habilitar o tooolip -->
+                                            <a asp-action="Details" asp-route-id="@item.Id" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Preview product">
+                                                <i class="fas fa-eye text-secondary"></i>
+                                            </a>
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Edit product">
+                                                <i class="fas fa-user-edit text-secondary"></i>
+                                            </a>
+                                            <a asp-action="Delete" asp-route-id="@item.Id" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Delete product">
+                                                <i class="fas fa-trash text-secondary"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                            <tfoot>
+                            </tfoot>
+                        </table>
+                        <nav aria-label="Page navigation example">
+                            <ul class="pagination justify-content-center">
+                                <li class="">
+                                    Página @ViewBag.Metada.PaginaAtual de @ViewBag.Metada.TotalDePaginas
+                                </li>
+                                <li class="page-item @anteriorDesabilitar">
+                                    <a class="page-link" asp-action="Index"
+                                       asp-route-ordemDeClassificacao="@ViewData["ClassificacaoAtual"]"
+                                       asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual - 1)"
+                                       asp-route-filtroAtual="@ViewData["FiltroAtual"]" tabindex="-1">
+                                        <i class="fa fa-angle-left"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item @proximoHabilitar">
+                                    <a class="page-link" asp-action="Index"
+                                       asp-route-ordemDeClassificacao="@ViewData["ClassificacaoAtual"]"
+                                       asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual + 1)"
+                                       asp-route-filtroAtual="@ViewData["FiltroAtual"]">
+                                        <i class="fa fa-angle-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+
+    </script>
+
+}

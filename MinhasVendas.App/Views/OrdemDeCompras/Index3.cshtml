@@ -1,0 +1,100 @@
+﻿@model IEnumerable<MinhasVendas.App.ViewModels.OrdemDeCompraViewModel>
+
+@{
+    ViewData["Title"] = "Ordem De Compra";
+}
+
+<h1>Ordem de Compra</h1>
+
+
+
+<p>
+    <a class="btn btn-success" asp-action="Create">Nova Ordem de Compras</a>
+</p>
+
+<div >
+    <form asp-action="Index" method="get">
+        <div class="form-actions no-color">
+            <p>
+            Pesquisa: <input type="text" name="pesquisarTexto" value="@ViewData["FiltroAtual"]" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+            <a asp-action="Index">Voltar para Lista</a>
+        </p>
+    </div>
+</form>
+</div>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @*@Html.DisplayNameFor(model => model.DataDeCriacao)*@
+                <a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["DataDeCriacaoClassificarParam"]" asp-route-filtroAtual="@ViewData["FiltroAtual"]">@Html.DisplayNameFor(model => model.DataDeCriacao)</a>
+            </th>
+            <th>
+                @*@Html.DisplayNameFor(model => model.StatusOrdemDeCompra)*@
+                <a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["StatusOrdemDeCompraClassificarParam"]" asp-route-filtroAtual="@ViewData["FiltroAtual"]">@Html.DisplayNameFor(model => model.StatusOrdemDeCompra)</a>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ValorDeFrete)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Fornecedor)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DataDeCriacao)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StatusOrdemDeCompra)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ValorDeFrete)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fornecedor.Nome)
+                </td>
+                <td>
+                    <a asp-action="CarrinhoDeCompras" asp-route-id="@item.Id">CarrinhoDeCompras</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+
+@{
+    var anteriorDesabilitar = !ViewBag.Metada.TemAnterior ? "disabled" : "";
+    var proximoHabilitar = !ViewBag.Metada.TemProxima ? "disabled" : "";
+}
+
+<nav aria-label="Paginacao Ordem de Compras">
+    <ul class="pagination">
+        <li class="page-item  @anteriorDesabilitar">
+            <a class="page-link" asp-action="Index"
+               asp-route-ordemDeClassificacao="@ViewData["ClassificacaoAtual"]"
+               asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual - 1)"
+               asp-route-filtroAtual="@ViewData["FiltroAtual"]">
+               Anterior</a>
+        </li>
+        <li class="page-item @proximoHabilitar">
+            <a class="page-link" asp-action="Index"
+               asp-route-ordemDeClassificacao="@ViewData["ClassificacaoAtual"]"
+               asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual + 1)"
+               asp-route-filtroAtual="@ViewData["FiltroAtual"]">
+               Próximo
+           </a>
+        </li>
+    </ul>
+</nav>
+
+<br />
+
+

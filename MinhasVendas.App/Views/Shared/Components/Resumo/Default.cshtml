@@ -1,12 +1,25 @@
 ﻿
 @if (ViewData.ModelState.ErrorCount > 0)
 {
-    <div style="padding-top: 15px;"></div>
+    @*<div style="padding-top: 15px;"></div>
 
     <div class="alert alert-danger" role="alert">
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
         <h6 id="msgRetorno" style="padding-top: 5px">Alerta:</h6>
-        <div style="padding-top: 5px" asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div style="padding-top: 5px" asp-validation-summary="ModelOnly" class="text-white"></div>
+    </div>*@
+
+    <div class="alert-sm alert-warning alert-dismissible fade show mx-20" role="alert">
+       
+        <div style="padding-top: 5px" asp-validation-summary="All" class="text-white"></div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
+
+
+   @* <div class="alert" role="alert">
+        <div style="padding-top: 5px" asp-validation-summary="ModelOnly" class="text-danger"></div>
+    </div>*@
 }
 

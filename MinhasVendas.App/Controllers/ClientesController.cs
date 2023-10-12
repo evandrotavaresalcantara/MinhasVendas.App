@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using MinhasVendas.App.Data;
 using MinhasVendas.App.Interfaces.Repositorio;
 using MinhasVendas.App.Interfaces.Servico;
 using MinhasVendas.App.Models;
 using MinhasVendas.App.Paginacao;
-using MinhasVendas.App.Repositorio;
 using MinhasVendas.App.ViewModels;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using System.Text.Json;
 
 namespace MinhasVendas.App.Controllers
 {
@@ -30,7 +26,7 @@ namespace MinhasVendas.App.Controllers
                                   IClienteEnderecoRepositorio clienteEnderecoRepositorio,
                                   IClienteServico clienteServico,
                                   IMapper mapper,
-                                  INotificador notificador) : base(notificador)  
+                                  INotificador notificador) : base(notificador)
         {
             _clienteRespositorio = clienteRespositorio;
             _clienteEnderecoRepositorio = clienteEnderecoRepositorio;
@@ -38,11 +34,14 @@ namespace MinhasVendas.App.Controllers
             _mapper = mapper;
         }
 
-       
+
+
+
+
         [HttpGet]
         public ActionResult<IEnumerable<OrdemDeCompraViewModel>> Index(string ordemDeClassificacao, string filtroAtual, string pesquisarTexto, int? numeroDePagina)
         {
-            var clientesParametros = new ClientesParametros() { NumeroDePagina = numeroDePagina ?? 1, TamanhoDePagina = 10 };
+            var clientesParametros = new ClientesParametros() { NumeroDePagina = numeroDePagina ?? 1, TamanhoDePagina = 30 };
 
             ViewData["ClassificacaoAtual"] = ordemDeClassificacao;
             ViewData["NomeClassificarParam"] = String.IsNullOrEmpty(ordemDeClassificacao) ? "nome_descendente" : "";
@@ -56,7 +55,7 @@ namespace MinhasVendas.App.Controllers
             ViewData["FiltroAtual"] = clientesParametros.PesquisaTexto ?? clientesParametros.FiltroAtual;
 
 
-            
+
 
             var clienteEndereco = _clienteRespositorio.ObterClientesPaginacaoLista(clientesParametros);
 
@@ -72,10 +71,20 @@ namespace MinhasVendas.App.Controllers
             };
 
             ViewBag.Metada = metadata;
-
             var clienteViewModel = _mapper.Map<IEnumerable<ClienteViewModel>>(clienteEndereco);
 
-            return View(clienteViewModel);
+
+            return View();
+
+
+            //var options = new JsonSerializerOptions
+            //{
+            //    ReferenceHandler = ReferenceHandler.Preserve,
+            //};
+            //string jsonCliente = JsonSerializer.Serialize(clienteViewModel, options);
+
+            //return Json(jsonCliente);
+
         }
 
         [HttpGet]
@@ -95,7 +104,7 @@ namespace MinhasVendas.App.Controllers
             ViewData["FiltroAtual"] = clientesParametros.PesquisaTexto ?? clientesParametros.FiltroAtual;
 
 
-            var clienteEndereco =  await _clienteRespositorio.BuscarTodos();
+            var clienteEndereco = await _clienteRespositorio.BuscarTodos();
 
             var clienteViewModel = _mapper.Map<IEnumerable<ClienteViewModel>>(clienteEndereco);
 
@@ -113,7 +122,7 @@ namespace MinhasVendas.App.Controllers
             if (cliente == null) return NotFound();
 
             var clienteViewModel = _mapper.Map<ClienteViewModel>(clienteEnderecoProdutos);
-          
+
             return View(clienteViewModel);
         }
 
@@ -144,7 +153,7 @@ namespace MinhasVendas.App.Controllers
             if (cliente == null) return NotFound();
 
             var clienteViewModel = _mapper.Map<ClienteViewModel>(cliente);
-          
+
             return View(clienteViewModel);
         }
 
@@ -153,10 +162,10 @@ namespace MinhasVendas.App.Controllers
         public async Task<IActionResult> Edit(int id, ClienteViewModel clienteViewModel)
         {
             if (id != clienteViewModel.Id) return NotFound();
-            
+
             if (!ModelState.IsValid) return View(clienteViewModel);
 
-            var clienteDB = await _clienteRespositorio.ObterSemRastreamento().FirstOrDefaultAsync(c=> c.Id == id);
+            var clienteDB = await _clienteRespositorio.ObterSemRastreamento().FirstOrDefaultAsync(c => c.Id == id);
 
             if (clienteDB == null) return NotFound();
 
@@ -167,20 +176,20 @@ namespace MinhasVendas.App.Controllers
             if (!OperacaoValida()) return View(clienteViewModel);
 
             return RedirectToAction("Details", new { id = cliente.Id });
-        
+
         }
 
         public async Task<IActionResult> Delete(int id)
         {
             var cliente = await _clienteRespositorio.ObterPorId(c => c.Id == id);
-            
+
             if (cliente == null) return NotFound();
 
             var clienteViewModel = _mapper.Map<ClienteViewModel>(cliente);
-           
+
             return View(clienteViewModel);
         }
-        
+
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -199,7 +208,7 @@ namespace MinhasVendas.App.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-        [HttpGet]                                
+        [HttpGet]
         public async Task<IActionResult> EditarEnderecoCliente(int id)
         {
             var endereco = await _clienteEnderecoRepositorio.ObterPorId(e => e.Id == id);
@@ -219,7 +228,7 @@ namespace MinhasVendas.App.Controllers
 
             if (!ModelState.IsValid) return PartialView("_AtualizarEnderecoCliente", clienteEnderecoViewModel);
 
-            var endereco = await _clienteEnderecoRepositorio.ObterSemRastreamento().FirstOrDefaultAsync(e => e.Id ==  clienteEnderecoViewModel.Id);
+            var endereco = await _clienteEnderecoRepositorio.ObterSemRastreamento().FirstOrDefaultAsync(e => e.Id == clienteEnderecoViewModel.Id);
 
             if (endereco == null) return NotFound();
 
@@ -231,6 +240,48 @@ namespace MinhasVendas.App.Controllers
 
             return RedirectToAction("Details", new { id = clienteEndereco.ClienteId });
 
+        }
+        public async Task<IActionResult> ObterClientesNomeEId()
+        {
+
+            var clientes = await _clienteRespositorio.BuscarTodos();
+
+            var clientesAutocomplete = clientes.Select(c => new
+            {
+                label = c.Nome,
+                value = c.Id
+            });
+
+            return Json(clientesAutocomplete);
+        }
+        public async Task<IActionResult> ObterClientesNome(string termo)
+        {
+
+            var clientes = await _clienteRespositorio.Buscar(c => c.Nome.Contains(termo));
+
+            var clientesAutocomplete = clientes.Select(c => new
+            {
+                label = c.Nome,
+                value = c.Id
+            });
+
+            return Json(clientesAutocomplete);
+        }
+
+
+        public async Task<IActionResult> ObterClientes(int draw, int start, int length, [FromQuery(Name = "search[value]")] string search)
+        {
+
+            var parametros = new OrdemDeVendasParametros();
+
+            parametros.draw = draw;
+            parametros.start = start;
+            parametros.lenght = length;
+            parametros.search = search;
+
+            string json = await _clienteServico.ObterClientes(parametros);
+            
+            return Content(json, "application/json");
         }
 
 

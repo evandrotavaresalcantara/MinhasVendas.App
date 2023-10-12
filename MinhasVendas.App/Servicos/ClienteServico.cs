@@ -4,6 +4,8 @@ using MinhasVendas.App.Interfaces.Repositorio;
 using MinhasVendas.App.Interfaces.Servico;
 using MinhasVendas.App.Models;
 using MinhasVendas.App.Models.Validacoes;
+using MinhasVendas.App.Paginacao;
+using Newtonsoft.Json;
 
 namespace MinhasVendas.App.Servicos
 {
@@ -30,6 +32,7 @@ namespace MinhasVendas.App.Servicos
             await _clienteRespositorio.Atualizar(cliente);
         }
 
+
         public async Task Remover(int id)
         {
             if (_clienteRespositorio.ObterClienteProdutoEndereco(id).Result.OrdemDeVendas.Any())
@@ -39,5 +42,58 @@ namespace MinhasVendas.App.Servicos
             }
             await _clienteRespositorio.Remover(id);
         }
+
+        public async Task<string> ObterClientes(OrdemDeVendasParametros ordemDeVendasParametros)
+        {
+            var clientesQuery = _clienteRespositorio.Obter();
+
+            if (!string.IsNullOrWhiteSpace(ordemDeVendasParametros.search))
+            {
+                ordemDeVendasParametros.search = ordemDeVendasParametros.search.ToLower();
+
+                clientesQuery = clientesQuery.Where(c =>
+                    c.Nome.ToLower().Contains(ordemDeVendasParametros.search) || 
+                    c.SobreNome.ToLower().Contains(ordemDeVendasParametros.search)
+                );
+            }
+
+            var totalRegistros = await clientesQuery.CountAsync();
+
+            var data = await clientesQuery
+                .Skip(ordemDeVendasParametros.start)
+                .Take(ordemDeVendasParametros.lenght)
+                .Select(c => new
+                {
+                    id = c.Id,
+                    nome = c.Nome,
+                    sobrenome = c.SobreNome,
+                    whatsApp = c.WhatsApp,
+                    celular = c.Celular,
+                    instagram = c.Instagram,
+                    email = c.Email,
+                    cidade = c.Endereco.Cidade,
+                    
+                })
+                .ToListAsync();
+
+            
+
+            string json = JsonConvert.SerializeObject(new 
+            {
+                ordemDeVendasParametros.draw,
+                recordsFiltered = totalRegistros,
+                recordsTotal = totalRegistros,
+                data
+            });
+
+
+            return json;
+
+
+
+
+        }
+
+
     }
 }

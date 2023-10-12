@@ -1,109 +1,172 @@
 ﻿@model IEnumerable<MinhasVendas.App.ViewModels.ClienteViewModel>
 
 @{
-    ViewData["Title"] = "Index";
+    Layout = "_Argon";
+
+    ViewData["Title"] = "Clientes";
+
+    ViewData["Rota"] = "Clientes";
+    ViewData["Acao"] = "Listagem";
+    ViewData["Rotulo"] = "Listagem de Clientes";
 }
 
-<h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <!-- Card header -->
+                <div class="card-header pb-0">
+                    <div class="d-lg-flex">
+                        <div>
+                            <h5 class="mb-0">Clientes</h5>
+                            <p class="text-sm mb-0">
+                                Listagem
+                            </p>
+                        </div>
+                        <div class="ms-auto my-auto mt-lg-0 mt-4">
+                            <div class="ms-auto my-auto">
+                                <a asp-action="Create" class="btn bg-gradient-primary btn-sm mb-0">Novo Cliente</a>
+                                <button class="btn btn-outline-primary btn-sm export mb-0 mt-sm-0 mt-1" data-type="csv" type="button" name="button">Exportar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body px-0 pb-0">
+                    <div class="table-responsive">
 
-<div>
-    <form asp-action="Index" method="get">
-        <div class="form-actions no-color">
-            <p>
-                <input type="text" name="pesquisarTexto" value="@ViewData["FiltroAtual"]" />
-                <input type="submit" value="Pesquisar" class="btn btn-primary" /> 
-                <a class="btn btn-light" asp-action="Index">Limpar Filtro</a>
-            </p>
+                        <table class="table table-flush hover compact" id="clientes-listagem">
+                            <thead class="thead-light">
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+
+
+                    </div>
+                </div>
+            </div>
         </div>
-    </form>
+    </div>
 </div>
 
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th>
-                <a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["NomeClassificarParam"]" asp-route-filtroAtual="@ViewData["FiltroAtual"]">@Html.DisplayNameFor(model => model.Nome)</a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SobreNome)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Celular)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.WhatsApp)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Instagram)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["CidadeClassificarParam"]" asp-route-filtroAtual="@ViewData["FiltroAtual"]">@Html.DisplayNameFor(model => model.Endereco.Cidade)</a>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Nome)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SobreNome)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Celular)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.WhatsApp)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Instagram)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Endereco.Cidade)
-                </td>
-                <td>
-                    <a class="btn btn-warning" asp-action="Details" asp-route-id="@item.Id">Detalhes</a> 
-                    <a class="btn btn-danger" asp-action="Delete" asp-route-id="@item.Id">Excluir</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
 
-@{
-    var anteriorDesabilitar = !ViewBag.Metada.TemAnterior ? "disabled" : "";
-    var proximoHabilitar = !ViewBag.Metada.TemProxima ? "disabled" : "";
+@section Scripts {
+
+
+    <script>
+
+        $(document).ready(function () {
+            $('#clientes-listagem').DataTable({
+                
+                serverSide: true,
+                processing: true,
+                search: {
+                    return: false,
+                },
+                ordering: false,
+                scrollY: 400,
+
+                ajax: '/Clientes/ObterClientes',
+                columns: [
+                    { data: 'nome', title: 'Nome' },
+                    { data: 'sobrenome', title: 'Sobre Nome' },
+                    { data: 'celular', title: 'Celular' },
+                    { data: 'whatsApp', title: 'WhatsApp' },
+                    { data: 'instagram', title: 'Instagram' },
+                    { data: 'email', title: 'Email' },
+                    { data: 'cidade', title: 'Cidade' },
+                    {
+                        // Coluna de Ação - Você pode personalizar isso de acordo com suas necessidades
+                        data: null,
+                        title: 'Ação',
+                        render: function (data, type, full, meta) {
+                            return '<a href="/Clientes/Details/' + data.id + '" title="Produto detalhe"><i class="fas fa-eye text-secondary"></i></a> ' +
+                                '<a href="/Clientes/Delete/' + data.id + '" title="Produto excluir"><i class="fas fa-trash text-secondary"></i></a>';
+                        }
+                    }
+                ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json'
+                }
+            });
+        });
+
+
+    </script>
 }
 
-<nav aria-label="Paginacao Clientes">
-    <ul class="pagination">
-        <li class="page-item  @anteriorDesabilitar">
-            <a class="page-link" asp-action="Index"
-               asp-route-ordemDeClassificacao="@ViewData["ClassificacaoAtual"]"
-               asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual - 1)"
-               asp-route-filtroAtual="@ViewData["FiltroAtual"]">
-                Anterior
-            </a>
-        </li>
-        <li class="page-item @proximoHabilitar">
-            <a class="page-link" asp-action="Index"
-               asp-route-ordemDeClassificacao="@ViewData["ClassificacaoAtual"]"
-               asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual + 1)"
-               asp-route-filtroAtual="@ViewData["FiltroAtual"]">
-                Próximo
-            </a>
-        </li>
-    </ul>
-</nav>
+
+@*
+
+ if (document.getElementById('clientes-listagem')) {
+            let dataTableSearch = new simpleDatatables.DataTable("#clientes-listagem", {
+                serverSide: true,
+                processing: true,
+                searchable: true,
+                fixedHeight: false,
+                perPage: 7,
+                $.ajax({
+                    url: "/Clientes/ObterClientesPaginado",
+                    type: "GET"
+                },
+                data: function (data) {
+
+                    data.draw = data.draw || 1;
+                    data.start = data.start || 0;
+                    data.length = data.length || 10;
+                },
+                columns: [
+                    { data: "nome" },
+                    { data: "sobrenome" }
+                ]
+            });
+        });
+
+                        };
+
+
+---------------------------------
+ $('#clientes-listagem').DataTable({
+            serverSide: true,
+            processing: true,
+            search: {
+                return: true,
+            },
+
+            ajax: {
+                url: '/Clientes/ObterClientesPaginadoBusca',
+                type: 'POST',
+                data: function (d) {
+                    d.draw = d.draw || 1;
+                    d.start = d.start || 0;
+                    d.length = d.length || 10;
+                },
+            },
+            columns: [
+                { data: 'nome', title: 'Nome' },
+                { data: 'sobrenome', title: 'Sobrenome' },
+            ],
+        });
+
+
+
+        Funcional:
+
+
+        $('#clientes-listagem').DataTable({
+            serverSide: true,
+            processing: true,
+            search: {
+                return: true,
+            },
+
+            ajax: '/Clientes/ObterClientesPaginadoBusca',
+            columns: [
+                { data: 'nome', title: 'Nome' },
+                { data: 'sobrenome', title: 'Sobrenome' },
+            ],
+        });
+
+
+*@

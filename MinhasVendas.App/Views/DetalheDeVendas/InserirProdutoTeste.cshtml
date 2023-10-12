@@ -1,0 +1,100 @@
+﻿@model MinhasVendas.App.ViewModels.CarrinhoDeVendasViewModel
+
+@{
+    ViewData["Title"] = "Inserir Produto";
+    Layout = "_Argon";
+}
+
+<div class="modal-header">
+    <h5 class="modal-title">@ViewData["Title"]</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<form asp-action="InserirProduto" id="formularioInserirProduto">
+    <vc:resumo></vc:resumo>
+    <div class="modal-body">
+        <div class="form-group">
+            <label asp-for="@Model.DetalheDeVendaViewModel.OrdemDeVendaId class=" control-label"></label>
+            <input readonly asp-for="@Model.DetalheDeVendaViewModel.OrdemDeVendaId" class="form-control" value=@ViewBag.OrdemDeVendaId>
+        </div>
+        <div class="form-group">
+            <label class="mt-4">Produto</label>
+
+            <input id="produtoId" type="hidden" asp-for="@Model.DetalheDeVendaViewModel.Produto.Id" />
+            <input id="produto" class="form-control" />
+
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.DetalheDeVendaViewModel.Quantidade" class="control-label"></label>
+            <input asp-for="@Model.DetalheDeVendaViewModel.Quantidade" class="form-control" />
+            <span asp-validation-for="@Model.DetalheDeVendaViewModel.Quantidade" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.DetalheDeVendaViewModel.Desconto" class="control-label"></label>
+            <input asp-for="@Model.DetalheDeVendaViewModel.Desconto" class="form-control" />
+            <span asp-validation-for="@Model.DetalheDeVendaViewModel.Desconto" class="text-danger"></span>
+        </div>
+
+        <div class="modal-footer">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Inserir Produto" class="btn btn-success" />
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            </div>
+        </div>
+
+    </div>
+</form>
+
+<hr />
+
+<div class="ui-widget">
+    <label for="autocomplete">Escolha uma fruta: </label>
+    <input id="autocomplete">
+</div>
+
+
+<script>
+    $(document).ready(function () {
+        console.log("Modal Inserir Produto carregado.");
+        $.ajax({
+            url: "/DetalheDeVendas/ObterProdutosVenda",
+            type: "GET",
+            success: function (data) {
+                $("#produto").autocomplete({
+                    source: data,
+                    select: function (event, ui) {
+                        $("#produtoId").val(ui.item.value);
+                        $("#produto").val(ui.item.label);
+                        return false;
+                    }
+                });
+            }
+        });
+
+    });
+</script>
+
+<script>
+    $(function () {
+        var availableTags = [
+            "Apple",
+            "Banana",
+            "Cherry",
+            "Date",
+            "Grape",
+            "Lemon",
+            "Orange",
+            "Pear",
+            "Pineapple",
+            "Strawberry",
+            "Watermelon"
+        ];
+
+        $("#autocomplete").autocomplete({
+            source: availableTags
+        });
+    });
+</script>
+
+
+

@@ -42,18 +42,19 @@ public class OrdemDeVendasController : BaseController
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<OrdemDeVenda>> Index(string ordemDeClassificacao, string filtroAtual, string pesquisarTexto, int? numeroDePagina)
+    public ActionResult<IEnumerable<OrdemDeVenda>> Index(string ordemDeClassificacao, string filtroAtual, string pesquisarTexto, int? numeroDePagina, string filtro)
     {
         var ordemDeVendasParametros = new OrdemDeVendasParametros() { NumeroDePagina = numeroDePagina ?? 1, TamanhoDePagina = 10 };
 
         ViewData["ClassificacaoAtual"] = ordemDeClassificacao;
         ViewData["DataDeVendaClassificarParam"] = String.IsNullOrEmpty(ordemDeClassificacao) ? "dataDeVenda_descendente" : "";
         ViewData["StatusOrdemDeVendaClassificarParam"] = ordemDeClassificacao == "statusOrdemDeVenda" ? "statusOrdemDeVenda_descendente" : "statusOrdemDeVenda";
-
+        ViewData["Filtro"] = filtro;
 
         ordemDeVendasParametros.OrdemDeClassificacao = ordemDeClassificacao;
         ordemDeVendasParametros.PesquisaTexto = pesquisarTexto;
         ordemDeVendasParametros.FiltroAtual = filtroAtual;
+        ordemDeVendasParametros.Filtro = filtro;
 
         ViewData["FiltroAtual"] = ordemDeVendasParametros.PesquisaTexto ?? ordemDeVendasParametros.FiltroAtual;
 
@@ -85,7 +86,11 @@ public class OrdemDeVendasController : BaseController
     {
         ViewData["ClienteId"] = new SelectList(await _clienteRespositorio.BuscarTodos(), "Id", "Nome");
         return View();
+
+
     }
+
+
 
     [HttpPost]
     [ValidateAntiForgeryToken]

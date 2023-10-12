@@ -116,4 +116,43 @@ public class DetalheDeVendasController : BaseController
 
         return RedirectToAction("CarrinhoDeVendas", "OrdemDeVendas", new { detalheDeVendaBD.OrdemDeVenda.Id });
     }
+
+
+    [HttpGet]
+    public async Task<IActionResult> ObterProdutosVenda()
+    {
+
+        var listaDeProdutos = await _transacaoDeEstoqueServico.ConsultaSaldoDeEstoque();
+       
+        var listaDeProdutosAutoComplete = listaDeProdutos.Select(c => new
+        {
+            label = c.ProdutoCompleto,
+            value = c.Id,
+            nome = c.NomeProduto
+
+        });
+
+        return Json(listaDeProdutosAutoComplete);
+
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> InserirProdutoTeste(int id)
+    {
+
+        var listaDeProdutos = await _transacaoDeEstoqueServico.ConsultaSaldoDeEstoque();
+
+        ViewData["ProdutoId"] = new SelectList(listaDeProdutos, "Id", "ProdutoCompleto");
+        ViewData["OrdemDeVendaId"] = id;
+
+        CarrinhoDeVendasViewModel model = new CarrinhoDeVendasViewModel();
+
+        await _detalheDeVendaServico.AdicionarView(id);
+
+        if (!OperacaoValida()) return PartialView("_OrdemDendaStatus", model);
+
+        return View(model);
+    }
+
+
 }

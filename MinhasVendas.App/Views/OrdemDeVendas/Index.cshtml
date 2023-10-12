@@ -1,95 +1,229 @@
 ﻿@model IEnumerable<MinhasVendas.App.ViewModels.OrdemDeVendaViewModel>
 
 @{
-    ViewData["Title"] = "Ordem de Vendas";
+    Layout = "_Argon";
+
+    ViewData["Title"] = "Vendas";
+
+    ViewData["Rota"] = "Vendas";
+    ViewData["Acao"] = "Listagem";
+    ViewData["Rotulo"] = "Listagem de Vendas";
 }
 
-<h1>Ordem de Vendas</h1>
-
-<p>
-    <a class="btn btn-success" asp-action="Create">Nova Ordem de Venda</a>
-</p>
-
-<div>
-    <form asp-action="Index" method="get">
-        <div class="form-actions no-color">
-            <p>
-                Pesquisa: <input type="text" name="pesquisarTexto" value="@ViewData["FiltroAtual"]" />
-                <input type="submit" value="Search" class="btn btn-default" /> |
-                <a asp-action="Index">Voltar para Lista</a>
-            </p>
-        </div>
-    </form>
-</div>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                <a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["StatusOrdemDeVendaClassificarParam"]" asp-route-filtroAtual="@ViewData["FiltroAtual"]">@Html.DisplayNameFor(model => model.StatusOrdemDeVenda)</a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.FormaDePagamento)
-            </th>
-            <th>
-               @Html.DisplayNameFor(model => model.DataDePagamento)
-            </th>
-            <th>
-                <a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["DataDeVendaClassificarParam"]" asp-route-filtroAtual="@ViewData["FiltroAtual"]">@Html.DisplayNameFor(model => model.DataDeCriacao)</a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Cliente)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.StatusOrdemDeVenda)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.FormaDePagamento)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DataDePagamento)
-            </td>
-            <td>
-                    @Html.DisplayFor(modelItem => item.DataDeCriacao)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Cliente.Nome)
-            </td>
-            <td>
-                <a asp-action="CarrinhoDeVendas" asp-route-id="@item.Id">CarrinhoDeVendas</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
 
 @{
     var anteriorDesabilitar = !ViewBag.Metada.TemAnterior ? "disabled" : "";
     var proximoHabilitar = !ViewBag.Metada.TemProxima ? "disabled" : "";
 }
 
-<nav aria-label="Paginacao Ordem de Vendas">
-    <ul class="pagination">
-        <li class="page-item  @anteriorDesabilitar">
-            <a class="page-link" asp-action="Index"
-               asp-route-ordemDeClassificacao="@ViewData["ClassificacaoAtual"]"
-               asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual - 1)"
-               asp-route-filtroAtual="@ViewData["FiltroAtual"]">
-                Anterior
-            </a>
-        </li>
-        <li class="page-item @proximoHabilitar">
-            <a class="page-link" asp-action="Index"
-               asp-route-ordemDeClassificacao="@ViewData["ClassificacaoAtual"]"
-               asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual + 1)"
-               asp-route-filtroAtual="@ViewData["FiltroAtual"]">
-                Próximo
-            </a>
-        </li>
-    </ul>
-</nav>
+
+<div class="container-fluid py-4">
+    <div class="row mb-2">
+        <div class="col-md-3">
+            <!-- Primeiro Grupo -->
+            <div class="d-sm-flex justify-content-start">
+                <div>
+                    <a asp-action="Create" class="btn btn-icon btn-outline-white btn-sm px-3">
+                        + Nova Venda
+                    </a>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-9">
+            <!-- Segundo Grupo -->
+
+            <div class="d-sm-flex justify-content-end">
+                <div>
+
+                    <form asp-action="Index" method="get">
+                        <input type="hidden" name="filtro" value="@ViewData["Filtro"]" />
+                        <div class="row">
+                            <div class="col-md-7">
+                                <div class="input-group input-group-sm">
+                                    <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+                                    <input type="text" class="form-control " placeholder="Digite aqui..." name="pesquisarTexto" value="@ViewData["FiltroAtual"]" />
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <button type="submit" class="btn btn-outline-white btn-sm">Buscar</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="d-flex">
+                    <div class="dropdown d-inline">
+                        <a href="javascript:;" class="btn btn-outline-white btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="navbarDropdownMenuLink2">
+                            @(ViewData["Filtro"] ?? "Todos")
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-lg-start px-2 py-3" aria-labelledby="navbarDropdownMenuLink2" data-popper-placement="left-start">
+                            <li>
+                                <a class="dropdown-item border-radius-md"
+                                   asp-action="Index"
+                                   asp-route-filtroAtual="@ViewData["FiltroAtual"]" asp-route-filtro="Orcamento">
+                                    Status: Orçamento
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item border-radius-md"
+                                   asp-action="Index"
+                                   asp-route-filtroAtual="@ViewData["FiltroAtual"]" asp-route-filtro="Vendido">
+                                    Status: Vendido
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item border-radius-md"
+                                   asp-action="Index"
+                                   asp-route-filtroAtual="@ViewData["FiltroAtual"]" asp-route-filtro="Cancelado">
+                                    Status: Cancelado
+                                </a>
+                            </li>
+                            <li>
+                                <hr class="horizontal dark my-2">
+                            </li>
+                            <li>
+                                <a class="dropdown-item border-radius-md text-danger"
+                                   asp-action="Index"
+                                   asp-route-filtroAtual="@ViewData["FiltroAtual"]" asp-route-filtro="">
+                                    Remover Filtro
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="mx-3">
+                    <a class="btn btn-outline-white btn-sm " asp-action="Index">Limpar Busca/Filtro</a>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table table-flush" id="datatable-search">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Id)
+                                </th>
+                                <th>
+                                    <a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["StatusOrdemDeVendaClassificarParam"]"
+                                       asp-route-filtroAtual="@ViewData["FiltroAtual"]"
+                                       asp-route-filtro="@ViewData["Filtro"]">
+                                        @Html.DisplayNameFor(model => model.StatusOrdemDeVenda)
+                                    </a>
+                                </th>
+                                <th>
+                                    <a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["DataDeVendaClassificarParam"]"
+                                       asp-route-filtroAtual="@ViewData["FiltroAtual"]"
+                                       asp-route-filtro="@ViewData["Filtro"]">
+                                        @Html.DisplayNameFor(model => model.DataDeCriacao)
+                                    </a>
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.FormaDePagamento)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.DataDePagamento)
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Cliente)
+                                </th>
+                                <th>
+                                    Ação
+                                </th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-left">
+                                            <span class="text-xs font-weight-bold ms-2 mb-0">
+                                                #@Html.DisplayFor(modelItem => item.Id)
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="font-weight-bold">
+                                        <span class="my-2 text-xs">
+                                            @Html.DisplayFor(modelItem => item.StatusOrdemDeVenda)
+                                        </span>
+                                    </td>
+                                    <td class="text-xs font-weight-bold">
+                                        <span class="my-2 text-xs">
+                                            @Html.DisplayFor(modelItem => item.DataDeCriacao)
+                                        </span>
+                                    </td>
+                                    <td class="text-xs font-weight-bold">
+                                        <div class="d-flex align-items-left">
+                                            <span>@Html.DisplayFor(modelItem => item.FormaDePagamento)</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-xs font-weight-bold">
+                                        <div class="d-flex align-items-center">
+                                            <span>@Html.DisplayFor(modelItem => item.DataDePagamento)</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-xs font-weight-bold">
+                                        <span class="my-2 text-xs">
+                                            @Html.DisplayFor(modelItem => item.Cliente.Nome)
+                                        </span>
+                                    </td>
+                                    <td class="text-xs font-weight-bold">
+                                        <a class="mx-3" asp-action="CarrinhoDeVendas" asp-route-id="@item.Id">
+                                            <i class="ni ni-cart text-secondary"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                        </tfoot>
+                    </table>
+                    <nav aria-label="Page navigation example">
+                        <ul class="pagination justify-content-center">
+                            <li class="">
+                                Página @ViewBag.Metada.PaginaAtual de @ViewBag.Metada.TotalDePaginas
+                            </li>
+                            <li class="page-item @anteriorDesabilitar">
+                                <a class="page-link" asp-action="Index"
+                                   asp-route-ordemDeClassificacao="@ViewData["ClassificacaoAtual"]"
+                                   asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual - 1)"
+                                   asp-route-filtroAtual="@ViewData["FiltroAtual"]" tabindex="-1"
+                                   asp-route-filtro="@ViewData["Filtro"]">
+                                    <i class="fa fa-angle-left"></i>
+                                </a>
+                            </li>
+                            <li class="page-item @proximoHabilitar">
+                                <a class="page-link" asp-action="Index"
+                                   asp-route-ordemDeClassificacao="@ViewData["ClassificacaoAtual"]"
+                                   asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual + 1)"
+                                   asp-route-filtroAtual="@ViewData["FiltroAtual"]"
+                                   asp-route-filtro="@ViewData["Filtro"]">
+                                    <i class="fa fa-angle-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+
+
+
+
+
+
+}

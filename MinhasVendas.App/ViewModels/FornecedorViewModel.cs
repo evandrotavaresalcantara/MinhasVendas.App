@@ -10,7 +10,7 @@ namespace MinhasVendas.App.ViewModels
         public int Id { get; set; }
 
         public string Documento { get; set; } = string.Empty;
-        public TipoFornecedor TipoFornecedor { get; set; }
+        public int TipoFornecedor { get; set; }
 
         public string Nome { get; set; } = string.Empty;
         public string Celular { get; set; } = string.Empty;

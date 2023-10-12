@@ -1,63 +1,107 @@
 ﻿@model MinhasVendas.App.ViewModels.FornecedorViewModel
 
 @{
-    ViewData["Title"] = "Edit";
-}
+    Layout = "_Argon";
 
-<h4>Atualizar Fornecedor</h4>
+    ViewData["Title"] = "Fornecedores";
 
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <vc:resumo></vc:resumo>
-            <div class="form-group">
-                <label asp-for="Nome" class="control-label"></label>
-                <input asp-for="Nome" class="form-control" />
-                <span asp-validation-for="Nome" class="text-danger"></span>
+    ViewData["Rota"] = "Fornecedores";
+    ViewData["Acao"] = "Atualizar Fornecedor";
+    ViewData["Rotulo"] = "Atualizar Fornecedor";
+
+ }
+
+<div class="container-fluid py-4">
+    <div class="row mb-5">
+        <div class="col-12">
+            <vc:resumo class="arround"></vc:resumo>
+            <div class="row">
+                <div class="col-12 col-lg-8 mx-auto my-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5>
+                                Código do Fornecedor: # @Model.Id
+                            </h5>
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="Documento" class="control-label"></label>
-                <input asp-for="Documento" class="form-control" />
-                <span asp-validation-for="Documento" class="text-danger"></span>
+            <div class="row">
+                <div class="col-12 col-lg-8 m-auto">
+                    <form class="mb-8" method="post" asp-action="Edit">
+                        <div class="card p-3 border-radius-xl bg-white">
+                            <h5 class="font-weight-bolder mb-0">Atualizar Fornecedor</h5>
+                            <p class="mb-0 text-sm">Informações importantes</p>
+                            <div class="row mt-3">
+                                <div class="col-12 col-sm-6">
+                                    <label asp-for="Nome"></label>
+                                    <input asp-for="Nome" class="form-control" />
+                                    <span asp-validation-for="Nome" class="text-danger"></span>
+                                </div>
+                                <div class="col-12 col-sm-6 mt-3 mt-sm-0">
+                                    <label asp-for="Documento"></label>
+                                    <input asp-for="Documento" class="form-control" />
+                                    <span asp-validation-for="Documento" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12 col-sm-6">
+                                    <label asp-for="TipoFornecedor"></label>
+                                    <div>
+                                        <input type="radio" value="1" asp-for="TipoFornecedor" checked="@(Model.TipoFornecedor == 1)" /> Pessoa Física
+                                        <input type="radio" value="2" asp-for="TipoFornecedor" checked="@(Model.TipoFornecedor == 2)" /> Pessoa Jurídica
+                                    </div>
+                                    <div>
+                                        &nbsp;
+                                    </div>
+                                </div>
+                                <div class="col-12 col-sm-6 mt-3 mt-sm-0">
+                                    <label asp-for="Celular"></label>
+                                    <input asp-for="Celular" class="form-control" />
+                                    <span asp-validation-for="Celular" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12 col-sm-6">
+                                    <label asp-for="WhatsApp"></label>
+                                    <input asp-for="WhatsApp" class="form-control" />
+                                    <span asp-validation-for="WhatsApp" class="text-danger"></span>
+                                </div>
+                                <div class="col-12 col-sm-6 mt-3 mt-sm-0">
+                                    <label asp-for="Instagram"></label>
+                                    <input asp-for="Instagram" class="form-control" />
+                                    <span asp-validation-for="Instagram" class="text-danger"></span>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12 col-sm-6">
+                                    <label asp-for="Email"></label>
+                                    <input asp-for="Email" class="form-control" />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                                <div class="col-12 col-sm-6 mt-3 mt-sm-0">
+                                    <div class="button-row d-flex mt-4">
+                                        <a href="javascript:window.history.back()" class="btn btn-outline-secondary mb-0 ms-auto" type="button" name="Voltar">Voltar</a>
+                                        <button class="btn bg-gradient-success ms-auto mb-0" type="submit" title="Atualizar">Atualizar</button>
+                                    </div>
+                                </div>
+                            </div>
+                            </>
+                        </div>
+                    </form>
+                </div>
             </div>
-            <div class="form-group">
-                <label asp-for="TipoFornecedor" class="control-label"></label><br />
-                <input type="radio" value="1" asp-for="TipoFornecedor" checked /> Pessoa Física<br />
-                <input type="radio" value="2" asp-for="TipoFornecedor" /> Pessoa Jurídica
-            </div>
-            <div class="form-group">
-                <label asp-for="Celular" class="control-label"></label>
-                <input asp-for="Celular" class="form-control" />
-                <span asp-validation-for="Celular" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="WhatsApp" class="control-label"></label>
-                <input asp-for="WhatsApp" class="form-control" />
-                <span asp-validation-for="WhatsApp" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Instagram" class="control-label"></label>
-                <input asp-for="Instagram" class="form-control" />
-                <span asp-validation-for="Instagram" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Atualizar" class="btn btn-success" />
-                <a class="btn btn-light" href="javascript:window.history.back();">Voltar</a>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
+
 
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-}
+
+    }
+
+

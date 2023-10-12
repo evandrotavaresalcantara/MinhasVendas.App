@@ -1,100 +1,109 @@
 ﻿@model IEnumerable<MinhasVendas.App.ViewModels.OrdemDeCompraViewModel>
 
 @{
-    ViewData["Title"] = "Ordem De Compra";
+
+
+    Layout = "_Argon";
+
+    ViewData["Title"] = "Compras";
+
+    ViewData["Rota"] = "Compras";
+    ViewData["Acao"] = "Listagem";
+    ViewData["Rotulo"] = "Listagem de Compras";
 }
 
-<h1>Ordem de Compra</h1>
 
 
-
-<p>
-    <a class="btn btn-success" asp-action="Create">Nova Ordem de Compras</a>
-</p>
-
-<div >
-    <form asp-action="Index" method="get">
-        <div class="form-actions no-color">
-            <p>
-            Pesquisa: <input type="text" name="pesquisarTexto" value="@ViewData["FiltroAtual"]" />
-            <input type="submit" value="Search" class="btn btn-default" /> |
-            <a asp-action="Index">Voltar para Lista</a>
-        </p>
+<div class="container-fluid py-4">
+    <div class="d-sm-flex justify-content-between">
+        <div>
+            <a asp-action="Create" class="btn btn-icon btn-outline-white">
+                Nova Compra
+            </a>
+        </div>
+        <div class="d-flex">
+            <div class="dropdown d-inline">
+                <a href="javascript:;" class="btn btn-outline-white dropdown-toggle " data-bs-toggle="dropdown" id="navbarDropdownMenuLink2">
+                    Filtros
+                </a>
+                <ul class="dropdown-menu dropdown-menu-lg-start px-2 py-3" aria-labelledby="navbarDropdownMenuLink2" data-popper-placement="left-start">
+                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Status: Paid</a></li>
+                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Status: Refunded</a></li>
+                    <li><a class="dropdown-item border-radius-md" href="javascript:;">Status: Canceled</a></li>
+                    <li>
+                        <hr class="horizontal dark my-2">
+                    </li>
+                    <li><a class="dropdown-item border-radius-md text-danger" href="javascript:;">Remove Filter</a></li>
+                </ul>
+            </div>
+        </div>
     </div>
-</form>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table table-flush" id="datatable-search">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.Id)
+                                </th>
+                                <th>
+                                    @*@Html.DisplayNameFor(model => model.DataDeCriacao)*@
+                                    <a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["DataDeCriacaoClassificarParam"]" asp-route-filtroAtual="@ViewData["FiltroAtual"]">@Html.DisplayNameFor(model => model.DataDeCriacao)</a>
+                                </th>
+                                <th>
+                                    @*@Html.DisplayNameFor(model => model.StatusOrdemDeCompra)*@
+                                    <a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["StatusOrdemDeCompraClassificarParam"]" asp-route-filtroAtual="@ViewData["FiltroAtual"]">@Html.DisplayNameFor(model => model.StatusOrdemDeCompra)</a>
+                                </th>
+                                <th>
+                                    Fornecedor
+                                </th>
+                                <th>
+                                    Qtd
+                                </th>
+                                <th>
+                                    @Html.DisplayNameFor(model => model.ValorDeFrete)
+                                </th>
+                            </tr>
+
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <p class="text-xs font-weight-bold ms-2 mb-0"># @Html.DisplayFor(modelItem => item.Id)</p>
+                                        </div>
+                                    </td>
+                                    <td class="font-weight-bold">
+                                        <span class="my-2 text-xs">@Html.DisplayFor(modelItem => item.DataDeCriacao)</span>
+                                    </td>
+                                    <td class="text-xs font-weight-bold">
+                                        <div class="d-flex align-items-center">
+                                            <button class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-2 btn-sm d-flex align-items-center justify-content-center"><i class="fas fa-check" aria-hidden="true"></i></button>
+                                            <span>@Html.DisplayFor(modelItem => item.StatusOrdemDeCompra)</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-xs font-weight-bold">
+                                        <div class="d-flex align-items-center">
+                                            <img src="~/argon/assets/img/team-2.jpg" class="avatar avatar-xs me-2" alt="user image">
+                                            <span>@Html.DisplayFor(modelItem => item.Fornecedor.Nome)</span>
+                                        </div>
+                                    </td>
+                                    <td class="text-xs font-weight-bold">
+                                        <span class="my-2 text-xs">@Html.DisplayFor(modelItem => item.DetalheDeCompras.Count)</span>
+                                    </td>
+                                    <td class="text-xs font-weight-bold">
+                                        <span class="my-2 text-xs">@Html.DisplayFor(modelItem => item.ValorDeFrete)</span>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @*@Html.DisplayNameFor(model => model.DataDeCriacao)*@
-                <a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["DataDeCriacaoClassificarParam"]" asp-route-filtroAtual="@ViewData["FiltroAtual"]">@Html.DisplayNameFor(model => model.DataDeCriacao)</a>
-            </th>
-            <th>
-                @*@Html.DisplayNameFor(model => model.StatusOrdemDeCompra)*@
-                <a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["StatusOrdemDeCompraClassificarParam"]" asp-route-filtroAtual="@ViewData["FiltroAtual"]">@Html.DisplayNameFor(model => model.StatusOrdemDeCompra)</a>
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ValorDeFrete)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Fornecedor)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.DataDeCriacao)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StatusOrdemDeCompra)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ValorDeFrete)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Fornecedor.Nome)
-                </td>
-                <td>
-                    <a asp-action="CarrinhoDeCompras" asp-route-id="@item.Id">CarrinhoDeCompras</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-
-
-
-@{
-    var anteriorDesabilitar = !ViewBag.Metada.TemAnterior ? "disabled" : "";
-    var proximoHabilitar = !ViewBag.Metada.TemProxima ? "disabled" : "";
-}
-
-<nav aria-label="Paginacao Ordem de Compras">
-    <ul class="pagination">
-        <li class="page-item  @anteriorDesabilitar">
-            <a class="page-link" asp-action="Index"
-               asp-route-ordemDeClassificacao="@ViewData["ClassificacaoAtual"]"
-               asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual - 1)"
-               asp-route-filtroAtual="@ViewData["FiltroAtual"]">
-               Anterior</a>
-        </li>
-        <li class="page-item @proximoHabilitar">
-            <a class="page-link" asp-action="Index"
-               asp-route-ordemDeClassificacao="@ViewData["ClassificacaoAtual"]"
-               asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual + 1)"
-               asp-route-filtroAtual="@ViewData["FiltroAtual"]">
-               Próximo
-           </a>
-        </li>
-    </ul>
-</nav>
-
-<br />
-
-

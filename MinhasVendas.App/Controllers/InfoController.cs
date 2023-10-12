@@ -236,7 +236,7 @@ namespace MinhasVendas.App.Controllers
 
                     fornecedorViewModel.Documento = $"0{i}-{prefixo}";
                     fornecedorViewModel.Nome = $"0{i}-{prefixo}";
-                    fornecedorViewModel.TipoFornecedor = i % 2 == 0 ? TipoFornecedor.PessoaJuridica : TipoFornecedor.PessoaFisica;
+                    fornecedorViewModel.TipoFornecedor = i % 2 == 0 ? 2 : 1;
                     fornecedorViewModel.Celular = $"0{i}-{prefixo}";
                     fornecedorViewModel.WhatsApp = $"0{i}-{prefixo}";
                     fornecedorViewModel.Instagram = $"0{i}-{prefixo}";
@@ -257,7 +257,7 @@ namespace MinhasVendas.App.Controllers
 
                     fornecedorViewModel.Documento = $"{i}-{prefixo}";
                     fornecedorViewModel.Nome = $"{i}-{prefixo}";
-                    fornecedorViewModel.TipoFornecedor = i % 2 == 0 ? TipoFornecedor.PessoaJuridica : TipoFornecedor.PessoaFisica;
+                    fornecedorViewModel.TipoFornecedor = i % 2 == 0 ? 2 : 1;
                     fornecedorViewModel.Celular = $"{i}-{prefixo}";
                     fornecedorViewModel.WhatsApp = $"{i}-{prefixo}";
                     fornecedorViewModel.Instagram = $"{i}-{prefixo}";
