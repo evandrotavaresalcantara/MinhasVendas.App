@@ -8,6 +8,8 @@ namespace MinhasVendas.App.Interfaces
         Task Atualizar(Produto produto);
         Task Remover(int id);
         Task<IEnumerable<Produto>> ConsultaProdutos();
+
+        Task AtualizarPreco(int id, decimal precoDeCusto, decimal markup, decimal precoDeVenda);
         
     }
 }

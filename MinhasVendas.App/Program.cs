@@ -54,6 +54,8 @@ builder.Services.AddScoped<IOrdemDeVendaRepositorio, OrdemDeVendaRepositorio>();
 builder.Services.AddScoped<IDetalheDeCompraRepositorio, DetalheDeCompraRepositorio>();
 builder.Services.AddScoped<IDetalheDeVendaRepositorio, DetalheDeVendaRepositorio>();
 builder.Services.AddScoped<ITransacaoDeEstoqueRepositorio, TransacaoDeEstoqueRepositorio>();
+builder.Services.AddScoped<IPrecoDeProdutoHistoricoRepositorio, PrecoDeProdutoHistoricoRepositorio>();
+
 
 
 var mapeamentoConfiguracao = new MapperConfiguration(mc =>

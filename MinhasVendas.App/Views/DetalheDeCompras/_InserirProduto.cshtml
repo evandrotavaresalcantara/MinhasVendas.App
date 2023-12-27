@@ -12,8 +12,8 @@
                          {
                              Id = c.Id,
                              NomeProtudo = c.Nome,
-                             Preco = c.PrecoBase,
-                             ProdutoCompleto = c.Nome + " | " + "Custo: R$ " + " " + c.PrecoBase
+                             Preco = c.PrecoDeCusto,
+                             ProdutoCompleto = c.Nome + " | " + "Custo: R$ " + " " + c.PrecoDeCusto
                          });
 
     var meusProdutos = new SelectList(listaProdutos, "Id", "ProdutoCompleto");

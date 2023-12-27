@@ -1,24 +1,36 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MinhasVendas.App.Data;
 using MinhasVendas.App.Interfaces;
+using MinhasVendas.App.Interfaces.Repositorio;
 using MinhasVendas.App.Interfaces.Servico;
+using MinhasVendas.App.Migrations;
 using MinhasVendas.App.Models;
+using MinhasVendas.App.Repositorio;
 
 namespace MinhasVendas.App.Servicos
 {
     public class ProdutoServico : BaseServico, IProdutoServico
     {
         private readonly MinhasVendasAppContext _minhasVendasAppContext;
-        
+        private readonly IProdutoRepositorio _produtoRepositorio;
+        private readonly IPrecoDeProdutoHistoricoRepositorio _precoDeProdutoHistoricoRepositorio;
+        private readonly ITransacaoDeEstoqueServico _transacaoDeEstoqueServico;
+
         public ProdutoServico(MinhasVendasAppContext minhasVendasAppContext,
-                              INotificador notificador): base(notificador)
+                              IProdutoRepositorio produtoRepositorio,
+                              IPrecoDeProdutoHistoricoRepositorio precoDeProdutoHistoricoRepositorio,
+                              ITransacaoDeEstoqueServico transacaoDeEstoqueServico,
+                              INotificador notificador) : base(notificador)
         {
+            _produtoRepositorio = produtoRepositorio;
             _minhasVendasAppContext = minhasVendasAppContext;
+            _precoDeProdutoHistoricoRepositorio = precoDeProdutoHistoricoRepositorio;
+            _transacaoDeEstoqueServico = transacaoDeEstoqueServico;
         }
 
         public async Task Adicionar(Produto produto)
         {
-           
+
             if (_minhasVendasAppContext.Produtos.ToListAsync().Result.Any(p => p.Nome == produto.Nome))
             {
                 Notificar("Já existe um produto com este nome informado.");
@@ -32,14 +44,35 @@ namespace MinhasVendas.App.Servicos
 
         public async Task Atualizar(Produto produto)
         {
-            if (_minhasVendasAppContext.Produtos.AsNoTracking().ToListAsync().Result.Any(p => p.Nome == produto.Nome && p.Id != produto.Id))
+            var produtoDB = await _produtoRepositorio.ObterSemRastreamento().FirstOrDefaultAsync(p => p.Id == produto.Id);
+
+            if (produtoDB == null)
+            {
+                Notificar("Produto não encontrado");
+            }
+
+
+            //if (_minhasVendasAppContext.Produtos.AsNoTracking().ToListAsync().Result.Any(p => p.Nome == produto.Nome && p.Id != produto.Id))
+
+            if (_produtoRepositorio.Obter().AsNoTracking().ToListAsync().Result.Any(p => p.Nome == produto.Nome && p.Id != produto.Id))    
             {
                 Notificar("Já existe um produto com este nome informado.");
                 return;
             }
 
-            _minhasVendasAppContext.Update(produto);
-            await _minhasVendasAppContext.SaveChangesAsync();
+            produtoDB.Nome = produto.Nome;
+            produtoDB.Codigo = produto.Codigo;
+            produtoDB.ProdutoCategoriaId = produto.ProdutoCategoriaId;
+            produtoDB.Descricao = produto.Descricao;
+            produtoDB.Ativo = produto.Ativo;
+            produtoDB.Imagem = produto.Imagem;
+
+            await _produtoRepositorio.Atualizar(produtoDB);
+
+            if ((produtoDB.PrecoDeCusto != produto.PrecoDeCusto) || (produtoDB.MarkUp != produto.MarkUp) || (produtoDB.PrecoDeVenda != produto.PrecoDeVenda))
+            {
+                AtualizarPreco(produto.Id, produto.PrecoDeCusto, produto.MarkUp, produto.PrecoDeVenda);
+            }
 
         }
 
@@ -55,7 +88,81 @@ namespace MinhasVendas.App.Servicos
             throw new NotImplementedException();
         }
 
-        
+        public async Task AtualizarPreco(int id, decimal precoDeCusto, decimal markup, decimal precoDeVenda)
+        {
+
+            var produto = await _produtoRepositorio.ObterPorId(p => p.Id == id);
+
+            if (produto == null)
+            {
+                Notificar("Produto não encontrado");
+                return;
+            }
+
+            if (precoDeCusto < 0 || markup < -101 || precoDeVenda < 0)
+            {
+                Notificar("Dados inconsistentes. Preços menores que zero ou markup abaixo de -101 %");
+                return;
+            }
+
+            if (precoDeCusto == 0 && markup == 0 && precoDeVenda >= 0)
+            {
+                produto.PrecoDeCusto = precoDeCusto;
+                produto.MarkUp = markup;
+                produto.PrecoDeVenda = precoDeVenda;
+
+
+                await _produtoRepositorio.Atualizar(produto);
+
+                var historicoPreco = new PrecoDeProdutoHistorico
+                {
+                    PrecoDeCusto = precoDeCusto,
+                    MarkUp = markup,
+                    PrecoDeVenda = precoDeVenda,
+                    DataAtualizacao = DateTime.Now,
+                    ProdutoId = id,
+                    EstoqueAtual = await _transacaoDeEstoqueServico.EstoqueAtualPorProduto(id)
+                };
+
+                await _precoDeProdutoHistoricoRepositorio.Adicionar(historicoPreco);
+                
+                return;
+
+            }
+
+            var novoPrecoDeVenda = precoDeCusto + (precoDeCusto * markup / 100);
+
+            if (novoPrecoDeVenda == precoDeVenda)
+            {
+                produto.PrecoDeCusto = precoDeCusto;
+                produto.MarkUp = markup;
+                produto.PrecoDeVenda = precoDeVenda;
+
+                await _produtoRepositorio.Atualizar(produto);
+
+
+                var historicoPreco = new PrecoDeProdutoHistorico
+                {
+                    PrecoDeCusto = precoDeCusto,
+                    MarkUp = markup,
+                    PrecoDeVenda = precoDeVenda,
+                    DataAtualizacao = DateTime.Now,
+                    ProdutoId = id,
+                    EstoqueAtual = await _transacaoDeEstoqueServico.EstoqueAtualPorProduto(id)
+                };
+
+                await _precoDeProdutoHistoricoRepositorio.Adicionar(historicoPreco);
+
+            }
+            else
+            {
+                Notificar("Preço não atualizado. Preço de Venda inconsistente");
+            }
+
+
+        }
+
+
 
 
 

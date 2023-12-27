@@ -33,8 +33,8 @@
                                 </div>
                                 <div class="col-12 mt-4">
                                     <div class="d-flex">
-                                        <label class ="btn btn-primary btn-sm mb-0 me-2" for="imagemInput">
-                                          Atualizar Imagem
+                                        <label class="btn btn-primary btn-sm mb-0 me-2" for="imagemInput">
+                                            Atualizar Imagem
                                         </label>
                                         <input asp-for="ImagemUpload" id="imagemInput" accept="image/*" style="display: none;" />
                                         <button class="btn btn-outline-dark btn-sm mb-0" id="removerImagem" type="button" name="button">Remover Imagem</button>
@@ -87,16 +87,22 @@
                             <div class="row">
                                 <h5 class="font-weight-bolder">Valores</h5>
                                 <div class="col-3">
-                                    <label asp-for="PrecoBase"></label>
-                                    <input asp-for="PrecoBase" class="form-control" />
-                                    <span asp-validation-for="PrecoBase" class="text-danger"></span>
+                                    <label asp-for="PrecoDeCusto"></label>
+                                    <input asp-for="PrecoDeCusto" type="number" class="form-control" id="preco-de-custo" />
+                                    <span asp-validation-for="PrecoDeCusto" class="text-danger"></span>
                                 </div>
                                 <div class="col-4">
-                                    <label asp-for="PrecoDeLista"></label>
-                                    <input asp-for="PrecoDeLista" class="form-control" />
-                                    <span asp-validation-for="PrecoDeLista" class="text-danger"></span>
+                                    <label asp-for="MarkUp"></label>
+                                    <input asp-for="MarkUp" type="number" class="form-control" id="markup" />
+                                    <span asp-validation-for="MarkUp" class="text-danger"></span>
                                 </div>
                                 <div class="col-5">
+                                    <label asp-for="PrecoDeVenda"></label>
+                                    <input asp-for="PrecoDeVenda" type="number" class="form-control" id="preco-de-venda" />
+                                    <span asp-validation-for="PrecoDeVenda" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-6">
                                     <label class="control-label"></label> <br />
                                     <input asp-for="Ativo" type="radio" value="true" checked /> Disponível <br />
                                     <input asp-for="Ativo" type="radio" value="false" /> Indisponível <br />
@@ -113,6 +119,15 @@
 </main>
 
 
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+
+
+
 <!--   Core JS Files   -->
 <script src="~/argon/assets/js/core/popper.min.js"></script>
 <script src="~/argon/assets/js/core/bootstrap.min.js"></script>
@@ -121,9 +136,6 @@
 <script src="~/argon/assets/js/plugins/choices.min.js"></script>
 <script src="~/argon/assets/js/plugins/quill.min.js"></script>
 
-<!-- Kanban scripts -->
-<script src="~/argon/assets/js/plugins/dragula/dragula.min.js"></script>
-<script src="~/argon/assets/js/plugins/jkanban/jkanban.js"></script>
 
 <script>
     const imagemInput = document.getElementById('imagemInput');
@@ -150,4 +162,88 @@
         imagemPreview.style.display = 'none';
         removerImagemButton.style.display = 'none';
     });
+</script>
+
+<script>
+    const precoDeCustoInput = document.getElementById('preco-de-custo');
+    const markupInput = document.getElementById('markup');
+    const precoDeVendaInput = document.getElementById('preco-de-venda');
+
+    precoDeCustoInput.addEventListener('input', updatePrecoDeVenda);
+    markupInput.addEventListener('input', updatePrecoDeVendaPorMarkup);
+    precoDeVendaInput.addEventListener('input', updateMarkup);
+
+    function updatePrecoDeVenda() {
+
+        const precoDeCusto = parseFloat(precoDeCustoInput.value);
+        const markup = parseFloat(markupInput.value);
+
+        if (isNaN(precoDeCusto) || precoDeCusto < 0 || precoDeCustoInput.value === '') {
+
+            precoDeCustoInput.value = '';
+            precoDeVendaInput.value = '';
+
+        }
+        else if (markupInput.value === '') {
+
+            precoDeVendaInput.value = precoDeCusto;
+            markupInput.value = ''
+
+        }
+        else {
+            const precoDeVenda = precoDeCusto + (precoDeCusto * (markup / 100));
+            precoDeVendaInput.value = precoDeVenda.toFixed(2);
+        }
+
+    }
+
+    function updatePrecoDeVendaPorMarkup() {
+
+        const precoDeCusto = parseFloat(precoDeCustoInput.value);
+        const markup = parseFloat(markupInput.value);
+
+        
+        if (isNaN(precoDeCusto) || precoDeCusto < 0 || precoDeCustoInput.value === '') {
+            precoDeCustoInput.value = '';
+            precoDeVendaInput.value = '';
+        }
+        else if (markup < -100) {
+
+            precoDeVendaInput.value = precoDeCusto;
+            markupInput.value = '0.00'
+
+        }
+
+        else {
+            const precoDeVenda = precoDeCusto + (precoDeCusto * (markup / 100));
+            precoDeVendaInput.value = precoDeVenda.toFixed(2);
+        }
+
+    }
+
+
+
+
+
+
+
+    function updateMarkup() {
+        const precoDeCusto = parseFloat(precoDeCustoInput.value);
+        const precoDeVenda = parseFloat(precoDeVendaInput.value);
+
+        if (precoDeVenda < 0 || isNaN(precoDeVenda)) {
+            precoDeVendaInput.value = '';
+
+        }
+        else if (precoDeCusto > 0 && precoDeVenda >= 0) {
+            const markup = ((precoDeVenda - precoDeCusto) / precoDeCusto) * 100;
+            markupInput.value = markup.toFixed(2);
+        }
+        else if (precoDeCusto == 0 && precoDeVenda >= 0) {
+            markupInput.value = '0.00'
+        }
+        else {
+            markupInput.value = "";
+        }
+    }
 </script>

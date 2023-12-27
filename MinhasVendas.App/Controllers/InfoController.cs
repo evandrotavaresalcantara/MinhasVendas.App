@@ -14,6 +14,7 @@ using System.IO;
 using System.Net.NetworkInformation;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
+using MinhasVendas.App.Repositorio;
 
 namespace MinhasVendas.App.Controllers
 {
@@ -349,8 +350,8 @@ namespace MinhasVendas.App.Controllers
                 produtoViewModel.Descricao = $"{i}-{prefixo}";
                 produtoViewModel.Ativo = true;
                 produtoViewModel.DataDeCadastro = DateTime.Now;
-                produtoViewModel.PrecoBase = i;
-                produtoViewModel.PrecoDeLista = i * 2;
+                produtoViewModel.PrecoDeCusto = i;
+                produtoViewModel.PrecoDeVenda = i * 2;
                 GeracaoImagem.GerarImagem($"{i}-{prefixo}", $"{i}-{prefixo}");
 
                 string nomeImagem = $"{i}-{prefixo}.png";

@@ -55,8 +55,8 @@
                                 <tr>
                                     <th><a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["NomeClassificarParam"]" asp-route-filtroAtual="@ViewData["FiltroAtual"]">@Html.DisplayNameFor(model => model.Nome)</a></th>
                                     <th><a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["CodigoClassificarParam"]" asp-route-filtroAtual="@ViewData["FiltroAtual"]">@Html.DisplayNameFor(model => model.Codigo)</a></th>
-                                    <th> @Html.DisplayNameFor(model => model.PrecoBase)</th>
-                                    <th> @Html.DisplayNameFor(model => model.PrecoDeLista)</th>
+                                    <th> @Html.DisplayNameFor(model => model.PrecoDeCusto)</th>
+                                    <th> @Html.DisplayNameFor(model => model.PrecoDeVenda)</th>
                                     <th> @Html.DisplayNameFor(model => model.EstoqueAtual)</th>
                                     <th>Ação</th>
                                 </tr>
@@ -75,8 +75,8 @@
                                             </div>
                                         </td>
                                         <td class="text-sm">@Html.DisplayFor(modelItem => item.Codigo)</td>
-                                        <td class="text-sm">@Html.DisplayFor(modelItem => item.PrecoBase)</td>
-                                        <td class="text-sm">@Html.DisplayFor(modelItem => item.PrecoDeLista)</td>
+                                        <td class="text-sm">@Html.DisplayFor(modelItem => item.PrecoDeCusto)</td>
+                                        <td class="text-sm">@Html.DisplayFor(modelItem => item.PrecoDeVenda)</td>
                                         <td>
                                             <span class="badge badge-danger badge-sm">@Html.DisplayFor(modelItem => item.EstoqueAtual)</span>
                                         </td>

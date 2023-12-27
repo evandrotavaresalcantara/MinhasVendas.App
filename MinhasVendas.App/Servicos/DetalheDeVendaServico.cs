@@ -20,7 +20,7 @@ public class DetalheDeVendaServico : BaseServico, IDetalheDeVendaServico
     public async Task Adicionar(DetalheDeVenda detalheDeVenda)
     {        
         var precoUnitario = await _minhasVendasAppContext.Produtos.FirstOrDefaultAsync(p => p.Id == detalheDeVenda.ProdutoId);
-        detalheDeVenda.PrecoUnitario = precoUnitario.PrecoDeLista;
+        detalheDeVenda.PrecoUnitario = (precoUnitario.PrecoDeCusto * (precoUnitario.MarkUp / 100)) + precoUnitario.PrecoDeCusto;
 
         _minhasVendasAppContext.Add(detalheDeVenda);
         await _minhasVendasAppContext.SaveChangesAsync();

@@ -21,6 +21,8 @@ namespace MinhasVendas.App.Data
         public DbSet<TransacaoDeEstoque>? TransacaoDeEstoques { get; set; }
         public DbSet<ClienteEndereco> ClienteEndereco { get; set; } = default!;
         public DbSet<FornecedorEndereco> FornecedorEndereco { get; set; } = default!;
+        public DbSet<PrecoDeProdutoHistorico> PrecoDeProdutoHistoricos { get; set; } = default!;
+
 
     }
 }

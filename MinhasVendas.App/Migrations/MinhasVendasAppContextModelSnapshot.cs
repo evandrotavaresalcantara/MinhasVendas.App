@@ -506,6 +506,37 @@ namespace MinhasVendas.App.Migrations
                     b.ToTable("OrdemDeVendas");
                 });
 
+            modelBuilder.Entity("MinhasVendas.App.Models.PrecoDeProdutoHistorico", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("DataAtualizacao")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("EstoqueAtual")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<decimal>("MarkUp")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("PrecoDeCusto")
+                        .HasColumnType("TEXT");
+
+                    b.Property<decimal>("PrecoDeVenda")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ProdutoId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProdutoId");
+
+                    b.ToTable("PrecoDeProdutoHistoricos");
+                });
+
             modelBuilder.Entity("MinhasVendas.App.Models.Produto", b =>
                 {
                     b.Property<int>("Id")
@@ -532,14 +563,17 @@ namespace MinhasVendas.App.Migrations
                     b.Property<string>("Imagem")
                         .HasColumnType("TEXT");
 
+                    b.Property<decimal>("MarkUp")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("PrecoBase")
+                    b.Property<decimal>("PrecoDeCusto")
                         .HasColumnType("TEXT");
 
-                    b.Property<decimal>("PrecoDeLista")
+                    b.Property<decimal>("PrecoDeVenda")
                         .HasColumnType("TEXT");
 
                     b.Property<int>("ProdutoCategoriaId")
@@ -739,6 +773,17 @@ namespace MinhasVendas.App.Migrations
                     b.Navigation("Cliente");
                 });
 
+            modelBuilder.Entity("MinhasVendas.App.Models.PrecoDeProdutoHistorico", b =>
+                {
+                    b.HasOne("MinhasVendas.App.Models.Produto", "Produto")
+                        .WithMany("PrecoDeProdutoHistoricos")
+                        .HasForeignKey("ProdutoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Produto");
+                });
+
             modelBuilder.Entity("MinhasVendas.App.Models.Produto", b =>
                 {
                     b.HasOne("MinhasVendas.App.Models.ProdutoCategoria", "ProdutoCategoria")
@@ -804,6 +849,8 @@ namespace MinhasVendas.App.Migrations
                     b.Navigation("DetalheDeCompras");
 
                     b.Navigation("DetalheDeVendas");
+
+                    b.Navigation("PrecoDeProdutoHistoricos");
 
                     b.Navigation("TransacaoDeEstoques");
                 });

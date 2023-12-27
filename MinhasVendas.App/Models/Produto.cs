@@ -13,8 +13,11 @@ namespace MinhasVendas.App.Models
         public string Descricao { get; set; } = string.Empty;
         public bool Ativo { get; set; }
         public DateTime DataDeCadastro { get; set; }
-        public decimal PrecoBase { get; set; }
-        public decimal PrecoDeLista { get; set; }
+
+        public decimal PrecoDeCusto { get; set; }
+        public decimal MarkUp { get; set; }
+        public decimal PrecoDeVenda { get; set; }
+
         public string? Imagem { get; set; }
 
         public int EstoqueAtual { get; set; }
@@ -24,5 +27,6 @@ namespace MinhasVendas.App.Models
         public ICollection<DetalheDeVenda>? DetalheDeVendas { get; set; }
         public ICollection<DetalheDeCompra>? DetalheDeCompras { get; set; }
         public ICollection<TransacaoDeEstoque>? TransacaoDeEstoques { get; set; }
+        public ICollection<PrecoDeProdutoHistorico>? PrecoDeProdutoHistoricos { get; set; }
     }
 }

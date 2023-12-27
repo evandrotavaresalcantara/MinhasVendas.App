@@ -18,13 +18,22 @@ namespace MinhasVendas.App.ViewModels
         public bool Ativo { get; set; }
         public DateTime DataDeCadastro { get; set; }
 
+        [Required(ErrorMessage = "# O campo {0} é obrigatório")]
+        //[Range(0, double.MaxValue, ErrorMessage = "# Valor inválido")]
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(18, 2)")]
-        public decimal PrecoBase { get; set; }
+        public decimal PrecoDeCusto { get; set; }
 
+        [Required(ErrorMessage = "# O campo {0} é obrigatório")]
+        //[Range(-101, double.MaxValue, ErrorMessage = "# Valor inválido")]
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal MarkUp { get; set; }
+
+        [Required(ErrorMessage = "# O campo {0} é obrigatório")]
+        //[Range(0, double.MaxValue, ErrorMessage = "# Valor inválido")]
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(18, 2)")]
-        public decimal PrecoDeLista { get; set; }
+        public decimal PrecoDeVenda { get; set; }
 
 
 

@@ -6,6 +6,7 @@ using MinhasVendas.App.Interfaces.Repositorio;
 using MinhasVendas.App.Interfaces.Servico;
 using MinhasVendas.App.Models;
 using MinhasVendas.App.Paginacao;
+using MinhasVendas.App.Repositorio;
 using MinhasVendas.App.ViewModels;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;

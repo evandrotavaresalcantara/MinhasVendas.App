@@ -1,4 +1,5 @@
 ﻿using MinhasVendas.App.Models;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace MinhasVendas.App.ViewModels
@@ -10,10 +11,19 @@ namespace MinhasVendas.App.ViewModels
 
         public int OrdemDeVendaId { get; set; }
         public int ProdutoId { get; set; }
-        //[Range(1, 1000, ErrorMessage = "Valor Inválido")]
+
+
+        [DisplayName("Quantidade")]
+        [Required(ErrorMessage = "# O campo {0} é obrigatório")]
+        [Range(1, int.MaxValue, ErrorMessage = "# Valor Inválido")]
         public int Quantidade { get; set; }
+
+
         public decimal PrecoUnitario { get; set; }
-        [Range(0, 20, ErrorMessage = "Valor Inválido")]
+
+
+        [Required(ErrorMessage = "# O campo {0} é obrigatório")]
+        [Range(0, 20, ErrorMessage = "# Valor inválido")]
         public decimal Desconto { get; set; }
         public bool RegistroTransacaoDeEstoque { get; set; }
         public int TransacaoDeEstoqueId { get; set; }
