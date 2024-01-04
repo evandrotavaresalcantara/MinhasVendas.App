@@ -5,7 +5,10 @@ using MinhasVendas.App.Interfaces.Repositorio;
 using MinhasVendas.App.Interfaces.Servico;
 using MinhasVendas.App.Models;
 using MinhasVendas.App.Models.Enums;
+using MinhasVendas.App.Paginacao;
+using MinhasVendas.App.Repositorio;
 using MinhasVendas.App.ViewModels;
+using Newtonsoft.Json;
 
 namespace MinhasVendas.App.Servicos;
 
@@ -172,4 +175,72 @@ public class OrdemDeVendaServico : BaseServico, IOrdemDeVendaServico
 
     }
 
+    public async Task<string> ObterOrdemVendas(OrdemDeVendasParametros ordemDeVendasParametros)
+    {
+        var ordemVendasQuery = _ordemDeVendaRepositorio.Obter();
+
+        if (!string.IsNullOrWhiteSpace(ordemDeVendasParametros.search))
+        {
+            ordemDeVendasParametros.search = ordemDeVendasParametros.search.ToLower();
+
+            ordemVendasQuery = ordemVendasQuery.Where(c =>
+                c.Cliente.Nome.ToLower().Contains(ordemDeVendasParametros.search) ||
+                c.Cliente.SobreNome.ToLower().Contains(ordemDeVendasParametros.search)
+            );
+        }
+
+        if (Enum.TryParse(ordemDeVendasParametros.Filtro, out StatusOrdemDeVenda resultado))
+        {
+            ordemVendasQuery = ordemVendasQuery.Where(c => c.StatusOrdemDeVenda == resultado);
+        }
+
+
+        if (ordemDeVendasParametros.Ordenacao != null)
+        {
+            var coluna = ordemDeVendasParametros.Ordenacao;
+            var direcao = ordemDeVendasParametros.Direcao;
+
+            switch (coluna)
+            {
+                case 3: 
+                    ordemVendasQuery = direcao == "asc" ?
+                        ordemVendasQuery.OrderBy(c => c.StatusOrdemDeVenda) :
+                        ordemVendasQuery.OrderByDescending(c => c.StatusOrdemDeVenda);
+                    break;
+                case 2:
+                    ordemVendasQuery = direcao == "asc" ?
+                        ordemVendasQuery.OrderBy(c => c.DataDeCriacao) :
+                        ordemVendasQuery.OrderByDescending(c => c.DataDeCriacao);
+                    break;
+            }
+        }
+
+        var totalRegistros = await ordemVendasQuery.CountAsync();
+
+        var data = await ordemVendasQuery
+            .Skip(ordemDeVendasParametros.start)
+            .Take(ordemDeVendasParametros.lenght)
+            .Select(c => new
+            {
+                id = c.Id,
+                nomeclinete = c.Cliente.Nome,
+                datadecriacao = c.DataDeCriacao.ToString("yyyy-MM-dd"),
+                statusOrdemVenda = c.StatusOrdemDeVenda.ToString(),
+                formapagamento = c.FormaDePagamento.ToString(),
+                datapagamento = c.DataDePagamento.HasValue ? c.DataDePagamento.Value.ToString("yyyy-MM-dd") : null,
+
+
+            })
+            .ToListAsync();
+
+        string json = JsonConvert.SerializeObject(new
+        {
+            ordemDeVendasParametros.draw,
+            recordsFiltered = totalRegistros,
+            recordsTotal = totalRegistros,
+            data
+        });
+
+        return json;
+    }
 }

@@ -5,6 +5,10 @@ using MinhasVendas.App.Interfaces.Repositorio;
 using MinhasVendas.App.Interfaces.Servico;
 using MinhasVendas.App.Models;
 using MinhasVendas.App.Models.Enums;
+using MinhasVendas.App.Paginacao;
+using MinhasVendas.App.Repositorio;
+using Newtonsoft.Json;
+using System.Globalization;
 
 namespace MinhasVendas.App.Servicos;
 
@@ -202,5 +206,72 @@ public class OrdemDeCompraServico : BaseServico, IOrdemDeCompraServico
         var ordeDecompraFornecedor = await _ordemDeCompraRepositorio.ObterSemRastreamento().Include(f=> f.Fornecedor).ToListAsync();
      
         return ordeDecompraFornecedor;
+    }
+
+    public async Task<string> ObterOrdemCompras(OrdemDeComprasParametros ordemDeComprasParametros)
+    {
+        IQueryable<OrdemDeCompra> ordemComprasQuery = _ordemDeCompraRepositorio.Obter();
+
+        if (!string.IsNullOrWhiteSpace(ordemDeComprasParametros.search))
+        {
+            ordemDeComprasParametros.search = ordemDeComprasParametros.search.ToLower();
+
+            ordemComprasQuery = ordemComprasQuery.Where(c =>
+                c.Fornecedor.Nome.ToLower().Contains(ordemDeComprasParametros.search) ||
+                c.Fornecedor.Instagram.ToLower().Contains(ordemDeComprasParametros.search)
+            );
+        }
+
+        if (Enum.TryParse(ordemDeComprasParametros.Filtro, out StatusOrdemDeCompra resultado))
+        {
+            ordemComprasQuery = ordemComprasQuery.Where(c => c.StatusOrdemDeCompra == resultado);
+        }
+
+
+        if (ordemDeComprasParametros.Ordenacao != null)
+        {
+            var coluna = ordemDeComprasParametros.Ordenacao;
+            var direcao = ordemDeComprasParametros.Direcao;
+
+            switch (coluna)
+            {
+                case 3:
+                    ordemComprasQuery = direcao == "asc" ?
+                        ordemComprasQuery.OrderBy(c => c.StatusOrdemDeCompra) :
+                        ordemComprasQuery.OrderByDescending(c => c.StatusOrdemDeCompra);
+                    break;
+                case 1:
+                    ordemComprasQuery = direcao == "asc" ?
+                        ordemComprasQuery.OrderBy(c => c.DataDeCriacao) :
+                        ordemComprasQuery.OrderByDescending(c => c.DataDeCriacao);
+                    break;
+            }
+        }
+
+        var totalRegistros = await ordemComprasQuery.CountAsync();
+
+        var data = await ordemComprasQuery
+            .Skip(ordemDeComprasParametros.start)
+            .Take(ordemDeComprasParametros.lenght)
+            .Select(c => new
+            {
+                id = c.Id,
+                nomefornecedor = c.Fornecedor.Nome,
+                datadecriacao = c.DataDeCriacao.ToString("yyyy-MM-dd"),
+                statusOrdemCompra = c.StatusOrdemDeCompra.ToString(),
+                valorfrete = c.ValorDeFrete.ToString("C", new CultureInfo("pt-BR")),
+
+            })
+            .ToListAsync();
+
+        string json = JsonConvert.SerializeObject(new
+        {
+            ordemDeComprasParametros.draw,
+            recordsFiltered = totalRegistros,
+            recordsTotal = totalRegistros,
+            data
+        });
+
+        return json;
     }
 }

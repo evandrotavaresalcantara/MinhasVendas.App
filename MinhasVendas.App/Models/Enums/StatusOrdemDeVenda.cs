@@ -2,8 +2,8 @@
 {
     public enum StatusOrdemDeVenda
     {
-        Orcamento = 0,
-        Vendido = 1,
-        Cancelado = 2
+        Orcamento = 1,
+        Vendido = 2,
+        Cancelado = 3
     }
 }

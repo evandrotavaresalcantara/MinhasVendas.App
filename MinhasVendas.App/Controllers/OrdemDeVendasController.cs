@@ -42,43 +42,9 @@ public class OrdemDeVendasController : BaseController
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<OrdemDeVenda>> Index(string ordemDeClassificacao, string filtroAtual, string pesquisarTexto, int? numeroDePagina, string filtro)
+    public ActionResult<IEnumerable<OrdemDeVenda>> Index()
     {
-        var ordemDeVendasParametros = new OrdemDeVendasParametros() { NumeroDePagina = numeroDePagina ?? 1, TamanhoDePagina = 10 };
-
-        ViewData["ClassificacaoAtual"] = ordemDeClassificacao;
-        ViewData["DataDeVendaClassificarParam"] = String.IsNullOrEmpty(ordemDeClassificacao) ? "dataDeVenda_descendente" : "";
-        ViewData["StatusOrdemDeVendaClassificarParam"] = ordemDeClassificacao == "statusOrdemDeVenda" ? "statusOrdemDeVenda_descendente" : "statusOrdemDeVenda";
-        ViewData["Filtro"] = filtro;
-
-        ordemDeVendasParametros.OrdemDeClassificacao = ordemDeClassificacao;
-        ordemDeVendasParametros.PesquisaTexto = pesquisarTexto;
-        ordemDeVendasParametros.FiltroAtual = filtroAtual;
-        ordemDeVendasParametros.Filtro = filtro;
-
-        ViewData["FiltroAtual"] = ordemDeVendasParametros.PesquisaTexto ?? ordemDeVendasParametros.FiltroAtual;
-
-
-
-
-        var ordemDeVendaCliente = _ordemDeVendaRepositorio.ObterOrdemDeVendasPaginacaoLista(ordemDeVendasParametros);
-
-        var metadata = new
-        {
-            ordemDeVendaCliente.TotalDeItens,
-            ordemDeVendaCliente.TamanhoDaPagina,
-            ordemDeVendaCliente.PaginaAtual,
-            ordemDeVendaCliente.TotalDePaginas,
-            ordemDeVendaCliente.TemProxima,
-            ordemDeVendaCliente.TemAnterior
-
-        };
-
-        ViewBag.Metada = metadata;
-
-        var ordemDeVendaViewModel = _mapper.Map<IEnumerable<OrdemDeVendaViewModel>>(ordemDeVendaCliente);
-
-        return View(ordemDeVendaViewModel);
+        return View();
     }
 
 
@@ -216,5 +182,29 @@ public class OrdemDeVendasController : BaseController
 
         return RedirectToAction("CarrinhoDeVendas", "OrdemDeVendas", new { id = ordemDeVendaBD.Id });
 
+    }
+
+    public async Task<IActionResult> ObterOrdemVendas(int draw, int start, int length, string statusFiltro, 
+                                                     [FromQuery(Name = "search[value]")] string search,
+                                                     [FromQuery(Name = "order[0][column]")] int ordenacao,
+                                                     [FromQuery(Name = "order[0][dir]")] string direcao)
+                                                     
+    {
+
+        var parametros = new OrdemDeVendasParametros();
+
+        parametros.draw = draw;
+        parametros.start = start;
+        parametros.lenght = length;
+        parametros.search = search;
+        parametros.Filtro = statusFiltro;
+        parametros.Ordenacao = ordenacao;
+        parametros.Direcao = direcao;
+
+
+
+        string json = await _ordemDeVendaServico.ObterOrdemVendas(parametros);
+
+        return Content(json, "application/json");
     }
 }

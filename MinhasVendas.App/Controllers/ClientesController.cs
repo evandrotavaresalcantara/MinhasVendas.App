@@ -35,84 +35,12 @@ namespace MinhasVendas.App.Controllers
             _mapper = mapper;
         }
 
-
-
-
-
         [HttpGet]
-        public ActionResult<IEnumerable<OrdemDeCompraViewModel>> Index(string ordemDeClassificacao, string filtroAtual, string pesquisarTexto, int? numeroDePagina)
+        public ActionResult<IEnumerable<OrdemDeCompraViewModel>> Index()
         {
-            var clientesParametros = new ClientesParametros() { NumeroDePagina = numeroDePagina ?? 1, TamanhoDePagina = 30 };
-
-            ViewData["ClassificacaoAtual"] = ordemDeClassificacao;
-            ViewData["NomeClassificarParam"] = String.IsNullOrEmpty(ordemDeClassificacao) ? "nome_descendente" : "";
-            ViewData["CidadeClassificarParam"] = ordemDeClassificacao == "cidade" ? "cidade_descendente" : "cidade";
-
-
-            clientesParametros.OrdemDeClassificacao = ordemDeClassificacao;
-            clientesParametros.PesquisaTexto = pesquisarTexto;
-            clientesParametros.FiltroAtual = filtroAtual;
-
-            ViewData["FiltroAtual"] = clientesParametros.PesquisaTexto ?? clientesParametros.FiltroAtual;
-
-
-
-
-            var clienteEndereco = _clienteRespositorio.ObterClientesPaginacaoLista(clientesParametros);
-
-            var metadata = new
-            {
-                clienteEndereco.TotalDeItens,
-                clienteEndereco.TamanhoDaPagina,
-                clienteEndereco.PaginaAtual,
-                clienteEndereco.TotalDePaginas,
-                clienteEndereco.TemProxima,
-                clienteEndereco.TemAnterior
-
-            };
-
-            ViewBag.Metada = metadata;
-            var clienteViewModel = _mapper.Map<IEnumerable<ClienteViewModel>>(clienteEndereco);
-
-
             return View();
 
-
-            //var options = new JsonSerializerOptions
-            //{
-            //    ReferenceHandler = ReferenceHandler.Preserve,
-            //};
-            //string jsonCliente = JsonSerializer.Serialize(clienteViewModel, options);
-
-            //return Json(jsonCliente);
-
         }
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<OrdemDeCompraViewModel>>> Index2(string ordemDeClassificacao, string filtroAtual, string pesquisarTexto, int? numeroDePagina)
-        {
-            var clientesParametros = new ClientesParametros() { NumeroDePagina = numeroDePagina ?? 1, TamanhoDePagina = 10 };
-
-            ViewData["ClassificacaoAtual"] = ordemDeClassificacao;
-            ViewData["NomeClassificarParam"] = String.IsNullOrEmpty(ordemDeClassificacao) ? "nome_descendente" : "";
-            ViewData["CidadeClassificarParam"] = ordemDeClassificacao == "cidade" ? "cidade_descendente" : "cidade";
-
-
-            clientesParametros.OrdemDeClassificacao = ordemDeClassificacao;
-            clientesParametros.PesquisaTexto = pesquisarTexto;
-            clientesParametros.FiltroAtual = filtroAtual;
-
-            ViewData["FiltroAtual"] = clientesParametros.PesquisaTexto ?? clientesParametros.FiltroAtual;
-
-
-            var clienteEndereco = await _clienteRespositorio.BuscarTodos();
-
-            var clienteViewModel = _mapper.Map<IEnumerable<ClienteViewModel>>(clienteEndereco);
-
-            return View(clienteViewModel);
-        }
-
-
 
         public async Task<IActionResult> Details(int id)
         {
@@ -270,22 +198,26 @@ namespace MinhasVendas.App.Controllers
         }
 
 
-        public async Task<IActionResult> ObterClientes(int draw, int start, int length, [FromQuery(Name = "search[value]")] string search)
+        public async Task<IActionResult> ObterClientes(int draw, int start, int length, string statusFiltro,
+                                                     [FromQuery(Name = "search[value]")] string search,
+                                                     [FromQuery(Name = "order[0][column]")] int ordenacao,
+                                                     [FromQuery(Name = "order[0][dir]")] string direcao)
         {
 
-            var parametros = new OrdemDeVendasParametros();
+            var parametros = new ClientesParametros();
 
             parametros.draw = draw;
             parametros.start = start;
             parametros.lenght = length;
             parametros.search = search;
+            parametros.Filtro = statusFiltro;
+            parametros.Ordenacao = ordenacao;
+            parametros.Direcao = direcao;
 
             string json = await _clienteServico.ObterClientes(parametros);
             
             return Content(json, "application/json");
         }
-
-
 
     }
 }

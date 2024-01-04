@@ -8,6 +8,7 @@ using MinhasVendas.App.Interfaces.Servico;
 using MinhasVendas.App.Models;
 using MinhasVendas.App.Paginacao;
 using MinhasVendas.App.Repositorio;
+using MinhasVendas.App.Servicos;
 using MinhasVendas.App.ViewModels;
 
 namespace MinhasVendas.App.Controllers;
@@ -34,42 +35,9 @@ public class FornecedoresController : BaseController
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<OrdemDeCompraViewModel>> Index(string ordemDeClassificacao, string filtroAtual, string pesquisarTexto, int? numeroDePagina)
+    public ActionResult<IEnumerable<OrdemDeCompraViewModel>> Index()
     {
-        var fornecedoresParametros = new FornecedoresParametros() { NumeroDePagina = numeroDePagina ?? 1, TamanhoDePagina = 10 };
-
-        ViewData["ClassificacaoAtual"] = ordemDeClassificacao;
-        ViewData["NomeClassificarParam"] = String.IsNullOrEmpty(ordemDeClassificacao) ? "nome_descendente" : "";
-        ViewData["CidadeClassificarParam"] = ordemDeClassificacao == "cidade" ? "cidade_descendente" : "cidade";
-
-
-        fornecedoresParametros.OrdemDeClassificacao = ordemDeClassificacao;
-        fornecedoresParametros.PesquisaTexto = pesquisarTexto;
-        fornecedoresParametros.FiltroAtual = filtroAtual;
-
-        ViewData["FiltroAtual"] = fornecedoresParametros.PesquisaTexto ?? fornecedoresParametros.FiltroAtual;
-
-
-
-
-        var fornecedorEndereco = _fornecedorRepositorio.ObterFornecedoresaginacaoLista(fornecedoresParametros);
-
-        var metadata = new
-        {
-            fornecedorEndereco.TotalDeItens,
-            fornecedorEndereco.TamanhoDaPagina,
-            fornecedorEndereco.PaginaAtual,
-            fornecedorEndereco.TotalDePaginas,
-            fornecedorEndereco.TemProxima,
-            fornecedorEndereco.TemAnterior
-
-        };
-
-        ViewBag.Metada = metadata;
-
-        var fornecedorViewModel = _mapper.Map<IEnumerable<FornecedorViewModel>>(fornecedorEndereco);
-
-        return View(fornecedorViewModel);
+        return View();
     }
 
 
@@ -199,5 +167,27 @@ public class FornecedoresController : BaseController
 
         return RedirectToAction("Details", new { id = fornecedorEndereco.FornecedorId });
 
+    }
+
+    public async Task<IActionResult> ObterFornecedores(int draw, int start, int length, string statusFiltro,
+                                                     [FromQuery(Name = "search[value]")] string search,
+                                                     [FromQuery(Name = "order[0][column]")] int ordenacao,
+                                                     [FromQuery(Name = "order[0][dir]")] string direcao)
+    {
+
+        var parametros = new FornecedoresParametros();
+
+
+        parametros.draw = draw;
+        parametros.start = start;
+        parametros.lenght = length;
+        parametros.search = search;
+        parametros.Filtro = statusFiltro;
+        parametros.Ordenacao = ordenacao;
+        parametros.Direcao = direcao;
+
+        string json = await _fornecedorServico.ObterFornecedores(parametros);
+
+        return Content(json, "application/json");
     }
 }

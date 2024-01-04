@@ -44,42 +44,9 @@ public class OrdemDeComprasController : BaseController
 
 
     [HttpGet]
-    public ActionResult<IEnumerable<OrdemDeCompraViewModel>> Index(string ordemDeClassificacao, string filtroAtual, string pesquisarTexto, int? numeroDePagina)
+    public ActionResult<IEnumerable<OrdemDeCompraViewModel>> Index()
     {
-        var ordemDeComprasParametros = new OrdemDeComprasParametros() { NumeroDePagina = numeroDePagina ?? 1, TamanhoDePagina = 10 };
-        
-        ViewData["ClassificacaoAtual"] = ordemDeClassificacao;
-        ViewData["DataDeCriacaoClassificarParam"] = String.IsNullOrEmpty(ordemDeClassificacao) ? "dataDeCriacao_descendente" : "";
-        ViewData["StatusOrdemDeCompraClassificarParam"] = ordemDeClassificacao == "statusOrdemDeCompra" ? "statusOrdemDeCompra_descendente" : "statusOrdemDeCompra";
-
-
-        ordemDeComprasParametros.OrdemDeClassificacao = ordemDeClassificacao;
-        ordemDeComprasParametros.PesquisaTexto = pesquisarTexto;
-        ordemDeComprasParametros.FiltroAtual = filtroAtual;
-
-        ViewData["FiltroAtual"] = ordemDeComprasParametros.PesquisaTexto ?? ordemDeComprasParametros.FiltroAtual;
-
-        
-
-
-        var ordemDeCompraFornecedor = _ordemDeCompraRepositorio.ObterOrdemDecomprasPaginacaoLista(ordemDeComprasParametros);
-
-        var metadata = new
-        {
-            ordemDeCompraFornecedor.TotalDeItens,
-            ordemDeCompraFornecedor.TamanhoDaPagina,
-            ordemDeCompraFornecedor.PaginaAtual,
-            ordemDeCompraFornecedor.TotalDePaginas,
-            ordemDeCompraFornecedor.TemProxima,
-            ordemDeCompraFornecedor.TemAnterior
-
-        };
-
-        ViewBag.Metada = metadata;
-
-        var ordemDeCompraViewModel = _mapper.Map<IEnumerable<OrdemDeCompraViewModel>>(ordemDeCompraFornecedor);
-
-        return View(ordemDeCompraViewModel);
+        return View();
     }
 
 
@@ -197,9 +164,25 @@ public class OrdemDeComprasController : BaseController
         return RedirectToAction("CarrinhoDeCompras", "OrdemDeCompras", new { id = ordemDeCompraBusca.Id });
 
     }
+    public async Task<IActionResult> ObterOrdemCompras(int draw, int start, int length, string statusFiltro,
+                                                     [FromQuery(Name = "search[value]")] string search,
+                                                     [FromQuery(Name = "order[0][column]")] int ordenacao,
+                                                     [FromQuery(Name = "order[0][dir]")] string direcao)
+    {
 
+        var parametros = new OrdemDeComprasParametros();
 
+        parametros.draw = draw;
+        parametros.start = start;
+        parametros.lenght = length;
+        parametros.search = search;
+        parametros.Filtro = statusFiltro;
+        parametros.Ordenacao = ordenacao;
+        parametros.Direcao = direcao;
 
+        string json = await _ordemDeCompraServico.ObterOrdemCompras(parametros);
 
+        return Content(json, "application/json");
+    }
 }
 

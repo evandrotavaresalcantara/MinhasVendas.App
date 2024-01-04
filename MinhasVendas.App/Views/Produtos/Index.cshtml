@@ -2,23 +2,15 @@
 @model IEnumerable<MinhasVendas.App.ViewModels.ProdutoViewModel>
 
 @{
+    Layout = "_Argon";
+    
     ViewData["Title"] = "Produtos";
 
     ViewData["Rota"] = "Produtos";
     ViewData["Acao"] = "Listagem";
     ViewData["Rotulo"] = "Listagem de Produtos";
 
-    Layout = "_Argon";
 }
-
-}
-
-@{
-    var anteriorDesabilitar = !ViewBag.Metada.TemAnterior ? "disabled" : "";
-    var proximoHabilitar = !ViewBag.Metada.TemProxima ? "disabled" : "";
-}
-
-
 
 <div class="container-fluid py-4">
     <div class="row">
@@ -29,98 +21,59 @@
                     <div class="d-lg-flex">
                         <div>
                             <h5 class="mb-0">Produtos</h5>
-                            <div>
-                                <form asp-action="Index" method="get">
-                                    <div class="form-actions no-color">
-                                        <p>
-                                            <input type="text" name="pesquisarTexto" value="@ViewData["FiltroAtual"]" />
-                                            <input type="submit" value="Pesquisar" class="btn bg-gradient-primary btn-sm mb-0" />
-                                            <a class="btn bg-gradient-light btn-sm mb-0" asp-action="Index">Limpar Filtro</a>
-                                        </p>
-                                    </div>
-                                </form>
-                            </div>
+                            <p class="text-sm mb-0">
+                                Listagem
+                            </p>
                         </div>
                         <div class="ms-auto my-auto mt-lg-0 mt-4">
                             <div class="ms-auto my-auto">
-                                <a asp-action="Create" class="btn bg-gradient-primary btn-sm mb-0">+&nbsp; Novo Produto</a>
+                                <a asp-action="Create" class="btn bg-gradient-primary btn-sm mb-0">Novo Produto</a>
+                                    <div class="dropdown d-inline">
+                                    <a href="javascript:;" class="btn btn-outline-primary btn-sm mb-0 mt-sm-0 mt-1 dropdown-toggle" data-bs-toggle="dropdown" id="navbarDropdownMenuLink2">
+                                           Filtro
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-lg-start px-2 py-3" aria-labelledby="navbarDropdownMenuLink2" data-popper-placement="left-start">
+                                            <li>
+                                            <a class="dropdown-item border-radius-md status-filter"
+                                                   data-status-filtro="50">
+                                                    Preço: Abaixo de 50
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item border-radius-md status-filter"
+                                                   data-status-filtro="100">
+                                                   Preço: Abaixo de 100
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item border-radius-md status-filter"
+                                                  data-status-filtro="150">
+                                                  Preço: Abaixo de 150
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <hr class="horizontal dark my-2">
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item border-radius-md text-danger clear-filter"
+                                                    data-status-filtro="Filtro">
+                                                    Remover Filtro
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="card-body px-0 pb-0">
                     <div class="table-responsive">
-                        <table class="table table-flush" id="products-list">
+                        <table class="table table-flush hover compact" id="produtos-listagem">
                             <thead class="thead-light">
-                                <tr>
-                                    <th><a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["NomeClassificarParam"]" asp-route-filtroAtual="@ViewData["FiltroAtual"]">@Html.DisplayNameFor(model => model.Nome)</a></th>
-                                    <th><a asp-action="Index" asp-route-ordemDeClassificacao="@ViewData["CodigoClassificarParam"]" asp-route-filtroAtual="@ViewData["FiltroAtual"]">@Html.DisplayNameFor(model => model.Codigo)</a></th>
-                                    <th> @Html.DisplayNameFor(model => model.PrecoDeCusto)</th>
-                                    <th> @Html.DisplayNameFor(model => model.PrecoDeVenda)</th>
-                                    <th> @Html.DisplayNameFor(model => model.EstoqueAtual)</th>
-                                    <th>Ação</th>
-                                </tr>
                             </thead>
                             <tbody>
-                                @foreach (var item in Model)
-                                {
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex">
-                                                <div class="form-check my-auto">
-                                                    <input class="form-check-input" type="checkbox" id="customCheck1" checked>
-                                                </div>
-                                                <img class="w-10 ms-3" src="./imagensProdutos/@item.Imagem" alt="@item.Imagem">
-                                                <h6 class="ms-3 my-auto">@Html.DisplayFor(modelItem => item.Nome)</h6>
-                                            </div>
-                                        </td>
-                                        <td class="text-sm">@Html.DisplayFor(modelItem => item.Codigo)</td>
-                                        <td class="text-sm">@Html.DisplayFor(modelItem => item.PrecoDeCusto)</td>
-                                        <td class="text-sm">@Html.DisplayFor(modelItem => item.PrecoDeVenda)</td>
-                                        <td>
-                                            <span class="badge badge-danger badge-sm">@Html.DisplayFor(modelItem => item.EstoqueAtual)</span>
-                                        </td>
-                                        <td class="text-sm">
-                                            <!-- Faltar Habilitar o tooolip -->
-                                            <a asp-action="Details" asp-route-id="@item.Id" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Preview product">
-                                                <i class="fas fa-eye text-secondary"></i>
-                                            </a>
-                                            <a asp-action="Edit" asp-route-id="@item.Id" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Edit product">
-                                                <i class="fas fa-user-edit text-secondary"></i>
-                                            </a>
-                                            <a asp-action="Delete" asp-route-id="@item.Id" class="mx-3" data-bs-toggle="tooltip" data-bs-original-title="Delete product">
-                                                <i class="fas fa-trash text-secondary"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                }
                             </tbody>
-                            <tfoot>
-                            </tfoot>
                         </table>
-                        <nav aria-label="Page navigation example">
-                            <ul class="pagination justify-content-center">
-                                <li class="">
-                                    Página @ViewBag.Metada.PaginaAtual de @ViewBag.Metada.TotalDePaginas
-                                </li>
-                                <li class="page-item @anteriorDesabilitar">
-                                    <a class="page-link" asp-action="Index"
-                                       asp-route-ordemDeClassificacao="@ViewData["ClassificacaoAtual"]"
-                                       asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual - 1)"
-                                       asp-route-filtroAtual="@ViewData["FiltroAtual"]" tabindex="-1">
-                                        <i class="fa fa-angle-left"></i>
-                                    </a>
-                                </li>
-                                <li class="page-item @proximoHabilitar">
-                                    <a class="page-link" asp-action="Index"
-                                       asp-route-ordemDeClassificacao="@ViewData["ClassificacaoAtual"]"
-                                       asp-route-numeroDePagina="@(ViewBag.Metada.PaginaAtual + 1)"
-                                       asp-route-filtroAtual="@ViewData["FiltroAtual"]">
-                                        <i class="fa fa-angle-right"></i>
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
                     </div>
                 </div>
             </div>
@@ -129,13 +82,73 @@
 </div>
 
 
+
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+
 
     <script>
 
-    </script>
+        $(document).ready(function () {
 
+            var statusFiltro = ''; // Variável para armazenar o valor do filtro de status
+
+            // Evento ao clicar em um filtro de status
+            $('.status-filter').on('click', function () {
+                statusFiltro = $(this).data('status-filtro');
+                tabelaProdutos.draw(); // Redesenha a tabela ao aplicar um filtro de status
+
+                $('#navbarDropdownMenuLink2').text('Preço: ' + statusFiltro);
+            });
+
+            // Evento ao clicar em 'Remover Filtro'
+            $('.clear-filter').on('click', function () {
+                statusFiltro = $(this).data('status-filtro');    // Limpa o filtro de status
+                tabelaProdutos.draw(); // Redesenha a tabela para mostrar todos os resultados
+
+                $('#navbarDropdownMenuLink2').text(statusFiltro);
+            });
+
+
+            var tabelaProdutos = $('#produtos-listagem').DataTable({
+
+                serverSide: true,
+                processing: true,
+                search: {
+                    return: false,
+                },
+                ordering: true,
+                scrollY: 400,
+              
+                ajax: {
+                    url: '/Produtos/ObterProdutos',
+                    data: function (d) {
+                            d.statusFiltro = statusFiltro;
+                    }
+                },
+
+                columns: [
+                    
+                    {
+                        data: null, title: '',
+                        render: function (data, type, full, meta) {
+                            return '<a href="/Produtos/Details/' + data.id + '" title="Produto detalhe"><i class="fas fa-eye text-secondary"></i></a> ' +
+                                '<a href="/Produtos/Edit/' + data.id + '" title="Produto Editar"><i class="fas fa-user-edit text-secondary"></i></a>' +
+                                '<a href="/Produtos/Delete/' + data.id + '" title="Produto excluir"><i class="fas fa-trash text-secondary"></i></a>';
+                        }
+                    },
+                    { data: 'categoria', title: 'Categoria', orderable: true },
+                    { data: 'nome', title: 'Nome', orderable: false },
+                    { data: 'codigo', title: 'Código', orderable: false },
+                    { data: 'estoqueatual', title: 'Estoque', orderable: true },
+                    { data: 'precovenda', title: 'Preço', orderable: false },
+                   
+                ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json'
+                }
+            });
+        });
+    </script>
 }
+
+

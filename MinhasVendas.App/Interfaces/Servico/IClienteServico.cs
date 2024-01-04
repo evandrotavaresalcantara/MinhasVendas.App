@@ -10,7 +10,7 @@ namespace MinhasVendas.App.Interfaces.Servico
         Task Atualizar(Cliente cliente);
         Task Remover(int id);
 
-        Task<string> ObterClientes(OrdemDeVendasParametros ordemDeVendasParametros);
+        Task<string> ObterClientes(ClientesParametros clientesParametros);
 
     }
 }

@@ -15,6 +15,7 @@ using MinhasVendas.App.Models;
 using MinhasVendas.App.Models.Enums;
 using MinhasVendas.App.Paginacao;
 using MinhasVendas.App.Repositorio;
+using MinhasVendas.App.Servicos;
 using MinhasVendas.App.ViewModels;
 
 namespace MinhasVendas.App.Controllers
@@ -43,65 +44,10 @@ namespace MinhasVendas.App.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<ProdutoViewModel>> Index(string ordemDeClassificacao, string filtroAtual, string pesquisarTexto, int? numeroDePagina)
+        public ActionResult<IEnumerable<ProdutoViewModel>> Index()
         {
-            var produtosParametros = new ProdutosParametros() { NumeroDePagina = numeroDePagina ?? 1, TamanhoDePagina = 10 };
-
-            ViewData["ClassificacaoAtual"] = ordemDeClassificacao;
-            ViewData["NomeClassificarParam"] = String.IsNullOrEmpty(ordemDeClassificacao) ? "nome_descendente" : "";
-            ViewData["CodigoClassificarParam"] = ordemDeClassificacao == "codigo" ? "codigo_descendente" : "codigo";
-
-
-            produtosParametros.OrdemDeClassificacao = ordemDeClassificacao;
-            produtosParametros.PesquisaTexto = pesquisarTexto;
-            produtosParametros.FiltroAtual = filtroAtual;
-
-            ViewData["FiltroAtual"] = produtosParametros.PesquisaTexto ?? produtosParametros.FiltroAtual;
-
-
-            var qtdCompraEVenda =
-                   from produtoQtd in _context.TransacaoDeEstoques
-                   group produtoQtd by produtoQtd.ProdutoId into produtoGroup
-                   select new
-                   {
-                       produtoGroup.Key,
-                       totalProdutoComprado = produtoGroup.Where(p => p.TipoDransacaoDeEstoque == TipoDransacaoDeEstoque.Compra).Sum(p => p.Quantidade),
-                       totalProdutoVendido = produtoGroup.Where(p => p.TipoDransacaoDeEstoque == TipoDransacaoDeEstoque.Venda).Sum(p => p.Quantidade),
-                   };
-
-
-            var listaPaginadaProdutos = _produtoRepositorio.ObterProdutosPaginacaoLista(produtosParametros);
-
-            var metadata = new
-            {
-                listaPaginadaProdutos.TotalDeItens,
-                listaPaginadaProdutos.TamanhoDaPagina,
-                listaPaginadaProdutos.PaginaAtual,
-                listaPaginadaProdutos.TotalDePaginas,
-                listaPaginadaProdutos.TemProxima,
-                listaPaginadaProdutos.TemAnterior
-
-            };
-
-
-            foreach (var produto in listaPaginadaProdutos)
-            {
-                var item = qtdCompraEVenda.FirstOrDefault(p => p.Key == produto.Id);
-
-                if (item == null) continue;
-
-                produto.EstoqueAtual = item.totalProdutoComprado - item.totalProdutoVendido;
-            }
-
-
-
-            ViewBag.Metada = metadata;
-
-            var produtosViewModel = _mapper.Map<IEnumerable<ProdutoViewModel>>(listaPaginadaProdutos);
-
    
-
-            return View(produtosViewModel);
+            return View();
         }
 
 
@@ -288,6 +234,27 @@ namespace MinhasVendas.App.Controllers
             }
 
             return true;
+        }
+
+        public async Task<IActionResult> ObterProdutos(int draw, int start, int length, int statusFiltro,
+                                                     [FromQuery(Name = "search[value]")] string search,
+                                                     [FromQuery(Name = "order[0][column]")] int ordenacao,
+                                                     [FromQuery(Name = "order[0][dir]")] string direcao)
+        {
+
+            var parametros = new ProdutosParametros();
+
+            parametros.draw = draw;
+            parametros.start = start;
+            parametros.lenght = length;
+            parametros.search = search;
+            parametros.Filtro = statusFiltro;
+            parametros.Ordenacao = ordenacao;
+            parametros.Direcao = direcao;
+
+            string json = await _produtoServico.ObterProdutos(parametros);
+
+            return Content(json, "application/json");
         }
     }
 }

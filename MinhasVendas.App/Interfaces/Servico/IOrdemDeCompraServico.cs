@@ -1,4 +1,5 @@
 ﻿using MinhasVendas.App.Models;
+using MinhasVendas.App.Paginacao;
 
 namespace MinhasVendas.App.Interfaces
 {
@@ -18,6 +19,8 @@ namespace MinhasVendas.App.Interfaces
         Task<IEnumerable<OrdemDeCompra>> ConsultaOrdemDeCompraFornecedor();
         Task<OrdemDeCompra> ConsultaOrdemDeCompraDetalheDeCompra(int id);
         Task<OrdemDeCompra> ConsultaOrdemDeCompra(int id);
+
+        Task<string> ObterOrdemCompras(OrdemDeComprasParametros ordemDeComprasParametros);
 
     }
 }

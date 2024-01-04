@@ -1,0 +1,155 @@
+﻿@using Newtonsoft.Json
+@model IEnumerable<MinhasVendas.App.ViewModels.ProdutoViewModel>
+
+@{
+    Layout = "_Argon";
+    
+    ViewData["Title"] = "Produtos";
+
+    ViewData["Rota"] = "Produtos";
+    ViewData["Acao"] = "Listagem";
+    ViewData["Rotulo"] = "Listagem de Produtos";
+
+}
+
+}
+
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <!-- Card header -->
+                <div class="card-header pb-0">
+                    <div class="d-lg-flex">
+                        <div>
+                            <h5 class="mb-0">Proutos</h5>
+                            <p class="text-sm mb-0">
+                                Listagem
+                            </p>
+                        </div>
+                        <div class="ms-auto my-auto mt-lg-0 mt-4">
+                            <div class="ms-auto my-auto">
+                                <div class="d-flex">
+                                    <div class="dropdown d-inline">
+                                        <a href="javascript:;" class="btn btn-outline-white btn-sm dropdown-toggle" data-bs-toggle="dropdown" id="navbarDropdownMenuLink2">
+                                            @(ViewData["Filtro"] ?? "Todos")
+                                        </a>
+                                        <ul class="dropdown-menu dropdown-menu-lg-start px-2 py-3" aria-labelledby="navbarDropdownMenuLink2" data-popper-placement="left-start">
+                                            <li>
+                                                <a class="dropdown-item border-radius-md status-filter"
+                                                   data-status-filtro="Orcamento">
+                                                    Status: Orçamento
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item border-radius-md status-filter"
+                                                   data-status-filtro="Vendido">
+                                                    Status: Vendido
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item border-radius-md status-filter"
+                                                   data-status-filtro="Cancelado">
+                                                    Status: Cancelado
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <hr class="horizontal dark my-2">
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item border-radius-md text-danger clear-filter">
+                                                    Remover Filtro
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <a asp-action="Create" class="btn bg-gradient-primary btn-sm mb-0">Novo Produto</a>
+                                <button class="btn btn-outline-primary btn-sm export mb-0 mt-sm-0 mt-1" data-type="csv" type="button" name="button">Exportar</button>
+                            </div>
+                            
+
+                    </div>
+                </div>
+                <div class="card-body px-0 pb-0">
+                    <div class="table-responsive">
+                        <table class="table table-flush hover compact" id="produtos-listagem">
+                            <thead class="thead-light">
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+
+    <script>
+
+        $(document).ready(function () {
+
+            var statusFiltro = ''; // Variável para armazenar o valor do filtro de status
+
+            // Evento ao clicar em um filtro de status
+            $('.status-filter').on('click', function () {
+                statusFiltro = $(this).data('status-filtro');
+                tabelaProdutos.draw(); // Redesenha a tabela ao aplicar um filtro de status
+            });
+
+            // Evento ao clicar em 'Remover Filtro'
+            $('.clear-filter').on('click', function () {
+                statusFiltro = ''; // Limpa o filtro de status
+                tabelaProdutos.draw(); // Redesenha a tabela para mostrar todos os resultados
+            });
+
+            
+            var tabelaProdutos = $('#produtos-listagem').DataTable({
+
+                serverSide: true,
+                processing: true,
+                search: {
+                    return: false,
+                },
+                ordering: false,
+                scrollY: 400,
+
+                ajax: {
+                    url: '/Produtos/ObterProdutos',
+                    data: function (d) {
+                        // Adiciona o filtro de status apenas se estiver definido
+                            d.statusFiltro = statusFiltro;
+                    }
+                },
+                columns: [
+                    {
+                        data: null, title: null,
+                        render: function (data, type, full, meta) {
+                            return '<a href="/Produtos/Details/' + data.id + '" title="Produto detalhe"><i class="fas fa-eye text-secondary"></i></a> ' +
+                                '<a href="/Produtos/Edit/' + data.id + '" title="Produto Editar"><i class="fas fa-user-edit text-secondary"></i></a>' +
+                                '<a href="/Produtos/Delete/' + data.id + '" title="Produto excluir"><i class="fas fa-trash text-secondary"></i></a>';
+                        }
+                    },
+                    { data: 'categoria', title: 'Categoria' },
+                    { data: 'nome', title: 'Nome' },
+                    { data: 'codigo', title: 'Código' },
+                    { data: 'estoqueatual', title: 'Estoque' },
+                    { data: 'precovenda', title: 'Preço' }
+                   
+                ],
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/pt-BR.json'
+                }
+            });
+        });
+    </script>
+}
+
+

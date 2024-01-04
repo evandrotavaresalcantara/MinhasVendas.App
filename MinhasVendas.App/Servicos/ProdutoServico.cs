@@ -5,7 +5,11 @@ using MinhasVendas.App.Interfaces.Repositorio;
 using MinhasVendas.App.Interfaces.Servico;
 using MinhasVendas.App.Migrations;
 using MinhasVendas.App.Models;
+using MinhasVendas.App.Models.Enums;
+using MinhasVendas.App.Paginacao;
 using MinhasVendas.App.Repositorio;
+using Newtonsoft.Json;
+using System.Globalization;
 
 namespace MinhasVendas.App.Servicos
 {
@@ -162,10 +166,77 @@ namespace MinhasVendas.App.Servicos
 
         }
 
+        public async Task<string> ObterProdutos(ProdutosParametros produtosParametros)
+        {
+            IQueryable<Produto> ordemVendasQuery = _produtoRepositorio.Obter().Include(c => c.ProdutoCategoria);
+
+            if (!string.IsNullOrWhiteSpace(produtosParametros.search))
+                {
+                produtosParametros.search = produtosParametros.search.ToLower();
+
+                    ordemVendasQuery = ordemVendasQuery.Where(c =>
+                        c.Nome.ToLower().Contains(produtosParametros.search) ||
+                        c.Codigo.ToLower().Contains(produtosParametros.search)
+                    );
+                }
+
+            var filtro = produtosParametros.Filtro;
+
+            if (filtro == 50 || filtro == 100 || filtro == 150)
+            {
+                ordemVendasQuery = ordemVendasQuery.Where(c => c.PrecoDeVenda <= filtro);
+            }
 
 
+            if (produtosParametros.Ordenacao != null)
+            {
+                var coluna = produtosParametros.Ordenacao;
+                var direcao = produtosParametros.Direcao;
 
+                switch (coluna)
+                {
+                    case 1:
+                        ordemVendasQuery = direcao == "asc" ?
+                            ordemVendasQuery.OrderBy(c => c.ProdutoCategoria.Nome) :
+                            ordemVendasQuery.OrderByDescending(c => c.ProdutoCategoria.Nome);
+                        break;
+                    case 4:
+                        ordemVendasQuery = direcao == "asc" ?
+                            ordemVendasQuery.OrderBy(c => c.EstoqueAtual) :
+                            ordemVendasQuery.OrderByDescending(c => c.EstoqueAtual);
+                        break;
+                }
+            }
 
+            var totalRegistros = await ordemVendasQuery.CountAsync();
 
+                var data = await ordemVendasQuery
+                    .Skip(produtosParametros.start)
+                    .Take(produtosParametros.lenght)
+                    .Select(c => new
+                    {
+                        id = c.Id,
+                        categoria = c.ProdutoCategoria.Nome,
+                        nome = c.Nome,
+                        codigo = c.Codigo,
+                        imagem = c.Imagem,
+                        precocusto = c.PrecoDeCusto.ToString("C", new CultureInfo("pt-BR")),
+                        precovenda = c.PrecoDeVenda.ToString("C", new CultureInfo("pt-BR")),
+                        estoqueatual = c.EstoqueAtual,
+
+                    })
+                    .ToListAsync();
+
+                string json = JsonConvert.SerializeObject(new
+                {
+                    produtosParametros.draw,
+                    recordsFiltered = totalRegistros,
+                    recordsTotal = totalRegistros,
+                    data
+                });
+
+                return json;
+            }
+        
     }
 }

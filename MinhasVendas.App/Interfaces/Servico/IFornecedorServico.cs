@@ -1,4 +1,5 @@
 ﻿using MinhasVendas.App.Models;
+using MinhasVendas.App.Paginacao;
 
 namespace MinhasVendas.App.Interfaces
 {
@@ -7,6 +8,6 @@ namespace MinhasVendas.App.Interfaces
         Task Adicionar(Fornecedor fornecedor);
         Task Atualizar(Fornecedor fornecedor);
         Task Remover(int id);
-
+        Task<string> ObterFornecedores(FornecedoresParametros fornecedoresParametros);
     }
 }

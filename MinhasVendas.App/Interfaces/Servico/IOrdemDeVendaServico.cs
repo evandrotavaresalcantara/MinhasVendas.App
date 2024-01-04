@@ -1,4 +1,5 @@
 ﻿using MinhasVendas.App.Models;
+using MinhasVendas.App.Paginacao;
 
 namespace MinhasVendas.App.Interfaces
 {
@@ -16,5 +17,6 @@ namespace MinhasVendas.App.Interfaces
 
         Task InserirFrete(OrdemDeVenda ordemDeVenda);
         Task InserirFrete(int id);
+        Task<string> ObterOrdemVendas(OrdemDeVendasParametros ordemDeVendasParametros);
     }
 }
