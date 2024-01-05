@@ -65,7 +65,7 @@ namespace MinhasVendas.App.Controllers
 
                 if (resultado.Succeeded)
                 {
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Produtos");
                 }
 
                 ModelState.AddModelError(string.Empty, "Login Inválido");
