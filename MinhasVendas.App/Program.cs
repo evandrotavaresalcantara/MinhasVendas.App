@@ -12,7 +12,8 @@ using MinhasVendas.App.Repositorio;
 using MinhasVendas.App.Servicos;
 using System;
 using System.Globalization;
-//
+
+//  arquivoTeste.db inserido através do KUDU em seguida executando um deploy através do gitgub
 
 var builder = WebApplication.CreateBuilder(args);
 
