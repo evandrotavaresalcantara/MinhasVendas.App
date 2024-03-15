@@ -184,7 +184,8 @@ namespace MinhasVendas.App.Servicos
 
             if (filtro == 50 || filtro == 100 || filtro == 150)
             {
-                ordemVendasQuery = ordemVendasQuery.Where(c => c.PrecoDeVenda <= filtro);
+                decimal padrao = 20;
+                ordemVendasQuery = ordemVendasQuery.Where(c => c.PrecoDeVenda <= padrao);
             }
 
 
