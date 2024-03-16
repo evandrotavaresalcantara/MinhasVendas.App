@@ -186,7 +186,7 @@ namespace MinhasVendas.App.Servicos
             {
                
 
-               ordemVendasQuery = ordemVendasQuery.Where(c => c.PrecoDeVenda == 10);
+               ordemVendasQuery = ordemVendasQuery.Where(c => c.PrecoDeVenda <= filtro);
             }
 
 
