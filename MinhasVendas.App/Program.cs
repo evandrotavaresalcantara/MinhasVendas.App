@@ -15,13 +15,15 @@ using System.Globalization;
 
 //  arquivoTeste.db inserido através do KUDU em seguida executando um deploy através do gitgub
 
-//builder.Services.AddDbContext<MinhasVendasAppContext>(options =>
-                //options.UseSqlite(builder.Configuration.GetConnectionString("MinhaConexao")));
+
 
 var builder = WebApplication.CreateBuilder(args);
 
+//builder.Services.AddDbContext<MinhasVendasAppContext>(options =>
+ //   options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")));
+
 builder.Services.AddDbContext<MinhasVendasAppContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")));
+options.UseSqlite(builder.Configuration.GetConnectionString("MinhaConexao")));
 
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
