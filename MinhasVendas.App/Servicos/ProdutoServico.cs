@@ -3,7 +3,6 @@ using MinhasVendas.App.Data;
 using MinhasVendas.App.Interfaces;
 using MinhasVendas.App.Interfaces.Repositorio;
 using MinhasVendas.App.Interfaces.Servico;
-using MinhasVendas.App.Migrations;
 using MinhasVendas.App.Models;
 using MinhasVendas.App.Models.Enums;
 using MinhasVendas.App.Paginacao;

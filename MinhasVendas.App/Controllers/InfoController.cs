@@ -58,6 +58,7 @@ namespace MinhasVendas.App.Controllers
                                   IOrdemDeCompraServico ordemDeCompraServico,
                                   IOrdemDeVendaRepositorio ordemDeVendaRepositorio,
                                   IOrdemDeVendaServico ordemDeVendaServico,
+
                                   INotificador notificador) : base(notificador)
         {
             _minhasVendasAppContext = minhasVendasAppContext;

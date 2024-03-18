@@ -17,11 +17,11 @@ using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.Services.AddDbContext<MinhasVendasAppContext>(options =>
-///    options.UseSqlServer(builder.Configuration.GetConnectionString("MinhasVendasAppContext") ?? throw new InvalidOperationException("Connection string 'MinhasVendasAppContext' not found.")));
-
 builder.Services.AddDbContext<MinhasVendasAppContext>(options =>
-                options.UseSqlite(builder.Configuration.GetConnectionString("MinhaConexao")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("MinhaConexaoSqlServer") ?? throw new InvalidOperationException("Connection string 'MinhasVendasAppContext' not found.")));
+
+//builder.Services.AddDbContext<MinhasVendasAppContext>(options =>
+                //options.UseSqlite(builder.Configuration.GetConnectionString("MinhaConexao")));
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<MinhasVendasAppContext>();
