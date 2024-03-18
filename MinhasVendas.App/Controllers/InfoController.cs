@@ -466,6 +466,35 @@ namespace MinhasVendas.App.Controllers
 
             return View("Resultado");
         }
+
+        [HttpPost]
+        public async Task<IActionResult> GerenciarProdutoCategoria(int excluir, int quantidade)
+        {
+
+            if (excluir == 1)
+            {
+                if (_produtoCategoriaRepositorio.Obter().Any())
+                {
+                    var produtoCategoriasDB = _produtoCategoriaRepositorio.Obter().ToList();
+
+                    _minhasVendasAppContext.RemoveRange(produtoCategoriasDB);
+                    _minhasVendasAppContext.SaveChanges();
+
+                    ViewBag.Resultado = "Todas as categorias foram Removidas.";
+
+                    return View("Resultado");
+                }
+            }
+
+
+            await _produtoCategoriaRepositorio.Adicionar(new Models.ProdutoCategoria { Nome = "Categoria", Descricao = "Descricao", Produtos = null });
+           
+
+            ViewBag.Resultado = "Dados Carregado com sucesso!";
+
+
+            return View("Resultado");
+        }
     }
 }
 

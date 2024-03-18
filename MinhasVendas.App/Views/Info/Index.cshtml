@@ -4,7 +4,7 @@
 
 <div class="text-center">
     <vc:resumo></vc:resumo>
-    <h2 class="display-4">Informações e Definicões do Sistema - Desenvolviemntoo </h2>
+    <h2 class="display-4">Informações e Definicões do Sistema - Desenvolviemnto </h2>
     <hr />
     <p>@ViewBag.Info</p>
     <p>@ViewBag.Path</p>
@@ -49,6 +49,19 @@
             </form><br />
             <form asp-action="GerenciarProdutos" method="post">
                 <label class="control-label">Criar Produtos:</label>
+                <input name="quantidade" class="form-control" placeholder=" Informe a Qtd" />
+                <input type="submit" value="Criar" class="btn btn-success" />
+            </form>
+        </div>
+        <div class="col-md-2 border p-2 m-2">
+            <strong>Produto Categorias: @ViewBag.TotalProdutos</strong>
+            <form asp-action="GerenciarProdutoCategorias" method="post">
+                <label class="control-label">Excluir Produto Categoria:</label>
+                <input name="excluir" class="form-control" placeholder=" (1) para Sim" />
+                <input type="submit" value="Excluir" class="btn btn-danger" />
+            </form><br />
+            <form asp-action="GerenciarProdutos" method="post">
+                <label class="control-label">Criar Produto Categoria:</label>
                 <input name="quantidade" class="form-control" placeholder=" Informe a Qtd" />
                 <input type="submit" value="Criar" class="btn btn-success" />
             </form>
