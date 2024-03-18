@@ -214,8 +214,8 @@ namespace MinhasVendas.App.Servicos
 
             var totalRegistros = await ordemVendasQuery.CountAsync();
 
-            try
-            {
+            
+            
                 var data = await ordemVendasQuery
                     .Skip(produtosParametros.start)
                     .Take(produtosParametros.lenght)
@@ -244,14 +244,6 @@ namespace MinhasVendas.App.Servicos
                 return json;
 
             }
-            catch (Exception ex)
-            {
-
-                return $"Error: {ex.Message}";
-            }
-               
-       
-            }
-        
+          
     }
 }
