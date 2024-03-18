@@ -190,26 +190,7 @@ namespace MinhasVendas.App.Servicos
 
                ordemVendasQuery = ordemVendasQuery.Where(c => c.PrecoDeVenda <= filtro);
             }
-            else if (filtro == 1)
-            {
-                try
-                {
-                    throw new Exception("Exceção intencional, Tradada");
-
-                }
-                catch (Exception ex)
-                {
-
-                    return ex.Message;
-                }
-
-            }else if (filtro == 2)
-            {
-                    throw new Exception("Exceção intencional, não tratada");
-
-
-            }
-
+          
 
             if (produtosParametros.Ordenacao != null)
             {
