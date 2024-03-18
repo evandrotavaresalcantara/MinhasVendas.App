@@ -12,8 +12,8 @@ using MinhasVendas.App.Data;
 namespace MinhasVendas.App.Migrations
 {
     [DbContext(typeof(MinhasVendasAppContext))]
-    [Migration("20240318104242_sqlServerLocalDB")]
-    partial class sqlServerLocalDB
+    [Migration("20240318174717_MeuApp")]
+    partial class MeuApp
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

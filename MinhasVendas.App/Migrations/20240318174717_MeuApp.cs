@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MinhasVendas.App.Migrations
 {
     /// <inheritdoc />
-    public partial class sqlServerLocalDB : Migration
+    public partial class MeuApp : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
