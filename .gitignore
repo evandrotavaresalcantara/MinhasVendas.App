@@ -42,3 +42,4 @@ msbuild.wrn
 .vs/
 
 /MinhasVendas.App/app.db
+/MinhasVendas.App/appsettings.Development.json
