@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using MinhasVendas.App.AutoMapper;
 using MinhasVendas.App.Data;
@@ -13,24 +14,23 @@ using MinhasVendas.App.Servicos;
 using System;
 using System.Globalization;
 
-//  arquivoTeste.db inserido através do KUDU em seguida executando um deploy através do gitgub
-
-
-
 var builder = WebApplication.CreateBuilder(args);
 
-//builder.Services.AddDbContext<MinhasVendasAppContext>(options =>
- //   options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.")));
+var tipoBD = 1;
 
-builder.Services.AddDbContext<MinhasVendasAppContext>(options =>
-options.UseSqlite(builder.Configuration.GetConnectionString("MinhaConexao")));
-
+if (tipoBD == 1)
+{
+   builder.Services.AddDbContext<MinhasVendasAppContext>(options =>
+      options.UseSqlServer(builder.Configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING") ?? throw new InvalidOperationException("Connection string 'AZURE_SQL_CONNECTIONSTRING' not found.")));
+}
+else
+{
+    builder.Services.AddDbContext<MinhasVendasAppContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("SQLITE_LOCAL")));
+}
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddEntityFrameworkStores<MinhasVendasAppContext>();
-
-
-
 
 
 // Add services to the container.
