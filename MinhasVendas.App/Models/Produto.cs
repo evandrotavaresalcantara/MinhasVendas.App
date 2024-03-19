@@ -13,9 +13,11 @@ namespace MinhasVendas.App.Models
         public string Descricao { get; set; } = string.Empty;
         public bool Ativo { get; set; }
         public DateTime DataDeCadastro { get; set; }
-
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal PrecoDeCusto { get; set; }
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal MarkUp { get; set; }
+        [Column(TypeName = "decimal(18, 2)")]
         public decimal PrecoDeVenda { get; set; }
 
         public string? Imagem { get; set; }

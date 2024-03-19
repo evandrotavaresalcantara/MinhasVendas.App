@@ -5,7 +5,7 @@ public class ProdutosParametros : QueryStringParametros
     public string OrdemDeClassificacao { get; set; } = string.Empty;
     public string PesquisaTexto { get; set; } = string.Empty;
     public string FiltroAtual { get; set; } = string.Empty;
-    public int Filtro { get; set; } 
+    public decimal Filtro { get; set; } 
 
     public string search { get; set; } = string.Empty;
     public int start { get; set; }

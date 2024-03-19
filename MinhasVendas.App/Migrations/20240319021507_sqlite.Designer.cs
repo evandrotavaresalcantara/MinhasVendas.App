@@ -11,7 +11,7 @@ using MinhasVendas.App.Data;
 namespace MinhasVendas.App.Migrations
 {
     [DbContext(typeof(MinhasVendasAppContext))]
-    [Migration("20240318194925_sqlite")]
+    [Migration("20240319021507_sqlite")]
     partial class sqlite
     {
         /// <inheritdoc />
@@ -567,17 +567,17 @@ namespace MinhasVendas.App.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("MarkUp")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<decimal>("PrecoDeCusto")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<decimal>("PrecoDeVenda")
-                        .HasColumnType("TEXT");
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<int>("ProdutoCategoriaId")
                         .HasColumnType("INTEGER");

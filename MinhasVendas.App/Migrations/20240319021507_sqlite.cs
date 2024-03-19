@@ -319,9 +319,9 @@ namespace MinhasVendas.App.Migrations
                     Descricao = table.Column<string>(type: "TEXT", nullable: false),
                     Ativo = table.Column<bool>(type: "INTEGER", nullable: false),
                     DataDeCadastro = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    PrecoDeCusto = table.Column<decimal>(type: "TEXT", nullable: false),
-                    MarkUp = table.Column<decimal>(type: "TEXT", nullable: false),
-                    PrecoDeVenda = table.Column<decimal>(type: "TEXT", nullable: false),
+                    PrecoDeCusto = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    MarkUp = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    PrecoDeVenda = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
                     Imagem = table.Column<string>(type: "TEXT", nullable: true),
                     EstoqueAtual = table.Column<int>(type: "INTEGER", nullable: false)
                 },

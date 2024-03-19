@@ -74,7 +74,7 @@ namespace MinhasVendas.App.Servicos
 
             if ((produtoDB.PrecoDeCusto != produto.PrecoDeCusto) || (produtoDB.MarkUp != produto.MarkUp) || (produtoDB.PrecoDeVenda != produto.PrecoDeVenda))
             {
-                AtualizarPreco(produto.Id, produto.PrecoDeCusto, produto.MarkUp, produto.PrecoDeVenda);
+               await AtualizarPreco(produto.Id, produto.PrecoDeCusto, produto.MarkUp, produto.PrecoDeVenda);
             }
 
         }
@@ -167,13 +167,13 @@ namespace MinhasVendas.App.Servicos
 
         public async Task<string> ObterProdutos(ProdutosParametros produtosParametros)
         {
-            IQueryable<Produto> ordemVendasQuery = _produtoRepositorio.Obter().Include(c => c.ProdutoCategoria);
+            IQueryable<Produto> produtosQuery = _produtoRepositorio.Obter().Include(c => c.ProdutoCategoria);
 
             if (!string.IsNullOrWhiteSpace(produtosParametros.search))
                 {
                 produtosParametros.search = produtosParametros.search.ToLower();
 
-                    ordemVendasQuery = ordemVendasQuery.Where(c =>
+                    produtosQuery = produtosQuery.Where(c =>
                         c.Nome.ToLower().Contains(produtosParametros.search) ||
                         c.Codigo.ToLower().Contains(produtosParametros.search)
                     );
@@ -181,16 +181,13 @@ namespace MinhasVendas.App.Servicos
 
             var filtro = produtosParametros.Filtro;
 
-
-          
-
             if (filtro == 50 || filtro == 100 || filtro == 150)
             {
-               
 
-               ordemVendasQuery = ordemVendasQuery.Where(c => c.PrecoDeVenda <= filtro);
+
+                produtosQuery =  produtosQuery.Where(c => c.PrecoDeVenda <= filtro);
             }
-          
+
 
             if (produtosParametros.Ordenacao != null)
             {
@@ -200,23 +197,23 @@ namespace MinhasVendas.App.Servicos
                 switch (coluna)
                 {
                     case 1:
-                        ordemVendasQuery = direcao == "asc" ?
-                            ordemVendasQuery.OrderBy(c => c.ProdutoCategoria.Nome) :
-                            ordemVendasQuery.OrderByDescending(c => c.ProdutoCategoria.Nome);
+                        produtosQuery = direcao == "asc" ?
+                            produtosQuery.OrderBy(c => c.ProdutoCategoria.Nome) :
+                            produtosQuery.OrderByDescending(c => c.ProdutoCategoria.Nome);
                         break;
                     case 4:
-                        ordemVendasQuery = direcao == "asc" ?
-                            ordemVendasQuery.OrderBy(c => c.EstoqueAtual) :
-                            ordemVendasQuery.OrderByDescending(c => c.EstoqueAtual);
+                        produtosQuery = direcao == "asc" ?
+                            produtosQuery.OrderBy(c => c.EstoqueAtual) :
+                            produtosQuery.OrderByDescending(c => c.EstoqueAtual);
                         break;
                 }
             }
 
-            var totalRegistros = await ordemVendasQuery.CountAsync();
+            var totalRegistros = await produtosQuery.CountAsync();
 
             
             
-                var data = await ordemVendasQuery
+                var data = await produtosQuery
                     .Skip(produtosParametros.start)
                     .Take(produtosParametros.lenght)
                     .Select(c => new
