@@ -1,0 +1,60 @@
+﻿@model Vendas.ViewModels.ProdutoCategoriaViewModel
+
+@{
+    Layout = "_Layout";
+
+    ViewData["Title"] = "Categoria";
+
+    ViewData["Rota"] = "Categorias Produto";
+    ViewData["Acao"] = "Atualizar categoria";
+    ViewData["Rotulo"] = "Atualizar categoria";
+}
+
+<div class="container-fluid py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header pb-0">
+                    <div class="d-lg-flex">
+                        <div>
+                            <h5 class="mb-0">Nova Categoria de Produto</h5>
+                        </div>
+                        <div class="ms-auto my-auto mt-lg-0 mt-4">
+                            <div class="ms-auto my-auto">
+                                <a asp-action="index" class="btn bg-gradient-primary btn-sm mb-0">Categorias</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body px-4 pb-0">
+                    <div class="col-md-4">
+                        <form asp-action="novo">
+                            <vc:resumo></vc:resumo>
+                            <div class="form-group">
+                                <label asp-for="Nome" class="control-label"></label>
+                                <input asp-for="Nome" class="form-control" />
+                                <span asp-validation-for="Nome" class="text-danger text-sm"></span>
+                            </div>
+                            <div class="form-group">
+                                <label asp-for="Descricao">Descrição</label>
+                                <input asp-for="Descricao" class="form-control" />
+                                <span asp-validation-for="Descricao" class="text-danger text-sm"></span>
+                            </div>
+                            <div class="form-group">
+                                <input type="submit" value="Nova" class="btn btn-primary" />
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+}
+
+

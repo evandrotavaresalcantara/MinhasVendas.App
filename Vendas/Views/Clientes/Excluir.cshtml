@@ -1,0 +1,70 @@
+﻿@model Vendas.ViewModels.ClienteViewModel
+@{
+    Layout = "_Layout";
+
+    ViewData["Title"] = "Clientes";
+
+    ViewData["Rota"] = "Clientes";
+    ViewData["Acao"] = "Excluir Cliente";
+    ViewData["Rotulo"] = "Excluir Cliente";
+}
+
+<div class="container-fluid py-4">
+    <form asp-action="excluir">
+        <input type="hidden" asp-for="Id" />
+        <vc:resumo></vc:resumo>
+        <div class="card mt-4" id="sessions">
+            <div class="card-header pb-3">
+                <h5>Excluir Cliente</h5>
+                <hr class="horizontal dark">
+                <h6>@Model.Nome </h6>
+                <p class="text-sm">O cliente será excluído definitivamente do sistema. O mesmo não pode ter venda ou orçamento cadastrado.</p>
+            </div>
+            <hr class="horizontal dark">
+            <div class="card-body pt-0">
+                <div class="d-flex align-items-center">
+                    <div class="my-auto ms-3">
+                        <div class="h-100">
+                            <p class="text-sm mb-1">
+                                @Html.DisplayNameFor(model => model.Nome)
+                            </p>
+                        </div>
+                    </div>
+                    <span class="badge badge-success badge-sm my-auto ms-auto me-3"> @Html.DisplayFor(model => model.Nome)</span>
+                </div>
+                <hr class="horizontal dark">
+                <div class="d-flex align-items-center mb-sm-0 mb-4">
+                    <div>
+                        <div class="form-check form-switch mb-0">
+                            <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault0">
+                        </div>
+                    </div>
+                    <div class="ms-2">
+                        <span class="text-dark font-weight-bold d-block text-sm">Confirmar</span>
+                        <span class="text-xs d-block">Eu quero excluir o cliente acima.</span>
+                    </div>
+                </div>
+                <div class="mt-4">
+                    <a asp-action="index" class="btn btn-outline-secondary mb-0 ms-auto" type="button" name="Voltar">Voltar</a>
+                    <button id="excluirButton" class="btn bg-gradient-danger mb-0 ms-2" type="submit" name="Excluir">Excluir</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $('#excluirButton').click(function (e) {
+                if (!$('#flexSwitchCheckDefault0').is(':checked')) {
+                    e.preventDefault();
+                    alert('Por favor, marque a caixa de seleção para confirmar a exclusão.');
+                }
+            });
+        });
+    </script>
+}
+
+
+

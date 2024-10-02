@@ -1,0 +1,164 @@
+﻿@model Vendas.ViewModels.FornecedorViewModel
+
+@{
+    Layout = "_Layout";
+
+    ViewData["Title"] = "Fornecedores";
+
+    ViewData["Rota"] = "Fornecedores";
+    ViewData["Acao"] = "Novo Fornecedor";
+    ViewData["Rotulo"] = "Novo Fornecedor";
+}
+
+
+
+<div class="container-fluid py-4">
+    <div class="row mb-5">
+        <div class="col-12">
+            <vc:resumo class="arround"></vc:resumo>
+            <div class="multisteps-form mb-5">
+                <!--progress bar-->
+                <div class="row">
+                    <div class="col-12 col-lg-8 mx-auto my-4">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="multisteps-form__progress">
+                                    <button class="multisteps-form__progress-btn js-active" type="button" title="Info">Fornecedor</button>
+                                    <button class="multisteps-form__progress-btn" type="button" title="Endereço">Endereço</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!--form panels-->
+                <div class="row">
+                    <div class="col-12 col-lg-8 m-auto">
+                        <form class="multisteps-form__form mb-8" method="post" asp-action="novo">
+                            <!--single form panel-->
+                            <div class="card multisteps-form__panel p-3 border-radius-xl bg-white js-active" data-animation="FadeIn">
+                                <h5 class="font-weight-bolder mb-0">Dados do Fornecedor</h5>
+                                <p class="mb-0 text-sm">Informações importantes</p>
+                                <div class="multisteps-form__content">
+                                    <div class="row mt-3">
+                                        <div class="col-12 col-sm-6">
+                                            <label asp-for="Nome"></label>
+                                            <input asp-for="Nome" class="multisteps-form__input form-control" placeholder="ex. João" />
+                                            <span asp-validation-for="Nome" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-12 col-sm-6 mt-3 mt-sm-0">
+                                            <label asp-for="Documento"></label>
+                                            <input asp-for="Documento" class="multisteps-form__input form-control" placeholder="ex. Melo" />
+                                            <span asp-validation-for="Documento" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-12 col-sm-6">
+                                            <label asp-for="TipoFornecedor"></label></br>
+                                            <input type="radio" value="1" asp-for="TipoFornecedor" checked />Pessoa Física
+                                            <input type="radio" value="2" asp-for="TipoFornecedor" /> Pessoa Jurídica
+                                        </div>
+                                        <div class="col-12 col-sm-6 mt-3 mt-sm-0">
+                                            <label asp-for="Celular"></label>
+                                            <input asp-for="Celular" class="multisteps-form__input form-control" placeholder="" />
+                                            <span asp-validation-for="Celular" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-12 col-sm-6">
+                                            <label asp-for="WhatsApp"></label>
+                                            <input asp-for="WhatsApp" class="multisteps-form__input form-control" placeholder="81 87589698" />
+                                            <span asp-validation-for="WhatsApp" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-12 col-sm-6 mt-3 mt-sm-0">
+                                            <label asp-for="Instagram"></label>
+                                            <input asp-for="Instagram" class="multisteps-form__input form-control" placeholder="@@meuinsagram" />
+                                            <span asp-validation-for="Instagram" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-12 col-sm-6">
+                                            <label asp-for="Email"></label>
+                                            <input asp-for="Email" class="multisteps-form__input form-control" placeholder="ex. jess@@.me.br" />
+                                            <span asp-validation-for="Email" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-12 col-sm-6 mt-3 mt-sm-0">
+                                            <div class="button-row d-flex mt-4">
+                                                <button class="btn bg-gradient-dark ms-auto mb-0 js-btn-next" type="button" title="Next">Próximo</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--single form panel-->
+                            <div class="card multisteps-form__panel p-3 border-radius-xl bg-white" data-animation="FadeIn">
+                                <h5 class="font-weight-bolder">Endereço</h5>
+                                <div class="multisteps-form__content">
+
+                                    <div class="row mt-3">
+                                        <div class="col-12 col-sm-6">
+                                            <label asp-for="Endereco.Cep"></label>
+                                            <input asp-for="Endereco.Cep" onblur="pesquisacep(this.value);" class="multisteps-form__input form-control" placeholder="ex. 5355585" />
+                                            <span asp-validation-for="Endereco.Cep" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-6 col-sm-3 mt-3 mt-sm-0">
+                                            <label asp-for="Endereco.Numero"></label>
+                                            <input asp-for="Endereco.Numero" class="multisteps-form__input form-control" placeholder="ex. 158" />
+                                            <span asp-validation-for="Endereco.Numero" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-6 col-sm-3 mt-3 mt-sm-0">
+                                            <label asp-for="Endereco.Complemento"></label>
+                                            <input asp-for="Endereco.Complemento" class="multisteps-form__input form-control" placeholder="ex. Casa" />
+                                            <span asp-validation-for="Endereco.Complemento" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col">
+                                            <label asp-for="Endereco.Logradouro"></label>
+                                            <input id="rua" asp-for="Endereco.Logradouro" class="multisteps-form__input form-control" placeholder="ex. Rua Nobre" />
+                                            <span asp-validation-for="Endereco.Logradouro" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        <div class="col-12 col-sm-6">
+                                            <label asp-for="Endereco.Bairro"></label>
+                                            <input id="bairro" asp-for="Endereco.Bairro" class="multisteps-form__input form-control" placeholder="ex. Boa Viagem" />
+                                            <span asp-validation-for="Endereco.Bairro" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-6 col-sm-3 mt-3 mt-sm-0">
+                                            <label asp-for="Endereco.Cidade"></label>
+                                            <input id="cidade" asp-for="Endereco.Cidade" class="multisteps-form__input form-control" placeholder="ex. Recife" />
+                                            <span asp-validation-for="Endereco.Cidade" class="text-danger"></span>
+                                        </div>
+                                        <div class="col-6 col-sm-3 mt-3 mt-sm-0">
+                                            <label asp-for="Endereco.Estado"></label>
+                                            <input id="uf" asp-for="Endereco.Estado" class="multisteps-form__input form-control" placeholder="ex. PE" />
+                                            <span asp-validation-for="Endereco.Estado" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                    <div class="button-row d-flex mt-4">
+                                        <button class="btn bg-gradient-light mb-0 js-btn-prev" type="button" title="Prev">Anterior</button>
+                                        <button class="btn bg-gradient-success ms-auto mb-0" type="submit" title="Novo">Cadastrar</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!--single form panel-->
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="~/argon/assets/js/plugins/multistep-form.js"></script>
+
+
+    }
+
+

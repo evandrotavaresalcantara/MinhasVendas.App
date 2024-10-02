@@ -1,0 +1,56 @@
+﻿@model Vendas.ViewModels.CarrinhoDeComprasViewModel
+
+@{
+ViewData["Title"] = "Excluir Produto";
+}
+
+<div class="modal-header">
+    <h5 class="modal-title">@ViewData["Title"]</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+
+<form asp-action="ExcluirProduto"> 
+    <vc:resumo></vc:resumo>
+    <input type="hidden" asp-for="DetalheDeCompraViewModel.Id" />    
+    <div class="modal-body">                                     
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.DetalheDeCompraViewModel.Quantidade)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.DetalheDeCompraViewModel.Quantidade)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.DetalheDeCompraViewModel.CustoUnitario)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.DetalheDeCompraViewModel.CustoUnitario)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.DetalheDeCompraViewModel.OrdemDeCompra)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.DetalheDeCompraViewModel.OrdemDeCompra.Id)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.DetalheDeCompraViewModel.Produto)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.DetalheDeCompraViewModel.Produto.Id)
+            </dd>
+        </dl>        
+    </div>
+    <div class="modal-footer">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Excluir Produto" class="btn btn-danger" /> |
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+    </div>                      
+</form>
+
+
+
+   
+
+
+

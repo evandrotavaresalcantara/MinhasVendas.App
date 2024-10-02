@@ -1,5 +1,5 @@
-"Minhas Vendas - Sistema de controle de compras, estoque e vendas para fins de aprendizagem NETCORE" 
+"Vendas - Sistema de controle de compra, venda e estoque para fins de aprendizagem NETCORE"
 
-Hospedagem no Azure:
+Hospedagem AWS:
 
-https://minhasvendas.azurewebsites.net/
+https://vendas.webapp.dev.br/

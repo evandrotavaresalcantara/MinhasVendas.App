@@ -1,0 +1,102 @@
+﻿@model Vendas.ViewModels.ProdutoViewModel
+
+@{
+    Layout = "_Layout";
+
+    ViewData["Title"] = "Produtos";
+
+    ViewData["Rota"] = "Produtos";
+    ViewData["Acao"] = "Excluir Produto";
+    ViewData["Rotulo"] = "Excluir do Produto";
+
+}
+
+
+<main class="main-content position-relative border-radius-lg ">
+    <vc:resumo></vc:resumo>
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-lg-6">
+                <h4 class="text-white">Excluir Produto</h4>
+            </div>
+                <form asp-action="delete" class="col-lg-6 text-right d-flex flex-column justify-content-center">
+                    <button type="submit" asp-action="excluir" class="btn btn-danger mb-0 ms-lg-auto me-lg-0 me-auto mt-lg-0 mt-2">Excluir</button>
+                    <input type="hidden" asp-for="Id" />
+                </form>
+        </div>
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+
+                        <div class="row">
+
+                            <div class="col-xl-5 col-lg-6 text-center">
+                                <img class="w-100 border-radius-lg shadow-lg mx-auto" src="~/imagensProdutos/@Model.Imagem" alt="imagem_produto">
+                            </div>
+                            <div class="col-lg-5 mx-auto">
+                                @*        <div>
+                                <form asp-action="Delete">
+                                <input type="submit" value="Excluir" class="btn btn-danger" />
+                                </form>
+                                </div>*@
+                                <h5 class="mt-lg-0 mt-4">@Model.Nome</h5>
+                                <div class="rating">
+                                    <i class="fas fa-star" aria-hidden="true"></i>
+                                    <i class="fas fa-star" aria-hidden="true"></i>
+                                    <i class="fas fa-star" aria-hidden="true"></i>
+                                    <i class="fas fa-star" aria-hidden="true"></i>
+                                    <i class="fas fa-star-half-alt" aria-hidden="true"></i>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <h6 class="mb-0 mt-3">@Html.DisplayNameFor(model => model.PrecoDeCusto)</h6>
+                                        <h5>@Html.DisplayFor(model => model.PrecoDeCusto)</h5>
+                                    </div>
+                                    <div class="col-6">
+                                        <h6 class="mb-0 mt-3">@Html.DisplayNameFor(model => model.PrecoDeVenda)</h6>
+                                        <h5>@Html.DisplayFor(model => model.PrecoDeVenda)</h5>
+                                    </div>
+                                </div>
+                                <span class="badge badge-success">Tem Estoque</span>
+                                <br>
+                                <div class="row mt-4">
+                                    <dl>
+                                        <dt>
+                                            @Html.DisplayNameFor(model => model.Descricao)
+                                        </dt>
+                                        <dd>
+                                            @Html.DisplayFor(model => model.Descricao)
+                                        </dd>
+                                        <dt>
+                                            @Html.DisplayNameFor(model => model.Codigo)
+                                        </dt>
+                                        <dd>
+                                            @Html.DisplayFor(model => model.Codigo)
+                                        </dd>
+                                        <dt>
+                                            @Html.DisplayNameFor(model => model.DataDeCadastro)
+                                        </dt>
+                                        <dd>
+                                            @Html.DisplayFor(model => model.DataDeCadastro)
+                                        </dd>
+                                        <dt>
+                                            @Html.DisplayNameFor(model => model.Ativo)
+                                        </dt>
+                                        <dd>
+                                            @Html.DisplayFor(model => model.Ativo)
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</main>
+

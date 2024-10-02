@@ -1,0 +1,11 @@
+﻿
+@if (ViewData.ModelState.ErrorCount > 0)
+{
+    <div class="alert-sm alert-warning alert-dismissible fade show mx-20" role="alert">
+        <div style="padding-top: 5px" asp-validation-summary="All" class="text-white"></div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+}
+

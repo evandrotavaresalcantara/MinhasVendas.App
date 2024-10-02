@@ -1,0 +1,49 @@
+﻿@model Vendas.ViewModels.CarrinhoDeVendasViewModel
+
+@{
+    ViewData["Title"] = "Finalizar Venda";
+}
+
+@{
+    var precoProduto = from item in Model.OrdemDeVendaViewModel.DetalheDeVendas select (item.PrecoUnitario * item.Quantidade * (1 - item.Desconto / 100));
+    decimal[] precoProdutos = precoProduto.ToArray();
+    decimal totalProdutos = precoProdutos.Aggregate((a, b) => a + b);
+    decimal totalVenda = totalProdutos + Model.OrdemDeVendaViewModel.ValorDeFrete;
+
+    var itens = from item in Model.OrdemDeVendaViewModel.DetalheDeVendas select (item.Quantidade);
+    int totalItens = itens.Sum();
+
+    Model.TotalItens = totalItens;
+    Model.TotalProdutos = totalProdutos;
+    Model.TotalVenda = totalVenda;
+}
+
+<div class="modal-header">
+    <h5 class="modal-title">@ViewData["Title"]</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<form asp-action="FinalizarVenda" id="finalizarVendaForm">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label asp-for="@Model.OrdemDeVendaViewModel.Id" class="control-label"></label>
+            <input readonly asp-for="@Model.OrdemDeVendaViewModel.Id" class="form-control" value=@ViewBag.OrdemDeVendaId>
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.TotalVenda" class="control-label"></label>
+            <input readonly value="@Model.TotalVenda" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label asp-for="@Model.OrdemDeVendaViewModel.FormaDePagamento" class="control-label"></label><br />
+            <input type="radio" value="0" asp-for="@Model.OrdemDeVendaViewModel.FormaDePagamento" checked /> Pix<br />
+            <input type="radio" value="1" asp-for="@Model.OrdemDeVendaViewModel.FormaDePagamento" /> Dinheiro<br />
+            <input type="radio" value="2" asp-for="@Model.OrdemDeVendaViewModel.FormaDePagamento" /> Cartao<br />
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Finalizar Venda" class="btn btn-success" />
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        </div>
+    </div>
+</form>

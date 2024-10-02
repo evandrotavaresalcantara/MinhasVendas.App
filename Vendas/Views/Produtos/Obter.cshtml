@@ -1,0 +1,81 @@
+﻿@model Vendas.ViewModels.ProdutoViewModel
+
+@{
+    Layout = "_Layout";
+
+    ViewData["Title"] = "Produtos";
+
+    ViewData["Rota"] = "Produtos";
+    ViewData["Acao"] = "Dados do Produto";
+    ViewData["Rotulo"] = "Dados do Produto";
+}
+
+<div class="main-content position-relative border-radius-lg ">
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="mb-4">Detalhes do Produto</h5>
+                        <div class="row">
+                            <div class="col-xl-5 col-lg-6 text-center">
+                                <img class="w-100 border-radius-lg shadow-lg mx-auto" src="~/imagensProdutos/@Model.Imagem" alt="imagem_produto">
+                            </div>
+                            <div class="col-lg-5 mx-auto">
+                                <h5 class="mt-lg-0 mt-4">@Model.Nome</h5>
+                                <div class="rating">
+                                    <i class="fas fa-star" aria-hidden="true"></i>
+                                    <i class="fas fa-star" aria-hidden="true"></i>
+                                    <i class="fas fa-star" aria-hidden="true"></i>
+                                    <i class="fas fa-star" aria-hidden="true"></i>
+                                    <i class="fas fa-star-half-alt" aria-hidden="true"></i>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <h6 class="mb-0 mt-3">@Html.DisplayNameFor(model => model.PrecoDeCusto)</h6>
+                                        <h5>@Html.DisplayFor(model => model.PrecoDeCusto)</h5>
+                                    </div>
+                                    <div class="col-6">
+                                        <h6 class="mb-0 mt-3">@Html.DisplayNameFor(model => model.PrecoDeVenda)</h6>
+                                        <h5>@Html.DisplayFor(model => model.PrecoDeVenda)</h5>
+                                    </div>
+                                </div>
+                                <span class="badge badge-success">Tem Estoque</span>
+                                <br>
+                                <div class="row mt-4">
+                                    <dl>
+                                        <dt>
+                                            @Html.DisplayNameFor(model => model.Descricao)
+                                        </dt>
+                                        <dd>
+                                            @Html.DisplayFor(model => model.Descricao)
+                                        </dd>
+                                        <dt>
+                                            @Html.DisplayNameFor(model => model.Codigo)
+                                        </dt>
+                                        <dd>
+                                            @Html.DisplayFor(model => model.Codigo)
+                                        </dd>
+                                        <dt>
+                                            @Html.DisplayNameFor(model => model.DataDeCadastro)
+                                        </dt>
+                                        <dd>
+                                            @Html.DisplayFor(model => model.DataDeCadastro)
+                                        </dd>
+                                        <dt>
+                                            @Html.DisplayNameFor(model => model.Ativo)
+                                        </dt>
+                                        <dd>
+                                            @Html.DisplayFor(model => model.Ativo)
+                                        </dd>
+                                    </dl>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

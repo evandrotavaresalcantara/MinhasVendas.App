@@ -1,0 +1,48 @@
+﻿@model Vendas.ViewModels.OrdemDeCompraViewModel
+@using Vendas.Models.Enums
+
+
+@{
+    Layout = "_Layout";
+
+    ViewData["Title"] = "Compras";
+
+    ViewData["Rota"] = "Compras";
+    ViewData["Acao"] = "Nova Compra";
+    ViewData["Rotulo"] = "Nova Compra";
+
+}
+<div>
+<form enctype="multipart/form-data" asp-action="novo">
+    <vc:resumo></vc:resumo>
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col">
+                <h4 class="text-white">Nova Compra</h4>
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-6 mx-auto">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="font-weight-bolder">Escolha o Fonecedor</h5>
+                        <label class="mt-4">Fornecedor</label>
+                        <select asp-for="FornecedorId" class="form-control" asp-items="ViewBag.FornecedorId"></select>
+                        <div class="button-row d-flex mt-4">
+                            <button class="btn bg-gradient-dark ms-auto mb-0" type="submit">Próximo</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</form>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

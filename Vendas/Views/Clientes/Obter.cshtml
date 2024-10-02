@@ -1,0 +1,251 @@
+﻿@model Vendas.ViewModels.ClienteViewModel
+
+@{
+    Layout = "_Layout";
+
+    ViewData["Title"] = "Clientes";
+
+    ViewData["Rota"] = "Clientes";
+    ViewData["Acao"] = "Dados dos Clientes";
+    ViewData["Rotulo"] = "Dados dos Clientes";
+}
+
+<div class="container-fluid py-4">
+    <div class="row ">
+        <div class="col-12 mb-4 mb-md-0">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0 text-capitalize">Dados do Cliente</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table table-flush align-items-center mb-0">
+                        <thead class="thead-light">
+                            <tr>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                    @Html.DisplayNameFor(model => model.Nome)
+                                </th>
+                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                    @Html.DisplayNameFor(model => model.SobreNome)
+                                </th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                    @Html.DisplayNameFor(model => model.DataNascimento)
+                                </th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                    @Html.DisplayNameFor(model => model.Celular)
+                                </th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                    @Html.DisplayNameFor(model => model.WhatsApp)
+                                </th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                    @Html.DisplayNameFor(model => model.Instagram)
+                                </th>
+                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                    @Html.DisplayNameFor(model => model.Email)
+                                </th>
+                                <th class="text-secondary opacity-7"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <div class="d-flex px-2 py-1">
+                                        <div class="d-flex flex-column justify-content-center">
+                                            <h6 class="mb-0 text-xs">
+                                                @Html.DisplayFor(modelItem => Model.Nome)
+                                            </h6>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="align-middle text-start text-sm">
+                                    <span class="text-secondary text-xs font-weight-bold">
+                                        @Html.DisplayFor(modelItem => Model.SobreNome)
+                                    </span>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <span class="text-secondary text-xs font-weight-bold">
+                                        @Html.DisplayFor(modelItem => Model.DataNascimento)
+                                    </span>
+                                </td>
+                                <td class="align-middle text-center text-sm">
+                                    <span class="text-secondary text-xs font-weight-bold">
+                                        @Html.DisplayFor(modelItem => Model.Celular)
+                                    </span>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <span class="text-secondary text-xs font-weight-bold">
+                                        @Html.DisplayFor(modelItem => Model.WhatsApp)
+                                    </span>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <span class="text-secondary text-xs font-weight-bold">
+                                        @Html.DisplayFor(modelItem => Model.Instagram)
+                                    </span>
+                                </td>
+                                <td class="align-middle text-center">
+                                    <span class="text-secondary text-xs font-weight-bold">
+                                        @Html.DisplayFor(modelItem => Model.Email)
+                                    </span>
+                                </td>
+                                <td class="align-middle">
+                                    <a asp-action="atualizar" asp-route-id="@Model.Id" class="mx-3" title="Editar Cliente">
+                                        <i class="fas fa-user-edit text-secondary"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (Model != null)
+    {
+        <div class="row mt-4">
+            <div class="col-12 mb-4 mb-md-0">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0 text-capitalize">Endereço</h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        @Html.DisplayNameFor(model => model.Endereco.Cep)
+                                    </th>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">
+                                        @Html.DisplayNameFor(model => model.Endereco.Logradouro)
+                                    </th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        @Html.DisplayNameFor(model => model.Endereco.Numero)
+                                    </th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        @Html.DisplayNameFor(model => model.Endereco.Complemento)
+                                    </th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        @Html.DisplayNameFor(model => model.Endereco.Bairro)
+                                    </th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        @Html.DisplayNameFor(model => model.Endereco.Cidade)
+                                    </th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        @Html.DisplayNameFor(model => model.Endereco.Estado)
+                                    </th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                                        @Html.DisplayNameFor(model => model.Endereco.Cliente)
+                                    </th>
+                                    <th class="text-secondary opacity-7">
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-xs">
+                                                    @Html.DisplayFor(modelItem => Model.Endereco.Cep)
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="align-middle text-start text-sm">
+                                        <span class="text-secondary text-xs font-weight-bold">
+                                            @Html.DisplayFor(modelItem => Model.Endereco.Logradouro)
+                                        </span>
+                                    </td>
+                                    <td class="align-middle text-center text-sm">
+                                        <span class="text-secondary text-xs font-weight-bold">
+                                            @Html.DisplayFor(modelItem => Model.Endereco.Numero)
+                                        </span>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="text-secondary text-xs font-weight-bold">
+                                            @Html.DisplayFor(modelItem => Model.Endereco.Complemento)
+                                        </span>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="text-secondary text-xs font-weight-bold">
+                                            @Html.DisplayFor(modelItem => Model.Endereco.Bairro)
+                                        </span>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="text-secondary text-xs font-weight-bold">
+                                            @Html.DisplayFor(modelItem => Model.Endereco.Cidade)
+                                        </span>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="text-secondary text-xs font-weight-bold">
+                                            @Html.DisplayFor(modelItem => Model.Endereco.Estado)
+                                        </span>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                        <span class="text-secondary text-xs font-weight-bold">
+                                            @Html.DisplayFor(modelItem => Model.Endereco.Cliente.Id)
+                                        </span>
+                                    </td>
+                                    <td class="align-middle">
+                                        <a onclick="AtuazliarEnderecoCliente(@Model.Endereco?.Id)" class="mx-3" title="Editar Endereço">
+                                            <i class="fas fa-user-edit text-secondary"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <div class="row mt-4">
+        <div class="col-12 mb-4 mb-md-0">
+                <partial name="../OrdemDeVendas/_ListaVendas" model="@Model.OrdemDeVendas" />
+        </div>
+    </div>
+
+
+</div>
+
+
+<div class="modal fade" id="modalAtuazliarEnderecoCliente">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div id="conteudoModalAtuazliarEnderecoCliente"> </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        if (document.getElementById('vendas-listagem')) {
+            const dataTableSearch = new simpleDatatables.DataTable("#vendas-listagem", {
+                searchable: true,
+                fixedHeight: false,
+                perPage: 7
+            });
+        };
+    </script>
+
+    }
+
+<script>
+    var AtuazliarEnderecoCliente = function (enderecoId) {
+
+        var enderecoId = enderecoId;
+        var action = "/Clientes/EditarEnderecoCliente/";
+        var url = action + enderecoId;
+
+        $("#conteudoModalAtuazliarEnderecoCliente").load(url, function () {
+            $("#modalAtuazliarEnderecoCliente").modal("show");
+
+            var form = document.getElementById("formularioModalAtuazliarEnderecoCliente");
+            $.validator.unobtrusive.parse(form);
+        });
+    }
+</script>

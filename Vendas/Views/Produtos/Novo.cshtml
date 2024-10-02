@@ -1,0 +1,140 @@
+﻿@using Vendas.Models.Enums
+@model Vendas.ViewModels.ProdutoViewModel
+
+@{
+    ViewData["Title"] = "Produtos";
+
+    ViewData["Rota"] = "Produtos";
+    ViewData["Acao"] = "Novo Produto";
+    ViewData["Rotulo"] = "Novo Produto";
+
+    Layout = "_Layout";
+}
+
+<main class="container-fluid py-4">
+    <div class="card">
+        <div class="card-body">
+            <div class="row">
+                <h5 class="mb-1">
+                    Novo Produto
+                </h5>
+                <div classss="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="row">
+                                <div class="col-12 col-lg-8 m-auto">
+                                    <form enctype="multipart/form-data" asp-action="novo" class="mb-2" id="meuFormulario">
+                                        <vc:resumo></vc:resumo>
+                                        <div class="card p-3 mb-3">
+                                            <h5 class="font-weight-bolder">Informações do Produto</h5>
+                                            <div>
+                                                <div class="row mt-3">
+                                                    <div class="col-12 col-sm-6">
+                                                        <label asp-for="Nome"></label>
+                                                        <input asp-for="Nome" class="form-control" placeholder="Ex. T-Shirt" />
+                                                        <span asp-validation-for="Nome" class="text-danger text-sm"></span>
+                                                    </div>
+                                                    <div class="col-12 col-sm-6 mt-3 mt-sm-0">
+                                                        <label asp-for="Codigo"></label>
+                                                        <input asp-for="Codigo" class="form-control" placeholder="Ex. t1010" />
+                                                        <span asp-validation-for="Codigo" class="text-danger text-sm"></span>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12 col-sm-6 mt-3 mt-sm-0">
+                                                        <label asp-for="Descricao"></label>
+                                                        <input asp-for="Descricao" class="form-control" placeholder="Ex. t1010" />
+                                                        <span asp-validation-for="Descricao" class="text-danger text-sm"></span>
+                                                    </div>
+                                                    <div class="col-12 col-sm-3 mt-3 mt-sm-0">
+                                                        <label>Categoria</label>
+                                                        <select asp-for="ProdutoCategoriaId" asp-items="ViewBag.categoriaId" class="form-control"></select>
+                                                    </div>
+                                                    <div class="col-12 col-sm-3 mt-3 mt-sm-0">
+                                                        <label>Tamanho</label>
+                                                        <select asp-for="Tamanho" class="form-control">
+                                                            <option value="P">P</option>
+                                                            <option value="M">M</option>
+                                                            <option value="G">G</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="card p-3 mb-3">
+                                            <h5 class="font-weight-bolder">Valores</h5>
+                                            <div>
+                                                <div class="row">
+                                                    <div class="form-group col-3">
+                                                        <label asp-for="PrecoDeCusto" class="control-label"></label>
+                                                        <input id="PrecoDeCusto" name="PrecoDeCusto" type="text" value="@Model?.PrecoDeCusto" class="form-control real" />
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <label asp-for="PrecoDeVenda"></label>
+                                                        <input id="PrecoDeVenda" name="PrecoDeVenda" type="text" value="@Model?.PrecoDeVenda" class="form-control real" />
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <label class="control-label"></label> <br />
+                                                        <input asp-for="Ativo" type="radio" value="true" checked /> Disponível <br />
+                                                        <input asp-for="Ativo" type="radio" value="false" /> Indisponível <br />
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="card p-3 mb-3">
+                                            <h5 class="font-weight-bolder">Imagem do Produto</h5>
+                                            <div>
+                                                <div class="row mt-3">
+                                                    <div class="col-12">
+                                                        <label>Foto do Produto</label>
+                                                        <div class="custom-file">
+                                                            <input type="file" class="custom-file-input" id="ImagemUpload" asp-for="ImagemUpload">
+                                                            <label data-browse="Procurar" class="custom-file-label" for="ImagemUpload"></label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="button-row l-flex mt-4">
+                                            <button type="submit" value="novo" class="btn bg-gradient-success ms-auto mb-0" title="Cadastrar">Cadastrar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</main>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script src="~/argon/assets/js/plugins/choices.min.js"></script>
+    <script src="~/argon/assets/js/plugins/dropzone.min.js"></script>
+    <script src="~/argon/assets/js/plugins/quill.min.js"></script>
+    <script src="~/argon/assets/js/plugins/multistep-form.js"></script>
+
+    <script>
+        $('.real').maskMoney({
+            thousands: '.',
+            decimal: ',',
+        })
+
+        $('#meuFormulario').submit(function (e) {
+            $('.real').each(function () {
+                var valoresReais = $(this).val();
+                valoresReais = valoresReais.replace('.', '');
+                $(this).val(valoresReais);
+            });
+        });
+    </script>
+
+}
