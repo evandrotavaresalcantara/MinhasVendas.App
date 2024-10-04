@@ -5,6 +5,7 @@
 }
 
 <h1>@ViewData["Title"]</h1>
-<partial name="_StatusMessage" model="Model.StatusMessage" />
 <p>Conta Ativada Com sucesso</p>
-<a href="/">Tela Inicial</a>
+<a asp-controller="home" asp-action="index">Tela Inicial</a>
+
+@* <partial name="_StatusMessage" model="Model.StatusMessage" /> *@

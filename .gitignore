@@ -1,8 +1,6 @@
 *.db
 *.db-shm
 *.db-wal
-
-
 *.swp
 *.*~
 project.lock.json
@@ -37,9 +35,8 @@ bld/
 msbuild.log
 msbuild.err
 msbuild.wrn
-
-# Visual Studio 2015
 .vs/
 
-/MinhasVendas.App/app.db
-/MinhasVendas.App/appsettings.Development.json
+appsettings.*
+!appsettings.example.json 
+
