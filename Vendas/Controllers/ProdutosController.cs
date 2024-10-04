@@ -8,6 +8,7 @@ using Vendas.Interfaces;
 using Vendas.Interfaces.Repositorio;
 using Vendas.Interfaces.Servico;
 using Vendas.Models;
+using Vendas.Models.Enums;
 using Vendas.Paginacao;
 using Vendas.ViewModels;
 
@@ -78,8 +79,15 @@ namespace Vendas.Controllers
             {
                 return NotFound();
             }
+
+
             var produtoViewModel = _mapper.Map<ProdutoViewModel>(produto);
 
+            var saldoProduto = _context.TransacaoDeEstoques
+                                .Where(te => te.ProdutoId == id)
+                                .Sum(te => te.TipoDransacaoDeEstoque == TipoDransacaoDeEstoque.Compra ? te.Quantidade : -te.Quantidade);
+
+            produtoViewModel.EstoqueAtual = saldoProduto;
             return View(produtoViewModel);
         }
 
@@ -93,7 +101,7 @@ namespace Vendas.Controllers
         }
 
 
-        [HttpPost]  
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Novo(ProdutoViewModel produtoViewModel)
         {
@@ -198,6 +206,13 @@ namespace Vendas.Controllers
             }
 
             var produtoViewModel = _mapper.Map<ProdutoViewModel>(produto);
+
+            var saldoProduto = _context.TransacaoDeEstoques
+                   .Where(te => te.ProdutoId == id)
+                   .Sum(te => te.TipoDransacaoDeEstoque == TipoDransacaoDeEstoque.Compra ? te.Quantidade : -te.Quantidade);
+
+            produtoViewModel.EstoqueAtual = saldoProduto;
+
             return View(produtoViewModel);
         }
 

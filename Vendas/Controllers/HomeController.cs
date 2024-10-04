@@ -7,6 +7,7 @@ using Vendas.Interfaces.Servico;
 using Vendas.Servicos;
 using Vendas.ViewModels;
 using Microsoft.AspNetCore.Authorization;
+using Vendas.Models.Enums;
 
 namespace Vendas.Controllers
 {
@@ -72,42 +73,32 @@ namespace Vendas.Controllers
             _ordemDeVendaServico = ordemDeVendaServico;
         }
 
-        [HttpGet]
-        public IActionResult Exemplo()
-        {
-            return View();
-
-        }
-
-        [HttpPost]
-        public IActionResult Exemplo(string email)
-        {
-
-            return Content($"Email recebido : {email}");
-
-        }
-
-
         public IActionResult Index()
         {
+            var resumo = ObterResumoCadastro();
 
-            ViewBag.TotalClientes = _clienteEnderecoRepositorio.Obter().Count();
-            ViewBag.TotalFornecedores = _fornecedorEnderecoRepositorio.Obter().Count();
-            ViewBag.TotalProdutos = _produtoRepositorio.Obter().Count();
-            ViewBag.TotalOrdemDeCompras = _ordemDeCompraRepositorio.Obter().Count();
-            ViewBag.TotalOrdemDeVendas = _ordemDeVendaRepositorio.Obter().Count();
-
-            string nomeImagem = "img.png";
-            var pathImagensProdutosTmp = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagensProdutosTmp", nomeImagem);
-
-            ViewBag.Path = pathImagensProdutosTmp;
-
-            return View();
+            return View(resumo);
         }
 
         [HttpPost]
-        public async Task<IActionResult> GerenciarClientes(int excluir, int quantidade)
+        public async Task<IActionResult> GerenciarClientes(ResumoCadastro model)
         {
+            var validarQuantidade = ValidarQuantidadeResumoCadastro(model);
+            var resumo = ObterResumoCadastro();
+
+            if (!validarQuantidade) return View("index", resumo);
+
+            var excluir = model.Excluir;
+            var quantidade = model.Quantidade;
+
+            var existeTransacaoVenda = _minhasVendasAppContext.TransacaoDeEstoques.Any(v => v.TipoDransacaoDeEstoque == TipoDransacaoDeEstoque.Venda);
+            if (existeTransacaoVenda)
+            {
+                Notificar("Existem transações de venda cadastrada. Primeiro exclua produtos e tente novamente.");
+                return View("index", resumo);
+            }
+
+
             if (excluir == 1)
             {
                 if (_clienteRepositorio.Obter().Any())
@@ -188,10 +179,24 @@ namespace Vendas.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GerenciarFornecedores(int excluir, int quantidade)
+        public async Task<IActionResult> GerenciarFornecedores(ResumoCadastro model)
         {
+            var validarQuantidade = ValidarQuantidadeResumoCadastro(model);
+            var resumo = ObterResumoCadastro();
 
+            if (!validarQuantidade) return View("index", resumo);
+
+            var existeTransacaoCompra = _minhasVendasAppContext.TransacaoDeEstoques.Any(v => v.TipoDransacaoDeEstoque == TipoDransacaoDeEstoque.Compra);
+            if (existeTransacaoCompra)
+            {
+                Notificar("Existem transações de compra cadastrada. Primeiro exclua produtos e tente novamente.");
+                return View("index", resumo);
+            }
+
+            var excluir = model.Excluir;
+            var quantidade = model.Quantidade;
             if (excluir == 1)
+
             {
                 if (_fornecedorRepositorio.Obter().Any())
                 {
@@ -269,11 +274,16 @@ namespace Vendas.Controllers
             return RedirectToAction("index", "home");
         }
 
-
-
         [HttpPost]
-        public async Task<IActionResult> GerenciarProdutos(int excluir, int quantidade)
+        public async Task<IActionResult> GerenciarProdutos(ResumoCadastro model)
         {
+            var validarQuantidade = ValidarQuantidadeResumoCadastro(model);
+            var resumo = ObterResumoCadastro();
+
+            if(!validarQuantidade) return View("index", resumo);
+            
+            var excluir = model.Excluir;
+            var quantidade = model.Quantidade;
 
             if (excluir == 1)
             {
@@ -284,11 +294,6 @@ namespace Vendas.Controllers
                     _minhasVendasAppContext.RemoveRange(produtosDB);
                     _minhasVendasAppContext.SaveChanges();
 
-                    ViewBag.Resultado = "Todos os produtos foram Removidos.";
-
-
-
-
                     var pathImagensProdutosTmp = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagensProdutosTmp");
                     var pathImagensProdutos = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagensProdutos");
 
@@ -297,7 +302,7 @@ namespace Vendas.Controllers
 
                     foreach (FileInfo file1 in dirProdutosTmp.GetFiles())
                     {
-                         file1.Delete();
+                        file1.Delete();
                     }
 
                     foreach (FileInfo file2 in dirProdutos.GetFiles())
@@ -305,67 +310,57 @@ namespace Vendas.Controllers
                         file2.Delete();
                     }
 
+                    if (!OperacaoValida()) return View("index", resumo);
 
-                    if (!OperacaoValida()) return View("Resultado");
-
-                    ViewBag.Resultado = "Produtos excluídos com sucesso!";
-
-
-                    return RedirectToAction("index", "home");
-
+                    var resumoAtualizado1 = ObterResumoCadastro();
+                    return View("index", resumoAtualizado1 );
                 }
             }
-
 
             ProdutosController produtoController = new ProdutosController(_minhasVendasAppContext, _notificadorInfo, _mapper, _produtoCategoriaRepositorio, _produtoRepositorio, _produtoServico);
             ProdutoViewModel produtoViewModel = new ProdutoViewModel();
 
             var prefixo = "nomeProduto";
-
-            for (int i = 1; i <= quantidade; i++)
+                      
+            for (decimal i = 1; i <= quantidade; i++)
             {
-
+                var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
 
                 produtoViewModel.ProdutoCategoriaId = 1;
-                produtoViewModel.Nome = $"{i}-{prefixo}";
+                produtoViewModel.Nome = $"{timestamp}-{prefixo}";
                 produtoViewModel.Codigo = $"{i}-{prefixo}";
                 produtoViewModel.Descricao = $"{i}-{prefixo}";
                 produtoViewModel.Ativo = true;
                 produtoViewModel.DataDeCadastro = DateTime.Now;
-                produtoViewModel.PrecoDeCusto = i;
-                produtoViewModel.PrecoDeVenda = i * 2;
-                GeracaoImagem.GerarImagem($"{i}-{prefixo}", $"{i}-{prefixo}");
+                produtoViewModel.PrecoDeCusto = i * 1.00m;
+                produtoViewModel.PrecoDeVenda = i * 1.00m + 20;
+                produtoViewModel.Imagem = $"{timestamp}";
 
-                string nomeImagem = $"{i}-{prefixo}.png";
-                var pathImagensProdutosTmp = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/imagensProdutosTmp", nomeImagem);
-
-                using (var fluxoImagemCriada = new FileStream(pathImagensProdutosTmp, FileMode.Open))
-                {
-
-                    var imagemRecebida = new MemoryStream();
-                    await fluxoImagemCriada.CopyToAsync(imagemRecebida);
-
-                    var meuFormFile = new FormFile(imagemRecebida, 0, imagemRecebida.Length, "name", nomeImagem.Remove(0, 1));
-
-                    produtoViewModel.ImagemUpload = meuFormFile;
-
-
-                }
                 await produtoController.Novo(produtoViewModel);
+
+                if (!OperacaoValida()) return View("index", resumo );
             }
-
-
-            if (!OperacaoValida()) return View("Resultado");
-
-            ViewBag.Resultado = "Dados Carregado com sucesso!";
-
-
-            return RedirectToAction("index", "home");
+            var resumoAtualizado = ObterResumoCadastro();
+            return View("index", resumoAtualizado);
         }
 
         [HttpPost]
-        public async Task<IActionResult> GerenciarOrdemDeCompras(int excluir, int quantidade)
+        public async Task<IActionResult> GerenciarOrdemDeCompras(ResumoCadastro model)
         {
+            var validarQuantidade = ValidarQuantidadeResumoCadastro(model);
+            var resumo = ObterResumoCadastro();
+
+            if (!validarQuantidade) return View("index", resumo);
+
+            var existeTransacaoVenda = _minhasVendasAppContext.TransacaoDeEstoques.Any(v => v.TipoDransacaoDeEstoque == TipoDransacaoDeEstoque.Compra);
+            if (existeTransacaoVenda)
+            {
+                Notificar("Existe transações de compra cadastrada. Primeiro exclua produtos e tente novamente.");
+                return View("index", resumo);
+            }
+
+            var excluir = model.Excluir;
+            var quantidade = model.Quantidade;
 
             if (excluir == 1)
             {
@@ -382,11 +377,17 @@ namespace Vendas.Controllers
                 }
             }
 
-
             OrdemDeComprasController ordemDeComprasController = new(_ordemDeCompraServico, _fornecedorRepositorio, _ordemDeCompraRepositorio, _mapper, _notificadorInfo);
             OrdemDeCompraViewModel ordemDeCompraViewModel = new();
             ProdutoViewModel produtoViewModel = new();
             FornecedorViewModel fornecedorViewModel = new FornecedorViewModel();
+
+            var existeFornecedor = _minhasVendasAppContext.Fornecedores.Any();
+            if (!existeFornecedor)
+            {
+                Notificar("Não existe nenhum fornecedor cadastrado. Primeiro crie ao menos um fornecedor.");
+                return View("index", resumo);
+            }
 
             var prefixo = "nomeProduto";
 
@@ -397,18 +398,28 @@ namespace Vendas.Controllers
                 await ordemDeComprasController.Novo(ordemDeCompraViewModel);
             }
 
-
-            if (!OperacaoValida()) return View("Resultado");
-
-            ViewBag.Resultado = "Dados Carregado com sucesso!";
-
+            if (!OperacaoValida()) return View("index", resumo);
 
             return RedirectToAction("index", "home");
         }
 
         [HttpPost]
-        public async Task<IActionResult> GerenciarOrdemDeVendas(int excluir, int quantidade)
+        public async Task<IActionResult> GerenciarOrdemDeVendas(ResumoCadastro model)
         {
+            var validarQuantidade = ValidarQuantidadeResumoCadastro(model);
+            var resumo = ObterResumoCadastro();
+
+            if (!validarQuantidade) return View("index", resumo);
+
+            var existeTransacaoVenda = _minhasVendasAppContext.TransacaoDeEstoques.Any(v => v.TipoDransacaoDeEstoque == TipoDransacaoDeEstoque.Venda);
+            if (existeTransacaoVenda)
+            {
+                Notificar("Existem transações de venda cadastrada. Primeiro exclua produtos e tente novamente.");
+                return View("index", resumo);
+            }
+
+            var excluir = model.Excluir;
+            var quantidade = model.Quantidade;
 
             if (excluir == 1)
             {
@@ -431,6 +442,12 @@ namespace Vendas.Controllers
             ProdutoViewModel produtoViewModel = new();
             ClienteViewModel fornecedorViewModel = new();
 
+            var existeCliente = _minhasVendasAppContext.Clientes.Any();
+            if (!existeCliente)
+            {
+                Notificar("Não existe nenhum cliente cadastrado. Primeiro crie ao menos um cliente.");
+                return View("index", resumo);
+            }
 
             for (int i = 1; i <= quantidade; i++)
             {
@@ -440,17 +457,21 @@ namespace Vendas.Controllers
             }
 
 
-            if (!OperacaoValida()) return View("Resultado");
-
-            ViewBag.Resultado = "Dados Carregado com sucesso!";
-
+            if (!OperacaoValida()) return View("index", resumo);
 
             return RedirectToAction("index", "home");
         }
 
         [HttpPost]
-        public async Task<IActionResult> GerenciarProdutoCategoria(int excluir, int quantidade)
+        public async Task<IActionResult> GerenciarProdutoCategoria(ResumoCadastro model)
         {
+            var validarQuantidade = ValidarQuantidadeResumoCadastro(model);
+            var resumo = ObterResumoCadastro();
+
+            if (!validarQuantidade) return View("index", resumo);
+
+            var excluir = model.Excluir;
+            var quantidade = model.Quantidade;
 
             if (excluir == 1)
             {
@@ -469,12 +490,49 @@ namespace Vendas.Controllers
 
 
             await _produtoCategoriaRepositorio.Adicionar(new Models.ProdutoCategoria { Nome = "Categoria", Descricao = "Descricao", Produtos = null });
-           
+
 
             ViewBag.Resultado = "Dados Carregado com sucesso!";
 
 
             return RedirectToAction("index", "home");
         }
+
+        ResumoCadastro  ObterResumoCadastro()
+        {
+            ResumoCadastro resumoCadastro = new()
+            {
+                TotalClientes = _clienteEnderecoRepositorio.Obter().Count(),
+                TotalFornecedores = _fornecedorEnderecoRepositorio.Obter().Count(),
+                TotalProdutos = _produtoRepositorio.Obter().Count(),
+                TotalOrdemDeCompras = _ordemDeCompraRepositorio.Obter().Count(),
+                TotalOrdemDeVendas = _ordemDeVendaRepositorio.Obter().Count()
+            };
+
+            return resumoCadastro;
+        }
+
+        bool ValidarQuantidadeResumoCadastro(ResumoCadastro model)
+        {
+
+            if (model.Quantidade > 1000 || model.Quantidade < 0)
+            {
+                Notificar("# Quantidade não pode ser maior que 1000 ou menor que 0.");
+
+                return false;
+            }
+            return true;
+        }
+    }
+
+    public class ResumoCadastro
+    {
+        public int TotalClientes { get; set; }
+        public int TotalFornecedores { get; set; }
+        public int TotalProdutos { get; set; }
+        public int TotalOrdemDeCompras { get; set; }
+        public int TotalOrdemDeVendas { get; set; }
+        public int Excluir { get; set; }
+        public int Quantidade { get; set; }
     }
 }

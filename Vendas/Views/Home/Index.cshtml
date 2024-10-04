@@ -1,11 +1,13 @@
-﻿@{
+﻿@using Vendas.Controllers
+@model ResumoCadastro
+
+@{
     Layout = "_Layout";
 
-    ViewData["Rota"] = "Dashboard";
-    ViewData["Acao"] = "Produtos";
-    ViewData["Rotulo"] = "Produtos";
+    ViewData["Rota"] = "Registros";
+    ViewData["Acao"] = "Cadastros";
+    ViewData["Rotulo"] = "";
 }
-
 
 <div class="container-fluid py-4">
     <div class="row mt-4">
@@ -16,88 +18,87 @@
                         <h2 class="mb-0 font-weight-bold">Gerar cadastro</h2>
                     </div>
                 </div>
+                <vc:resumo></vc:resumo>
                 <div class="card-body p-3">
                     <div class="row d-flex justify-content-center">
                         <div class="col-md-1 border p-2 m-2">
-                            <strong>Clientes: @ViewBag.TotalClientes</strong>
+                            <strong>Clientes: @Model.TotalClientes</strong>
+                            <form asp-action="GerenciarClientes" method="post">
+                                <label class="control-label">Criar Clientes Qtd:</label>
+                                <input asp-for="@Model.Quantidade" class="form-control" value="" placeholder="Qtd" />
+                                <input type="submit" value="Criar" class="btn btn-success" />
+                            </form>
                             <form asp-action="GerenciarClientes" method="post">
                                 <label class="control-label">Excluir Clientes:</label>
-                                <input name="excluir" class="form-control" placeholder=" (1) para Sim" />
+                                <input hidden asp-for="@Model.Excluir" value="1" class="form-control" />
                                 <input type="submit" value="Excluir" class="btn btn-danger" />
-                            </form><br />
-                            <form asp-action="GerenciarClientes" method="post">
-                                <label class="control-label">Criar Clientes:</label>
-                                <input name="quantidade" class="form-control" placeholder=" Informe a Qtd" />
-                                <input type="submit" value="Criar" class="btn btn-success" />
-                            </form><br />
+                            </form>
                         </div>
                         <div class="col-md-1 border p-2 m-2">
-                            <strong>Fornecedores: @ViewBag.TotalFornecedores</strong>
+                            <strong>Fornecedores: @Model.TotalFornecedores</strong>
+                            <form asp-action="GerenciarFornecedores" method="post">
+                                <label class="control-label">Criar Fornecedores Qtd:</label>
+                                <input asp-for="@Model.Quantidade" class="form-control" value="" placeholder="Qtd" />
+                                <input type="submit" value="Criar" class="btn btn-success" />
+                            </form>
                             <form asp-action="GerenciarFornecedores" method="post">
                                 <label class="control-label">Excluir Fornecedores:</label>
-                                <input name="excluir" class="form-control" placeholder=" (1) para Sim" />
+                                <input hidden asp-for="@Model.Excluir" value="1" class="form-control" />
                                 <input type="submit" value="Excluir" class="btn btn-danger" />
-                            </form><br />
-                            <form asp-action="GerenciarFornecedores" method="post">
-                                <label class="control-label">Criar Fornecedores:</label>
-                                <input name="quantidade" class="form-control" placeholder=" Informe a Qtd" />
-                                <input type="submit" value="Criar" class="btn btn-success" />
                             </form>
                         </div>
                         <div class="col-md-1 border p-2 m-2">
-                            <strong>Produtos: @ViewBag.TotalProdutos</strong>
+                            <strong>Produtos: @Model.TotalProdutos</strong>
+                            <form asp-action="GerenciarProdutos" method="post">
+                                <label class="control-label">Criar Produtos Qtd:</label>
+                                <input asp-for="@Model.Quantidade" class="form-control" value="" placeholder="Qtd" />
+                                <input type="submit" value="Criar" class="btn btn-success" />
+                            </form>
                             <form asp-action="GerenciarProdutos" method="post">
                                 <label class="control-label">Excluir Produtos:</label>
-                                <input name="excluir" class="form-control" placeholder=" (1) para Sim" />
+                                <input hidden asp-for="@Model.Excluir" value="1"  class="form-control" />
                                 <input type="submit" value="Excluir" class="btn btn-danger" />
-                            </form><br />
-                            <form asp-action="GerenciarProdutos" method="post">
-                                <label class="control-label">Criar Produtos:</label>
-                                <input name="quantidade" class="form-control" placeholder=" Informe a Qtd" />
-                                <input type="submit" value="Criar" class="btn btn-success" />
                             </form>
                         </div>
                         <div class="col-md-1 border p-2 m-2">
-                            <strong>Produto Categorias: @ViewBag.TotalProdutos</strong>
-                            <form asp-action="GerenciarProdutoCategorias" method="post">
-                                <label class="control-label">Excluir Produto Categoria:</label>
-                                <input name="excluir" class="form-control" placeholder=" (1) para Sim" />
-                                <input type="submit" value="Excluir" class="btn btn-danger" />
-                            </form><br />
-                            <form asp-action="GerenciarProdutos" method="post">
-                                <label class="control-label">Criar Produto Categoria:</label>
-                                <input name="quantidade" class="form-control" placeholder=" Informe a Qtd" />
-                                <input type="submit" value="Criar" class="btn btn-success" />
-                            </form>
-                        </div>
-                        <div class="col-md-1 border p-2 m-2">
-                            <strong>Ordem de Compras: @ViewBag.TotalOrdemDeCompras</strong>
+                            <strong>Compras: @Model.TotalOrdemDeCompras</strong>
                             <form asp-action="GerenciarOrdemDeCompras" method="post">
-                                <label class="control-label">Excluir Ordem De Compras:</label>
-                                <input name="excluir" class="form-control" placeholder=" (1) para Sim" />
-                                <input type="submit" value="Excluir" class="btn btn-danger" />
-                            </form><br />
-                            <form asp-action="GerenciarOrdemDeCompras" method="post">
-                                <label class="control-label">Criar Ordem de Compras:</label>
-                                <input name="quantidade" class="form-control" placeholder=" Informe a Qtd" />
+                                <label class="control-label">Criar Compras Qtd:</label>
+                                <input asp-for="@Model.Quantidade" class="form-control" value="" placeholder="Qtd" />
                                 <input type="submit" value="Criar" class="btn btn-success" />
+                            </form>
+                            <form asp-action="GerenciarOrdemDeCompras" method="post">
+                                <label class="control-label">Excluir Compras:</label>
+                                <input hidden asp-for="@Model.Excluir" value="1" class="form-control" />
+                                <input type="submit" value="Excluir" class="btn btn-danger" />
                             </form>
                         </div>
                         <div class="col-md-1 border p-2 m-2">
-                            <strong>Ordem de Vendas: @ViewBag.TotalOrdemDeVendas</strong>
+                            <strong>Vendas: @Model.TotalOrdemDeVendas</strong>
                             <form asp-action="GerenciarOrdemDeVendas" method="post">
-                                <label class="control-label">Excluir Ordem De Vendas:</label>
-                                <input name="excluir" class="form-control" placeholder=" (1) para Sim" />
-                                <input type="submit" value="Excluir" class="btn btn-danger" />
-                            </form><br />
-                            <form asp-action="GerenciarOrdemDeVendas" method="post">
-                                <label class="control-label">Criar Ordem de Vendas:</label>
-                                <input name="quantidade" class="form-control" placeholder=" Informe a Qtd" />
+                                <label class="control-label">Criar Vendas Qtd:</label>
+                                <input asp-for="@Model.Quantidade" class="form-control" value="" placeholder="Qtd" />
                                 <input type="submit" value="Criar" class="btn btn-success" />
+                            </form>
+                            <form asp-action="GerenciarOrdemDeVendas" method="post">
+                                <label class="control-label">Excluir Vendas:</label>
+                                <input hidden asp-for="@Model.Excluir" value="1" class="form-control" />
+                                <input type="submit" value="Excluir" class="btn btn-danger" />
                             </form>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="card mt-2 p-2">
+                <h3>Informações Gerais - Para fins de teste</h3>
+                <hr />
+                <h4>Criação de Registros</h4>
+                <p>Para criar clientes, fornecedores e produtos não há requesitos.</p>
+                <p>Para criar compras/vendas é necessário ter criado fornecedor/cliente.</p>
+                <h4>Exclusão de Registros</h4>
+                <p>Para excluir produto, não há requesitos. Se houverem transações de compra ou venda, essas serão excluídas também.</p>
+                <p>Para excluir cliente e fornecedor, não pode existir itens no carrinho de compra/venda. A forma de liberar é excluindo produto.</p>
+                <p>Para excluir compra e venda, não pode existir itens no carrinho de compra/venda. A forma de liberar é excluindo produto.</p>
             </div>
         </div>
     </div>

@@ -41,7 +41,17 @@
                                         <h5>@Html.DisplayFor(model => model.PrecoDeVenda)</h5>
                                     </div>
                                 </div>
-                                <span class="badge badge-success">Tem Estoque</span>
+                                @{
+                                    if (@Model.EstoqueAtual > 0)
+                                    {
+                                        <span class="badge badge-success">Estoque:@Model.EstoqueAtual</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge badge-warning">Estoque:@Model.EstoqueAtual</span>
+                                    }
+                                }
+                                <div></div>
                                 <br>
                                 <div class="row mt-4">
                                     <dl>

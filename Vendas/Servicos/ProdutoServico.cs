@@ -140,7 +140,6 @@ namespace Vendas.Servicos
                              precocusto = c.PrecoDeCusto.ToString("C", new CultureInfo("pt-BR")),
                              precovenda = c.PrecoDeVenda.ToString("C", new CultureInfo("pt-BR")),
 
-                             // Subconsulta para obter o estoque atual baseado nas compras e vendas
                              estoqueatual = (
                                  from produto in _minhasVendasAppContext.TransacaoDeEstoques
                                  where produto.ProdutoId == c.Id
@@ -148,7 +147,7 @@ namespace Vendas.Servicos
                                  select produtoGroup.Sum(p => p.TipoDransacaoDeEstoque == TipoDransacaoDeEstoque.Compra
                                                                ? p.Quantidade
                                                                : -p.Quantidade)
-                             ).FirstOrDefault() // Caso não tenha registros, retornará 0
+                             ).FirstOrDefault()
                          })
                          .ToListAsync();
 
